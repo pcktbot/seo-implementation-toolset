@@ -1,0 +1,143 @@
+body > .container {
+  padding-top: 5em;
+}
+.row {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+#logo {
+  width: 3em;
+  height: 3em;
+}
+
+a.nav-link {
+  color: #0d2240;
+  font-weight:bold
+}
+
+a.nav-link:hover {
+  color: #7c98ab;
+  font-weight:bold
+}
+
+.table td, .table th {
+  padding: .7rem;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.container {
+  max-width: 2000px;
+}
+
+#redirects-table,#lv-table {  
+  max-height: 40em !important;
+  overflow: scroll;
+}​
+
+#vertical, #domain-strat,#chain-brand,#select-location,#redirect-menu,#select-location-redirects  {
+  background: #7c98ab;
+  border-color: #7c98ab; 
+  color: white;
+}
+#locations {
+  background: #0d2240;
+  border-color: #0d2240; 
+  color: white;
+}
+#vertical {
+  background: #7c98ab;
+  border-color: #7c98ab; 
+  color: white;
+}
+
+.form-group {
+  margin-bottom: 0em;
+  text-align: center;
+}
+
+footer {
+  margin-top: 3em;
+}
+
+
+h2,h3,h4 {
+  padding: .5rem 0rem;
+  margin-bottom: 0rem;
+}
+.header {
+  padding-top: 50px; 
+}
+
+h1 {
+  margin-top: .5rem;
+}
+.btn-primary {
+  background: #0d2240;
+  border-color: #0d2240; 
+  color: white;
+}
+
+.btn-secondary {
+  background: #7c98ab;
+  border-color: #7c98ab; 
+  color: white;
+}
+
+.btn-outline-secondary:hover {
+  background: #7c98ab;
+  border-color: #7c98ab; 
+}
+.btn-primary:hover {
+  background: #9ea7b3;
+  border-color: #9ea7b3;  
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.pt-3-half {
+padding-top: 1.4rem;
+}
+
+.notes {
+  text-align: left;
+}
+
+textarea {
+  min-height: 5rem;
+  font-size: 90%;
+  text-indent: 0;
+  padding: .3rem;
+  margin-bottom: 0;
+  box-sizing: border-box !important;
+  width: 100%;
+  background-color: transparent;
+  border-width: 3px;
+  font-size: 1rem;
+  height: 7.5rem
+}
+
+h4.title {
+  margin-bottom: 0px
+}
+.sw-theme-arrows>ul.step-anchor>li.active>a {
+  border-color: #7c98ab !important;
+  background: #7c98ab !important;
+}
+
+.sw-theme-arrows>ul.step-anchor>li.active>a:after {
+  
+  border-left: 30px solid #7c98ab!important;
+}
+
+.sw-theme-arrows>ul.step-anchor>li.done>a:after {
+  border-left: 30px solid #f5f5f5;
+}
+
+.sw-theme-arrows>ul.step-anchor>li.done>a {
+  border-color: #f5f5f5 !important;
+  background: #f5f5f5 !important;
+  color:#bbb !important;
+}
