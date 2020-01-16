@@ -19,12 +19,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 export default {
-  computed: {
-    ...mapState({
-      form: state => state.form
-    })
-  },
-  data() {
+  data () {
     return {
       steps: [
         { id: 'name-address', text: 'Name / Address Validation' },
@@ -34,6 +29,14 @@ export default {
         { id: 'notes', text: 'Notes' }
       ]
     }
+  },
+  computed: {
+    ...mapState({
+      form: state => state.form
+    })
+  },
+  created () {
+    this.$emit('console', { test: 'test' })
   },
   methods: {
     ...mapActions({})
