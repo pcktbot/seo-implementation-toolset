@@ -1,6 +1,6 @@
 # seo-implementation
 
-> My terrific Nuxt.js project
+Migrating project from https://github.com/ColinMcCullough/SEO-Implementation-Toolset-2020/
 
 ## Build Setup
 
