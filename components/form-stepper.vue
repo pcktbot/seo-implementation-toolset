@@ -69,6 +69,7 @@ export default {
     },
     // Executed when @stepper-finished event is triggered
     alert (payload) {
+      console.log({ payload })
       alert('end')
     }
   }

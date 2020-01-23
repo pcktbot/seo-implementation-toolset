@@ -74,9 +74,9 @@ export default {
       deep: true
     },
     clickedNext (val) {
+      this.$emit('formData', { form: this.form })
       if (val === true) {
         this.$v.form.$touch()
-        this.$emit('formData', { form: this.form })
       }
     }
   },
