@@ -1,14 +1,20 @@
 <template>
   <div>
     <g5Nav />
-    <b-container fluid>
-      Content
-      <form-stepper />
+    <b-container class="mainBody">
+      <h3> Step 1: Complete Options Below</h3>
       <b-row>
         <b-col v-for="select in selects" :key="select.selected">
           <b-form-select v-model="select.selected" :options="select.options" />
         </b-col>
       </b-row>
+      <h3>Step 2: Select Location</h3>
+      <b-row>
+        <b-col>
+          <b-form-select v-model="location.selected" :options="location.options" />
+        </b-col>
+      </b-row>
+      <form-stepper />
       <!-- <div class="mt-3">Selected: <strong>{{ verticals.selected }}</strong></div> -->
     </b-container>
   </div>
@@ -50,6 +56,13 @@ export default {
             { value: 'no', text: 'No' }
           ]
         }
+      },
+      location: {
+        selected: null,
+        options: [
+          { value: null, text: 'Select Locaiton' },
+          { value: 'loc1', text: 'Loc 1' }
+        ]
       }
     }
   }
@@ -57,5 +70,7 @@ export default {
 </script>
 
 <style>
-
+.container.mainBody {
+  padding-top: 5em;
+}
 </style>

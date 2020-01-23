@@ -3,43 +3,74 @@
     <h2 class="text-center">
       Step 3: Fill in Client Data
     </h2>
-    <b-container class="stepper-container my-5 d-none">
-      <b-form
-        id="my-form"
-        role="form"
-        data-toggle="validator"
-        accept-charset="utf-8"
-      >
-      <!-- INSERT STEPPER -->
-      </b-form>
+    <b-container>
+      <horizontal-stepper
+        :steps="demoSteps"
+        @completed-step="completeStep"
+        @active-step="isStepActive"
+        @stepper-finished="alert"
+      />
     </b-container>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import HorizontalStepper from 'vue-stepper'
+// This components will have the content for each stepper step.
+import StepOne from './StepOne.vue'
+import StepTwo from './StepTwo.vue'
+
 export default {
+  components: {
+    HorizontalStepper
+  },
   data () {
     return {
-      steps: [
-        { id: 'name-address', text: 'Name / Address Validation' },
-        { id: 'keyword-research', text: 'Keyword Research' },
-        { id: 'context', text: 'Context' },
-        { id: 'redirects', text: 'Redirects' },
-        { id: 'notes', text: 'Notes' }
+      demoSteps: [
+        {
+          icon: 'mail',
+          name: 'first',
+          title: 'Sample title 1',
+          subtitle: 'Subtitle sample',
+          component: StepOne,
+          completed: false
+
+        },
+        {
+          icon: 'report_problem',
+          name: 'second',
+          title: 'Sample title 2',
+          subtitle: 'Subtitle sample',
+          component: StepTwo,
+          completed: false
+        }
       ]
     }
   },
-  computed: {
-    ...mapState({
-      form: state => state.form
-    })
-  },
-  created () {
-    this.$emit('console', { test: 'test' })
-  },
   methods: {
-    ...mapActions({})
+    // Executed when @completed-step event is triggered
+    completeStep (payload) {
+      this.demoSteps.forEach((step) => {
+        console.log({ payload })
+        if (step.name === payload.name) {
+          step.completed = true
+        }
+      })
+    },
+    // Executed when @active-step event is triggered
+    isStepActive (payload) {
+      this.demoSteps.forEach((step) => {
+        if (step.name === payload.name) {
+          if (step.completed === true) {
+            step.completed = false
+          }
+        }
+      })
+    },
+    // Executed when @stepper-finished event is triggered
+    alert (payload) {
+      alert('end')
+    }
   }
 }
 </script>
