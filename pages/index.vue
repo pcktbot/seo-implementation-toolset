@@ -1,11 +1,38 @@
 <template>
   <div>
     <g5Nav />
-    <b-container class="mainBody">
-      <h3> Step 1: Complete Options Below</h3>
+    <div class="mainBody">
+      <h3>Step 1: Complete Options Below</h3>
       <b-row>
         <b-col v-for="select in selects" :key="select.selected">
-          <b-form-select v-model="select.selected" :options="select.options" />
+          <b-form-select
+            v-model="select.selected"
+            :options="select.options"
+            @change="loadLocation"
+          />
+        </b-col>
+        <b-col>
+          <b-form-file
+            v-model="file"
+            :state="Boolean(file)"
+            placeholder="Choose a file or drop it here..."
+            drop-placeholder="Drop file here..."
+          />
+        </b-col>
+        <b-col>
+          <b-form-input
+            id="input-1"
+            v-model="projectId"
+            required
+            placeholder="Enter LP project Id"
+          />
+        </b-col>
+        <b-col>
+          <b-btn
+            @click="upload"
+          >
+            Upload
+          </b-btn>
         </b-col>
       </b-row>
       <h3>Step 2: Select Location</h3>
@@ -14,13 +41,14 @@
           <b-form-select v-model="location.selected" :options="location.options" />
         </b-col>
       </b-row>
-      <form-stepper />
       <!-- <div class="mt-3">Selected: <strong>{{ verticals.selected }}</strong></div> -->
-    </b-container>
+    </div>
+    <form-stepper :location="selectedLocation" />
   </div>
 </template>
 
 <script>
+import Papa from 'papaparse'
 import FormStepper from '~/components/form-stepper'
 import g5Nav from '~/components/nav'
 export default {
@@ -30,6 +58,9 @@ export default {
   },
   data () {
     return {
+      selectedLocation: null,
+      projectId: null,
+      file: [],
       selects: {
         verticals: {
           selected: null,
@@ -57,6 +88,7 @@ export default {
           ]
         }
       },
+      locationData: null,
       location: {
         selected: null,
         options: [
@@ -65,12 +97,33 @@ export default {
         ]
       }
     }
+  },
+  methods: {
+    loadLocation (payload) {
+      console.log(payload)
+      // this.selectedLocation = this.locationData[payload]
+    },
+    upload () {
+      Papa.parse(this.file, {
+        header: true,
+        complete: (res) => {
+          this.location.options = res.data.map((location, i) => {
+            const { name } = location
+            return {
+              value: i,
+              text: name
+            }
+          })
+          this.locationData = res.data
+        }
+      })
+    }
   }
 }
 </script>
 
 <style>
-.container.mainBody {
+.mainBody {
   padding-top: 5em;
 }
 </style>
