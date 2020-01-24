@@ -8,7 +8,6 @@
           <b-form-select
             v-model="select.selected"
             :options="select.options"
-            @change="loadLocation"
           />
         </b-col>
         <b-col>
@@ -38,12 +37,15 @@
       <h3>Step 2: Select Location</h3>
       <b-row>
         <b-col>
-          <b-form-select v-model="location.selected" :options="location.options" />
+          <b-form-select v-model="location.selected" :options="location.options" @change="loadLocation" />
         </b-col>
       </b-row>
       <!-- <div class="mt-3">Selected: <strong>{{ verticals.selected }}</strong></div> -->
     </div>
-    <form-stepper :location="selectedLocation" />
+    <form-stepper
+      v-if="selectedLocation"
+      :location="selectedLocation"
+    />
   </div>
 </template>
 
@@ -101,7 +103,7 @@ export default {
   methods: {
     loadLocation (payload) {
       console.log(payload)
-      // this.selectedLocation = this.locationData[payload]
+      this.selectedLocation = this.locationData[payload]
     },
     upload () {
       Papa.parse(this.file, {
