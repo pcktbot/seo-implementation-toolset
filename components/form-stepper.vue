@@ -8,65 +8,14 @@
     <b-tabs card content-class="my-5">
       <b-tab title="Name / Adress Validation" active>
         <b-row>
-          <b-col cols="4">
-            <b-form-group id="input-group-1" label="Name:" label-for="input-1">
+          <b-col v-for="input in validation.fields" :key="input" cols="4">
+            <b-form-group :id="`input-group-${input}`" :label="input" :label-for="`input-${input}`">
               <b-form-input
-                id="input-1"
-                :value="form.name"
-                @input="update('name', form.name)"
+                :id="`input-${input}`"
+                :value="form[input]"
+                :placeholder="`Enter ${input}`"
+                @input="update(input, form[input])"
                 required
-                placeholder="Enter name"
-              />
-            </b-form-group>
-          </b-col>
-          <b-col cols="4">
-            <b-form-group id="input-group-2" label="Address:" label-for="input-2">
-              <b-form-input
-                id="input-2"
-                :value="form.address"
-                @input="update('address', form.address)"
-                required
-                placeholder="Enter address"
-              />
-            </b-form-group>
-          </b-col>
-          <b-col cols="4">
-            <b-form-group id="input-group-3" label="City:" label-for="input-3">
-              <b-form-input
-                id="input-3"
-                v-model="form.city"
-                required
-                placeholder="Enter City"
-              />
-            </b-form-group>
-          </b-col>
-          <b-col cols="4">
-            <b-form-group id="input-group-4" label="State:" label-for="input-4">
-              <b-form-input
-                id="input-4"
-                v-model="form.state"
-                required
-                placeholder="Enter state"
-              />
-            </b-form-group>
-          </b-col>
-          <b-col cols="4">
-            <b-form-group id="input-group-5" label="Zip:" label-for="input-5">
-              <b-form-input
-                id="input-5"
-                v-model="form.zip"
-                required
-                placeholder="Enter Zip"
-              />
-            </b-form-group>
-          </b-col>
-          <b-col cols="4">
-            <b-form-group id="input-group-6" label="Country:" label-for="input-6">
-              <b-form-input
-                id="input-6"
-                v-model="form.country"
-                required
-                placeholder="Enter Country"
               />
             </b-form-group>
           </b-col>
@@ -94,6 +43,20 @@ export default {
   props: {
     location: {
       type: Object
+    }
+  },
+  data () {
+    return {
+      validation: {
+        fields: [
+          'name',
+          'address',
+          'city',
+          'state',
+          'zip',
+          'country'
+        ]
+      }
     }
   },
   computed: {

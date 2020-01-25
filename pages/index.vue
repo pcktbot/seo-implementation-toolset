@@ -109,13 +109,13 @@ export default {
       Papa.parse(this.file, {
         header: true,
         complete: (res) => {
-          this.location.options = res.data.map((location, i) => {
+          this.location.options = [{ value: null, text: 'Select Location' }, ...res.data.map((location, i) => {
             const { name } = location
             return {
               value: i,
               text: name
             }
-          })
+          })]
           this.locationData = res.data
         }
       })
