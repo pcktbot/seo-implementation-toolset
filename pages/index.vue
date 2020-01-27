@@ -5,8 +5,8 @@
       <b-row>
         <b-col>
           <b-card no-body class="my-5">
-            <b-card-header>
-              <h3>
+            <b-card-header class="bg-secondary--lighten2">
+              <h3 class="mb-1">
                 Step 1: Complete Options Below
               </h3>
             </b-card-header>
@@ -52,17 +52,33 @@
           </b-card>
         </b-col>
       </b-row>
-      <h3>Step 2: Select Location</h3>
       <b-row>
         <b-col>
-          <b-form-select v-model="location.selected" :options="location.options" @change="loadLocation" />
+          <b-card no-body>
+            <b-card-header>
+              <h3>
+                Step 2: Select Location
+              </h3>
+            </b-card-header>
+            <b-card-body>
+              <b-form-select
+                v-model="location.selected"
+                :options="location.options"
+                @change="loadLocation"
+              />
+            </b-card-body>
+          </b-card>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
+          <form-stepper
+            v-if="selectedLocation"
+            :location="selectedLocation"
+          />
         </b-col>
       </b-row>
     </b-container>
-    <form-stepper
-      v-if="selectedLocation"
-      :location="selectedLocation"
-    />
   </div>
 </template>
 
