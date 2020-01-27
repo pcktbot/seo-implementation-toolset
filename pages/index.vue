@@ -1,37 +1,55 @@
 <template>
   <div>
-    <g5Nav />
-    <div class="mainBody">
-      <h3>Step 1: Complete Options Below</h3>
+    <g5-nav />
+    <b-container fluid class="px-5">
       <b-row>
-        <b-col v-for="select in selects" :key="select.selected">
-          <b-form-select
-            v-model="select.selected"
-            :options="select.options"
-          />
-        </b-col>
         <b-col>
-          <b-form-file
-            v-model="file"
-            :state="Boolean(file)"
-            placeholder="Choose a file or drop it here..."
-            drop-placeholder="Drop file here..."
-          />
-        </b-col>
-        <b-col>
-          <b-form-input
-            id="input-1"
-            v-model="projectId"
-            required
-            placeholder="Enter LP project Id"
-          />
-        </b-col>
-        <b-col>
-          <b-btn
-            @click="upload"
-          >
-            Upload
-          </b-btn>
+          <b-card no-body class="my-5">
+            <b-card-header>
+              <h3>
+                Step 1: Complete Options Below
+              </h3>
+            </b-card-header>
+            <b-card-body class="py-5">
+              <b-row>
+                <b-col
+                  v-for="select in selects"
+                  :key="select.selected"
+                >
+                  <b-form-select
+                    v-model="select.selected"
+                    :options="select.options"
+                  />
+                </b-col>
+                <b-col cols="4">
+                  <b-form-file
+                    v-model="file"
+                    :state="Boolean(file)"
+                    placeholder="Choose a file or drop it here..."
+                    drop-placeholder="Drop file here..."
+                  />
+                </b-col>
+                <b-col>
+                  <b-form-input
+                    id="input-1"
+                    v-model="projectId"
+                    required
+                    placeholder="Enter LP project Id"
+                  />
+                </b-col>
+                <b-col>
+                  <b-btn
+                    @click="upload"
+                    variant="outline-primary--darken3"
+                    block
+                    class="px-4"
+                  >
+                    Upload
+                  </b-btn>
+                </b-col>
+              </b-row>
+            </b-card-body>
+          </b-card>
         </b-col>
       </b-row>
       <h3>Step 2: Select Location</h3>
@@ -40,8 +58,7 @@
           <b-form-select v-model="location.selected" :options="location.options" @change="loadLocation" />
         </b-col>
       </b-row>
-      <!-- <div class="mt-3">Selected: <strong>{{ verticals.selected }}</strong></div> -->
-    </div>
+    </b-container>
     <form-stepper
       v-if="selectedLocation"
       :location="selectedLocation"
@@ -125,7 +142,5 @@ export default {
 </script>
 
 <style>
-.mainBody {
-  padding-top: 5em;
-}
+
 </style>
