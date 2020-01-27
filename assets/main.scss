@@ -1,13 +1,36 @@
 $theme-colors: (
-  'primary': #0d2240,
-  'lt-grey': #eaeaea,
-  'warm-grey': #9a9999,
-  'ultra-lt-secondary': #c0cdd6,
-  'lt-secondary': #b1c4d2,
-  'md-secondary': #87a2b5,
-  'dk-secondary': #3e637f,
-  'tertiary': #e94f3c
+  "primary": #94acb7,
+  "primary--lighten5": #969ea5,
+  "primary--lighten4": #8a949c,
+  "primary--lighten3": #737f8b,
+  "primary--lighten2": #516071,
+  "primary--lighten1": #455668,
+  "primary--darken1": #2e4157,
+  "primary--darken2": #22374e,
+  "primary--darken3": #172c46,
+  "primary--darken4": #0b223d,
+  "secondary": #7A98A9,
+  "secondary--lighten5": #c8d3d3,
+  "secondary--lighten4": #c1ced0,
+  "secondary--lighten3": #bbc9cc,
+  "secondary--lighten2": #aebfc5,
+  "secondary--lighten1": #a1b5be,
+  "secondary--darken1": #8ea7b4,
+  "secondary--darken2": #87a2b0,
+  "secondary--darken3": #819dad,
+  "secondary--darken4": #7a98a9,
+  "tertiary": #e67069,
+  "tertiary--lighten5": #f3b5ac,
+  "tertiary--lighten4": #f1aca4,
+  "tertiary--lighten3": #ee9b93,
+  "tertiary--lighten2": #ed928b,
+  "tertiary--lighten1": #ea817a,
+  "tertiary--darken1": #e56761,
+  "tertiary--darken2": #e35e59,
+  "tertiary--darken3": #e25650,
+  "tertiary--darken4": #e04d48
 );
+
 body > .container {
   padding-top: 5em;
 }
