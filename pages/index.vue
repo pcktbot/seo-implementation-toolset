@@ -1,51 +1,93 @@
 <template>
   <div>
-    <g5Nav />
-    <div class="mainBody">
-      <h3>Step 1: Complete Options Below</h3>
-      <b-row>
-        <b-col v-for="select in selects" :key="select.selected">
-          <b-form-select
-            v-model="select.selected"
-            :options="select.options"
-          />
-        </b-col>
-        <b-col>
-          <b-form-file
-            v-model="file"
-            :state="Boolean(file)"
-            placeholder="Choose a file or drop it here..."
-            drop-placeholder="Drop file here..."
-          />
-        </b-col>
-        <b-col>
-          <b-form-input
-            id="input-1"
-            v-model="projectId"
-            required
-            placeholder="Enter LP project Id"
-          />
-        </b-col>
-        <b-col>
-          <b-btn
-            @click="upload"
-          >
-            Upload
-          </b-btn>
-        </b-col>
-      </b-row>
-      <h3>Step 2: Select Location</h3>
+    <g5-nav />
+    <b-container fluid class="px-5">
       <b-row>
         <b-col>
-          <b-form-select v-model="location.selected" :options="location.options" @change="loadLocation" />
+          <b-card no-body class="my-5">
+            <b-card-header>
+              <h3 class="mb-1">
+                Step 1: Complete Options Below
+              </h3>
+            </b-card-header>
+            <b-card-body class="py-5">
+              <b-alert
+                :show="isError"
+                dismissible
+                variant="danger"
+              >
+                {{ errorMsg }}
+              </b-alert>
+              <b-row>
+                <b-col
+                  v-for="select in selects"
+                  :key="select.selected"
+                  cols="4"
+                  class="mb-4"
+                >
+                  <b-form-select
+                    v-model="select.selected"
+                    :options="select.options"
+                  />
+                </b-col>
+                <b-col cols="5">
+                  <b-form-file
+                    v-model="file"
+                    placeholder="Choose a file or drop it here..."
+                    drop-placeholder="Drop file here..."
+                  />
+                </b-col>
+                <b-col>
+                  <b-form-input
+                    id="input-1"
+                    v-model="lpId"
+                    required
+                    placeholder="Enter LP project Id"
+                  />
+                </b-col>
+                <b-col>
+                  <b-btn
+                    @click="onUpload"
+                    variant="outline-primary--darken3"
+                    block
+                    class="px-4"
+                  >
+                    Upload
+                  </b-btn>
+                </b-col>
+              </b-row>
+            </b-card-body>
+          </b-card>
         </b-col>
       </b-row>
-      <!-- <div class="mt-3">Selected: <strong>{{ verticals.selected }}</strong></div> -->
-    </div>
-    <form-stepper
-      v-if="selectedLocation"
-      :location="selectedLocation"
-    />
+      <b-row>
+        <b-col>
+          <b-card no-body>
+            <b-card-header>
+              <h3>
+                Step 2: Select Location
+              </h3>
+            </b-card-header>
+            <b-card-body>
+              <b-form-select
+                v-model="location.selected"
+                :options="location.options"
+                @change="loadLocation"
+              />
+            </b-card-body>
+          </b-card>
+        </b-col>
+      </b-row>
+      <b-row no-gutters>
+        <b-col cols="12">
+          <form-stepper
+            v-if="selectedLocation"
+            :location="selectedLocation"
+            @stepper-updated="onUpdate"
+          />
+        </b-col>
+      </b-row>
+    </b-container>
   </div>
 </template>
 
@@ -61,8 +103,10 @@ export default {
   data () {
     return {
       selectedLocation: null,
-      projectId: null,
+      lpId: null,
       file: [],
+      isError: false,
+      errorMsg: 'Please ensure vertical, domain strategy and chain branding drop downs have selections.',
       selects: {
         verticals: {
           selected: null,
@@ -90,7 +134,7 @@ export default {
           ]
         }
       },
-      locationData: null,
+      locations: [],
       location: {
         selected: null,
         options: [
@@ -101,31 +145,61 @@ export default {
     }
   },
   methods: {
-    loadLocation (payload) {
-      console.log(payload)
-      this.selectedLocation = this.locationData[payload]
+    loadLocation(payload) {
+      this.selectedLocation = this.locations[payload]
     },
-    upload () {
-      Papa.parse(this.file, {
-        header: true,
-        complete: (res) => {
-          this.location.options = [{ value: null, text: 'Select Location' }, ...res.data.map((location, i) => {
-            const { name } = location
-            return {
-              value: i,
-              text: name
-            }
-          })]
-          this.locationData = res.data
+    validDropDowns(obj) {
+      let val = true
+      let i = 0
+      const keys = Object.keys(obj)
+      while (val && i < keys.length) {
+        if (!this.selects[keys[i]].selected) {
+          val = false
         }
-      })
+        i++
+      }
+      return val
+    },
+    onSave(event) {
+      this.$emit('on-save', event)
+      // TODO validate save payload
+      this.$axios
+        .$put('api/locations/update', {
+          lpId: this.lpId,
+          locaitons: this.locations
+        })
+    },
+    onUpdate({ key, val, id }) {
+      const i = this.locations.findIndex(loc => loc.id === id)
+      this.locations[i][key] = val
+    },
+    onUpload() {
+      if (!this.validDropDowns(this.selects)) {
+        this.isError = true
+      } else {
+        Papa.parse(this.file, {
+          header: true,
+          complete: (res) => {
+            this.location.options = [
+              { value: null, text: 'Select Location' },
+              ...res.data.map((location, i) => {
+                const { name } = location
+                return { value: i, text: name }
+              })
+            ]
+            this.locations = res.data.map((loc, i) => {
+              return {
+                id: i, ...loc
+              }
+            })
+          }
+        })
+      }
     }
   }
 }
 </script>
 
-<style>
-.mainBody {
-  padding-top: 5em;
-}
+<style scoped>
+
 </style>

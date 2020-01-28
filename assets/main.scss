@@ -1,120 +1,128 @@
-$theme-colors: (
-  'primary': #0d2240,
-  'lt-grey': #eaeaea,
-  'warm-grey': #9a9999,
-  'ultra-lt-secondary': #c0cdd6,
-  'lt-secondary': #b1c4d2,
-  'md-secondary': #87a2b5,
-  'dk-secondary': #3e637f,
-  'tertiary': #e94f3c
-);
-body > .container {
-  padding-top: 5em;
-}
-.row {
-  margin-top: 1em;
-  margin-bottom: 1em;
-}
-#logo {
-  width: 3em;
-  height: 3em;
-}
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,400i,700&display=swap');
 
-a.nav-link {
+$theme-colors: (
+  "primary": #94acb7,
+  "primary--lighten5": #969ea5,
+  "primary--lighten4": #8a949c,
+  "primary--lighten3": #737f8b,
+  "primary--lighten2": #516071,
+  "primary--lighten1": #455668,
+  "primary--darken1": #2e4157,
+  "primary--darken2": #22374e,
+  "primary--darken3": #172c46,
+  "primary--darken4": #0b223d,
+  "secondary": #7A98A9,
+  "secondary--lighten5": #c8d3d3,
+  "secondary--lighten4": #c1ced0,
+  "secondary--lighten3": #bbc9cc,
+  "secondary--lighten2": #aebfc5,
+  "secondary--lighten1": #a1b5be,
+  "secondary--darken1": #8ea7b4,
+  "secondary--darken2": #87a2b0,
+  "secondary--darken3": #819dad,
+  "secondary--darken4": #7a98a9,
+  "tertiary": #e67069,
+  "tertiary--lighten5": #f3b5ac,
+  "tertiary--lighten4": #f1aca4,
+  "tertiary--lighten3": #ee9b93,
+  "tertiary--lighten2": #ed928b,
+  "tertiary--lighten1": #ea817a,
+  "tertiary--darken1": #e56761,
+  "tertiary--darken2": #e35e59,
+  "tertiary--darken3": #e25650,
+  "tertiary--darken4": #e04d48
+);
+
+$font-family-base: 'Roboto', sans-serif;
+
+.nav-link {
   color: #0d2240;
   font-weight:bold
 }
-
-a.nav-link:hover {
+.nav-link:hover {
   color: #7c98ab;
   font-weight:bold
 }
-
-.table td, .table th {
+.table td,
+.table th {
   padding: .7rem;
   white-space: nowrap;
   vertical-align: middle;
 }
-
 .container {
   max-width: 2000px;
 }
-
-#redirects-table,#lv-table {  
+#redirects-table,
+#lv-table {
   max-height: 40em !important;
   overflow: scroll;
 }​
-
-#vertical, #domain-strat,#chain-brand,#select-location,#redirect-menu,#select-location-redirects  {
+#vertical,
+#domain-strat,
+#chain-brand,
+#select-location,
+#redirect-menu,
+#select-location-redirects {
   background: #7c98ab;
-  border-color: #7c98ab; 
+  border-color: #7c98ab;
   color: white;
 }
 #locations {
   background: #0d2240;
-  border-color: #0d2240; 
+  border-color: #0d2240;
   color: white;
 }
 #vertical {
   background: #7c98ab;
-  border-color: #7c98ab; 
+  border-color: #7c98ab;
   color: white;
 }
-
 .form-group {
   margin-bottom: 0em;
   text-align: center;
 }
-
 footer {
   margin-top: 3em;
 }
-
-
-h2,h3,h4 {
+h2,
+h3,
+h4 {
   padding: .5rem 0rem;
   margin-bottom: 0rem;
 }
 .header {
-  padding-top: 50px; 
+  padding-top: 50px;
 }
-
 h1 {
   margin-top: .5rem;
 }
 .btn-primary {
   background: #0d2240;
-  border-color: #0d2240; 
+  border-color: #0d2240;
   color: white;
 }
-
 .btn-secondary {
   background: #7c98ab;
-  border-color: #7c98ab; 
+  border-color: #7c98ab;
   color: white;
 }
-
 .btn-outline-secondary:hover {
   background: #7c98ab;
-  border-color: #7c98ab; 
+  border-color: #7c98ab;
 }
 .btn-primary:hover {
   background: #9ea7b3;
-  border-color: #9ea7b3;  
+  border-color: #9ea7b3;
 }
-
 html {
   scroll-behavior: smooth;
 }
-
 .pt-3-half {
 padding-top: 1.4rem;
 }
-
 .notes {
   text-align: left;
 }
-
 textarea {
   min-height: 5rem;
   font-size: 90%;
@@ -128,25 +136,23 @@ textarea {
   font-size: 1rem;
   height: 7.5rem
 }
-
-h4.title {
+.title {
   margin-bottom: 0px
 }
-.sw-theme-arrows>ul.step-anchor>li.active>a {
+.sw-theme-arrows > .step-anchor > li.active > a {
   border-color: #7c98ab !important;
   background: #7c98ab !important;
 }
 
-.sw-theme-arrows>ul.step-anchor>li.active>a:after {
-  
+.sw-theme-arrows > .step-anchor > li.active > a::after {
   border-left: 30px solid #7c98ab!important;
 }
 
-.sw-theme-arrows>ul.step-anchor>li.done>a:after {
+.sw-theme-arrows > .step-anchor > li.done > a::after {
   border-left: 30px solid #f5f5f5;
 }
 
-.sw-theme-arrows>ul.step-anchor>li.done>a {
+.sw-theme-arrows > .step-anchor > li.done > a {
   border-color: #f5f5f5 !important;
   background: #f5f5f5 !important;
   color:#bbb !important;
