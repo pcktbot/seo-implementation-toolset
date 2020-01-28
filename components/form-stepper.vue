@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import NameAddress from '~/components/name-address'
+import NameAddress from '~/components/steps/name-address'
 export default {
   components: {
     NameAddress
