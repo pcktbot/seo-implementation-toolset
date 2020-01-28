@@ -40,14 +40,14 @@
                 <b-col>
                   <b-form-input
                     id="input-1"
-                    v-model="projectId"
+                    v-model="lpId"
                     required
                     placeholder="Enter LP project Id"
                   />
                 </b-col>
                 <b-col>
                   <b-btn
-                    @click="upload"
+                    @click="onUpload"
                     variant="outline-primary--darken3"
                     block
                     class="px-4"
@@ -78,11 +78,12 @@
           </b-card>
         </b-col>
       </b-row>
-      <b-row>
-        <b-col>
+      <b-row no-gutters>
+        <b-col cols="12">
           <form-stepper
             v-if="selectedLocation"
             :location="selectedLocation"
+            @stepper-updated="onUpdate"
           />
         </b-col>
       </b-row>
@@ -102,7 +103,7 @@ export default {
   data () {
     return {
       selectedLocation: null,
-      projectId: null,
+      lpId: null,
       file: [],
       isError: false,
       errorMsg: 'Please ensure vertical, domain strategy and chain branding drop downs have selections.',
@@ -133,7 +134,7 @@ export default {
           ]
         }
       },
-      locationData: null,
+      locations: [],
       location: {
         selected: null,
         options: [
@@ -145,7 +146,7 @@ export default {
   },
   methods: {
     loadLocation(payload) {
-      this.selectedLocation = this.locationData[payload]
+      this.selectedLocation = this.locations[payload]
     },
     validDropDowns(obj) {
       let val = true
@@ -159,7 +160,20 @@ export default {
       }
       return val
     },
-    upload() {
+    onSave(event) {
+      this.$emit('on-save', event)
+      // TODO validate save payload
+      this.$axios
+        .$put('api/locations/update', {
+          lpId: this.lpId,
+          locaitons: this.locations
+        })
+    },
+    onUpdate({ key, val, id }) {
+      const i = this.locations.findIndex(loc => loc.id === id)
+      this.locations[i][key] = val
+    },
+    onUpload() {
       if (!this.validDropDowns(this.selects)) {
         this.isError = true
       } else {
@@ -173,7 +187,11 @@ export default {
                 return { value: i, text: name }
               })
             ]
-            this.locationData = res.data
+            this.locations = res.data.map((loc, i) => {
+              return {
+                id: i, ...loc
+              }
+            })
           }
         })
       }

@@ -1,25 +1,21 @@
 <template>
-  <b-card no-body class="mx-4 my-5 py-2">
+  <b-card no-body class="my-5 py-2">
     <b-card-header class="text-left">
-      <h2>
+      <h4 class="mb-0">
         Step 3: Fill in Client Data
-      </h2>
+      </h4>
     </b-card-header>
     <b-tabs card content-class="my-5">
-      <b-tab title="Name / Adress Validation" active>
-        <b-row>
-          <b-col v-for="input in validation.fields" :key="input" cols="4">
-            <b-form-group :id="`input-group-${input}`" :label="input" :label-for="`input-${input}`">
-              <b-form-input
-                :id="`input-${input}`"
-                :value="form[input]"
-                :placeholder="`Enter ${input}`"
-                @input="update(input, form[input])"
-                required
-              />
-            </b-form-group>
-          </b-col>
-        </b-row>
+      <b-tab>
+        <template v-slot:title>
+          <!-- SOME COMPLETED INDICATION HERE -->
+          Name / Adress Validation
+        </template>
+        <name-address
+          :inputs="validation.fields"
+          :location="location"
+          @step-update="onUpdate"
+        />
       </b-tab>
       <b-tab title="Keyword Research">
         <p>I'm the second tab</p>
@@ -38,11 +34,17 @@
 </template>
 
 <script>
-
+import NameAddress from '~/components/name-address'
 export default {
+  components: {
+    NameAddress
+  },
   props: {
     location: {
-      type: Object
+      type: Object,
+      default() {
+        return {}
+      }
     }
   },
   data () {
@@ -59,24 +61,9 @@ export default {
       }
     }
   },
-  computed: {
-    form: {
-      get () {
-        return {
-          name: this.location.name,
-          address: this.location.street_address_1,
-          city: this.location.city,
-          state: this.location.state,
-          zip: this.location.postal_code,
-          country: this.location.country
-        }
-      },
-      set (val) {}
-    }
-  },
   methods: {
-    update (key, val) {
-      this.$emit('update', key, val)
+    onUpdate(data) {
+      this.$emit('stepper-updated', data)
     }
   }
 }
