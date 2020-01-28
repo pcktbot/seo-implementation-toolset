@@ -5,26 +5,34 @@
       <b-row>
         <b-col>
           <b-card no-body class="my-5">
-            <b-card-header class="bg-secondary--lighten2">
+            <b-card-header>
               <h3 class="mb-1">
                 Step 1: Complete Options Below
               </h3>
             </b-card-header>
             <b-card-body class="py-5">
+              <b-alert
+                :show="isError"
+                dismissible
+                variant="danger"
+              >
+                {{ errorMsg }}
+              </b-alert>
               <b-row>
                 <b-col
                   v-for="select in selects"
                   :key="select.selected"
+                  cols="4"
+                  class="mb-4"
                 >
                   <b-form-select
                     v-model="select.selected"
                     :options="select.options"
                   />
                 </b-col>
-                <b-col cols="4">
+                <b-col cols="5">
                   <b-form-file
                     v-model="file"
-                    :state="Boolean(file)"
                     placeholder="Choose a file or drop it here..."
                     drop-placeholder="Drop file here..."
                   />
@@ -96,6 +104,8 @@ export default {
       selectedLocation: null,
       projectId: null,
       file: [],
+      isError: false,
+      errorMsg: 'Please ensure vertical, domain strategy and chain branding drop downs have selections.',
       selects: {
         verticals: {
           selected: null,
@@ -134,11 +144,10 @@ export default {
     }
   },
   methods: {
-    loadLocation (payload) {
-      console.log(payload)
+    loadLocation(payload) {
       this.selectedLocation = this.locationData[payload]
     },
-    validDropDowns (obj) {
+    validDropDowns(obj) {
       let val = true
       let i = 0
       const keys = Object.keys(obj)
@@ -150,20 +159,20 @@ export default {
       }
       return val
     },
-    upload () {
+    upload() {
       if (!this.validDropDowns(this.selects)) {
-        alert('Please ensure vertical, domain strategy and chain branding drop downs have selections.')
+        this.isError = true
       } else {
         Papa.parse(this.file, {
           header: true,
           complete: (res) => {
-            this.location.options = [{ value: null, text: 'Select Location' }, ...res.data.map((location, i) => {
-              const { name } = location
-              return {
-                value: i,
-                text: name
-              }
-            })]
+            this.location.options = [
+              { value: null, text: 'Select Location' },
+              ...res.data.map((location, i) => {
+                const { name } = location
+                return { value: i, text: name }
+              })
+            ]
             this.locationData = res.data
           }
         })
@@ -173,6 +182,6 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 </style>
