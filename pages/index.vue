@@ -138,20 +138,36 @@ export default {
       console.log(payload)
       this.selectedLocation = this.locationData[payload]
     },
-    upload () {
-      Papa.parse(this.file, {
-        header: true,
-        complete: (res) => {
-          this.location.options = [{ value: null, text: 'Select Location' }, ...res.data.map((location, i) => {
-            const { name } = location
-            return {
-              value: i,
-              text: name
-            }
-          })]
-          this.locationData = res.data
+    validDropDowns (obj) {
+      let val = true
+      let i = 0
+      const keys = Object.keys(obj)
+      while (val && i < keys.length) {
+        if (!this.selects[keys[i]].selected) {
+          val = false
         }
-      })
+        i++
+      }
+      return val
+    },
+    upload () {
+      if (!this.validDropDowns(this.selects)) {
+        alert('Please ensure vertical, domain strategy and chain branding drop downs have selections.')
+      } else {
+        Papa.parse(this.file, {
+          header: true,
+          complete: (res) => {
+            this.location.options = [{ value: null, text: 'Select Location' }, ...res.data.map((location, i) => {
+              const { name } = location
+              return {
+                value: i,
+                text: name
+              }
+            })]
+            this.locationData = res.data
+          }
+        })
+      }
     }
   }
 }
