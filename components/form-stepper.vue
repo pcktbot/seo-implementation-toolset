@@ -52,10 +52,10 @@ export default {
       validation: {
         fields: [
           'name',
-          'address',
+          'street_address_1',
           'city',
           'state',
-          'zip',
+          'postal_code',
           'country'
         ]
       }
@@ -70,7 +70,5 @@ export default {
 </script>
 
 <style scoped>
-
-</style>>
 
 </style>

@@ -29,7 +29,7 @@
 export default {
   props: {
     inputs: {
-      type: Object,
+      type: Array,
       default() {
         return {}
       }
@@ -46,11 +46,11 @@ export default {
       get() {
         return {
           name: this.location.name,
-          address: this.location.street_address_1,
-          city: this.location.city,
-          state: this.location.state,
-          zip: this.location.postal_code,
-          country: this.location.country
+          street_address_1: this.location.properties.street_address_1,
+          city: this.location.properties.city,
+          state: this.location.properties.state,
+          postal_code: this.location.properties.postal_code,
+          country: this.location.properties.country
         }
       },
       set(val) {}

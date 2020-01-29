@@ -146,7 +146,21 @@ export default {
   },
   methods: {
     loadLocation(payload) {
-      this.selectedLocation = this.locations[payload]
+      // this.$emit(payload)
+      // eslint-disable-next-line no-console
+      console.log(payload)
+      this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
+      // eslint-disable-next-line no-console
+      console.log(this.selectedLocation)
+    },
+    reject(obj, keys) {
+      const vkeys = Object.keys(obj)
+        .filter(k => !keys.includes(k))
+      return this.pick(obj, vkeys)
+    },
+    pick(obj, keys) {
+      return keys.map(k => k in obj ? { [k]: obj[k] } : {})
+        .reduce((res, o) => Object.assign(res, o), {})
     },
     validDropDowns(obj) {
       let val = true
@@ -171,27 +185,39 @@ export default {
     },
     onUpdate({ key, val, id }) {
       const i = this.locations.findIndex(loc => loc.id === id)
-      this.locations[i][key] = val
+      if (key === 'name') {
+        this.locations[i][key] = val
+      } else {
+        this.locations[i].properties[key] = val
+      }
     },
     onUpload() {
       if (!this.validDropDowns(this.selects)) {
+        // need to check for lp id
         this.isError = true
       } else {
         Papa.parse(this.file, {
           header: true,
           complete: (res) => {
-            this.location.options = [
-              { value: null, text: 'Select Location' },
-              ...res.data.map((location, i) => {
-                const { name } = location
-                return { value: i, text: name }
-              })
-            ]
-            this.locations = res.data.map((loc, i) => {
-              return {
-                id: i, ...loc
-              }
+            const locations = res.data.map((location) => {
+              const { name } = location
+              const properties = this.reject(location, ['name'])
+              return { name, properties }
             })
+            this.$axios
+              .$post('api/locations', {
+                lpId: this.lpId,
+                locations
+              }).then((res) => {
+                this.locations = res
+                this.location.options = [
+                  { value: null, text: 'Select Location' },
+                  ...res.map((location) => {
+                    const { name, properties } = location
+                    return { value: location.id, text: `${name} - ${properties.street_address_1}` }
+                  })
+                ]
+              })
           }
         })
       }

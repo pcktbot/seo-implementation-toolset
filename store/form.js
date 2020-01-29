@@ -1,9 +1,9 @@
 export const state = () => ({
   name: '',
-  address: '',
+  street_address_1: '',
   city: '',
   state: '',
-  zip: 0
+  postal_code: 0
 })
 
 export const actions = {}

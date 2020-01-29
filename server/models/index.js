@@ -21,15 +21,10 @@ const maxTest = parseInt(max)
 const idleTest = parseInt(idle)
 const acquireTest = parseInt(acquire)
 const evictTest = parseInt(evict)
-
 const sequelize = new Sequelize(dbUrl, {
   pool: { max: maxTest, min: minTest, idle: idleTest, acquire: acquireTest, evict: evictTest },
   dialectOptions: {
-    ssl: (ssl === 'true') ? {
-      ca: fs.readFileSync(path.join(__dirname, ca)),
-      cert: fs.readFileSync(path.join(__dirname, cert)),
-      key: fs.readFileSync(path.join(__dirname, key))
-    } : false
+    ssl: (ssl === 'true')
   },
   logging: (logging === 'true')
 })
