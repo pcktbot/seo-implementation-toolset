@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 <template>
   <div>
     <g5-nav />
@@ -18,6 +17,13 @@
                 variant="danger"
               >
                 {{ errorMsg }}
+              </b-alert>
+              <b-alert
+                :show="successfulUpload"
+                dismissible
+                variant="success"
+              >
+                {{ successMsg }}
               </b-alert>
               <b-row>
                 <b-col
@@ -86,6 +92,7 @@
             v-if="selectedLocation"
             :location="selectedLocation"
             @stepper-updated="onUpdate"
+            @step-1-save="stepOneSave"
           />
         </b-col>
       </b-row>
@@ -108,6 +115,9 @@ export default {
       lpId: null,
       file: [],
       isError: false,
+      isSaveErr: false,
+      successfulUpload: false,
+      successMsg: '',
       errorMsg: '',
       selects: {
         verticals: {
@@ -186,6 +196,29 @@ export default {
           locaitons: this.locations
         })
     },
+    validateFields(fields) {
+      let val = true
+      let i = 0
+      while (val && i < fields.length) {
+        if (!fields[i]) {
+          val = false
+        }
+        i++
+      }
+      return val
+    },
+    stepOneSave({ key, val, id }, fields) {
+      const i = this.locations.findIndex(loc => loc.id === id)
+      const location = this.locations[i]
+      const fieldValues = []
+      fields.forEach(field => fieldValues.push(location.properties[field]))
+      fieldValues.push(location.name, location.properties.population, location.properties.uspsvalid)
+      const valid = this.validateFields(fieldValues)
+      if (!valid) {
+        this.errorMsg = 'All fields must be completed to save'
+        this.isSaveErr = true
+      }
+    },
     onUpdate({ key, val, id }) {
       const i = this.locations.findIndex(loc => loc.id === id)
       if (key === 'name') {
@@ -206,8 +239,8 @@ export default {
               const locations = res.data.map((location) => {
                 const { name } = location
                 const properties = this.reject(location, ['name'])
-                properties.population = 0
-                properties.uspsverified = false
+                properties.population = null
+                properties.uspsvalid = null
                 return { name, properties }
               })
               // writes parsed csv to database
@@ -225,7 +258,8 @@ export default {
                       return { value: location.id, text: `${name} - ${properties.street_address_1}` }
                     })
                   ]
-                  // eslint-disable-next-line no-console
+                  this.successMsg = 'Your CSV has been successfully imported, please select a location below'
+                  this.successfulUpload = true
                 })
             }
           })

@@ -32,12 +32,12 @@
       </b-col>
       <b-col
         cols="4"
-        class="mb-4"
+        class="align-self-center pt-3"
       >
         <b-form-select
-          :value="form.uspsverified"
+          :value="form.uspsvalid"
           :options="uspsvalid.options"
-          @change="onInput(input, $event)"
+          @change="onUsps('uspsvalid', $event)"
         />
       </b-col>
     </b-row>
@@ -77,7 +77,7 @@ export default {
           postal_code: this.location.properties.postal_code,
           country: this.location.properties.country,
           population: this.location.properties.population,
-          uspsverified: this.uspsvalid.selected
+          uspsvalid: this.location.properties.uspsvalid
         }
       },
       set(val) {}
@@ -85,7 +85,10 @@ export default {
   },
   methods: {
     onSave() {
-      this.$emit('step-1-save', {})
+      this.$emit('step-1-save', { id: this.location.id })
+    },
+    onUsps(key, val) {
+      this.$emit('step-update', { key, val, id: this.location.id })
     },
     onInput(key, val) {
       this.$emit('step-update', { key, val, id: this.location.id })
