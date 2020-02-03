@@ -5,7 +5,7 @@
         Step 3: Fill in Client Data
       </h4>
     </b-card-header>
-    <b-tabs card content-class="my-5">
+    <b-tabs card content-class="my-2">
       <b-tab>
         <template v-slot:title>
           <!-- SOME COMPLETED INDICATION HERE -->
@@ -14,6 +14,7 @@
         <name-address
           :inputs="validation.fields"
           :location="location"
+          :uspsvalid="uspsvalid"
           @step-update="onUpdate"
         />
       </b-tab>
@@ -56,7 +57,16 @@ export default {
           'city',
           'state',
           'postal_code',
-          'country'
+          'country',
+          'population'
+        ]
+      },
+      uspsvalid: {
+        selected: null,
+        options: [
+          { value: null, text: 'Select Option' },
+          { value: true, text: 'Yes' },
+          { value: false, text: 'No' }
         ]
       }
     }

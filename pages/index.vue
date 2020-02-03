@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 <template>
   <div>
     <g5-nav />
@@ -33,6 +34,7 @@
                 <b-col cols="5">
                   <b-form-file
                     v-model="file"
+                    accept=".csv"
                     placeholder="Choose a file or drop it here..."
                     drop-placeholder="Drop file here..."
                   />
@@ -106,7 +108,7 @@ export default {
       lpId: null,
       file: [],
       isError: false,
-      errorMsg: 'Please ensure vertical, domain strategy and chain branding drop downs have selections.',
+      errorMsg: '',
       selects: {
         verticals: {
           selected: null,
@@ -146,12 +148,7 @@ export default {
   },
   methods: {
     loadLocation(payload) {
-      // this.$emit(payload)
-      // eslint-disable-next-line no-console
-      console.log(payload)
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
-      // eslint-disable-next-line no-console
-      console.log(this.selectedLocation)
     },
     reject(obj, keys) {
       const vkeys = Object.keys(obj)
@@ -174,6 +171,12 @@ export default {
       }
       return val
     },
+    validLPID() {
+      return this.lpId && !isNaN(this.lpId)
+    },
+    hasFile() {
+      return this.file.length > 0
+    },
     onSave(event) {
       this.$emit('on-save', event)
       // TODO validate save payload
@@ -192,34 +195,44 @@ export default {
       }
     },
     onUpload() {
-      if (!this.validDropDowns(this.selects)) {
-        // need to check for lp id
+      if (!this.validDropDowns(this.selects) || !this.validLPID()) {
+        this.errorMsg = 'Please ensure vertical, domain strategy and chain branding drop downs have selections. LP field cannot be blank'
         this.isError = true
       } else {
-        Papa.parse(this.file, {
-          header: true,
-          complete: (res) => {
-            const locations = res.data.map((location) => {
-              const { name } = location
-              const properties = this.reject(location, ['name'])
-              return { name, properties }
-            })
-            this.$axios
-              .$post('api/locations', {
-                lpId: this.lpId,
-                locations
-              }).then((res) => {
-                this.locations = res
-                this.location.options = [
-                  { value: null, text: 'Select Location' },
-                  ...res.map((location) => {
-                    const { name, properties } = location
-                    return { value: location.id, text: `${name} - ${properties.street_address_1}` }
-                  })
-                ]
+        try {
+          Papa.parse(this.file, {
+            header: true,
+            complete: (res) => {
+              const locations = res.data.map((location) => {
+                const { name } = location
+                const properties = this.reject(location, ['name'])
+                properties.population = 0
+                properties.uspsverified = false
+                return { name, properties }
               })
-          }
-        })
+              // writes parsed csv to database
+              this.$axios
+                .$post('api/locations', {
+                  lpId: this.lpId,
+                  locations
+                }).then((res) => {
+                // adds location data to front end and fills out location drop down
+                  this.locations = res
+                  this.location.options = [
+                    { value: null, text: 'Select Location' },
+                    ...res.map((location) => {
+                      const { name, properties } = location
+                      return { value: location.id, text: `${name} - ${properties.street_address_1}` }
+                    })
+                  ]
+                  // eslint-disable-next-line no-console
+                })
+            }
+          })
+        } catch (err) {
+          this.errorMsg = 'There was an error uploading the csv'
+          this.isError = true
+        }
       }
     }
   }
