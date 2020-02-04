@@ -13,6 +13,7 @@
             <b-card-body class="py-5">
               <b-alert
                 :show="isError"
+                @dismissed="isError=false"
                 dismissible
                 variant="danger"
               >
@@ -20,6 +21,7 @@
               </b-alert>
               <b-alert
                 :show="successfulUpload"
+                @dismissed="successfulUpload=false"
                 dismissible
                 variant="success"
               >
@@ -115,7 +117,6 @@ export default {
       lpId: null,
       file: [],
       isError: false,
-      isSaveErr: false,
       successfulUpload: false,
       successMsg: '',
       errorMsg: '',
@@ -158,6 +159,8 @@ export default {
   },
   methods: {
     loadLocation(payload) {
+      // eslint-disable-next-line no-console
+      console.log(payload)
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
     },
     reject(obj, keys) {
@@ -193,31 +196,12 @@ export default {
       this.$axios
         .$put('api/locations/update', {
           lpId: this.lpId,
-          locaitons: this.locations
+          locations: this.locations
         })
     },
-    validateFields(fields) {
-      let val = true
-      let i = 0
-      while (val && i < fields.length) {
-        if (!fields[i]) {
-          val = false
-        }
-        i++
-      }
-      return val
-    },
     stepOneSave({ key, val, id }, fields) {
-      const i = this.locations.findIndex(loc => loc.id === id)
-      const location = this.locations[i]
-      const fieldValues = []
-      fields.forEach(field => fieldValues.push(location.properties[field]))
-      fieldValues.push(location.name, location.properties.population, location.properties.uspsvalid)
-      const valid = this.validateFields(fieldValues)
-      if (!valid) {
-        this.errorMsg = 'All fields must be completed to save'
-        this.isSaveErr = true
-      }
+      // eslint-disable-next-line no-console
+      console.log(fields)
     },
     onUpdate({ key, val, id }) {
       const i = this.locations.findIndex(loc => loc.id === id)

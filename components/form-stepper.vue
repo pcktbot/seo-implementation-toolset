@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 <template>
   <b-card no-body class="my-5 py-2">
     <b-card-header class="text-left">
@@ -78,7 +77,7 @@ export default {
       this.$emit('stepper-updated', data)
     },
     saveStepOne(data) {
-      const valFieldKeys = this.validation.fields.slice(1, this.validation.fields.length - 1)
+      const valFieldKeys = this.validation.fields
       this.$emit('step-1-save', data, valFieldKeys)
     }
   }

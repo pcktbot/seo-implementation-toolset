@@ -4,7 +4,7 @@ export const state = () => ({
   city: '',
   state: '',
   postal_code: 0,
-  population: 0
+  population: null
 })
 
 export const actions = {}

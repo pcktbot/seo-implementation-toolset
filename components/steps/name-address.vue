@@ -1,5 +1,15 @@
 <template>
   <b-container fluid>
+    <b-row>
+      <b-alert
+        :show="isError"
+        @dismissed="isError=false"
+        dismissible
+        variant="danger"
+      >
+        {{ errorMsg }}
+      </b-alert>
+    </b-row>
     <b-row class="pb-2 pl-3">
       <b-btn
         @click="onSave"
@@ -66,6 +76,12 @@ export default {
       }
     }
   },
+  data () {
+    return {
+      isError: false,
+      errorMsg: ''
+    }
+  },
   computed: {
     form: {
       get() {
@@ -84,8 +100,28 @@ export default {
     }
   },
   methods: {
+    updateErr() {
+      this.errorMsg = false
+    },
+    validateStepOne() {
+      let valid = true
+      for (const prop in this.form) {
+        if (this.form[prop] === '' || this.form[prop] === null) {
+          valid = false
+          break
+        }
+      }
+      return valid
+    },
+    showErr(msg) {
+      this.errorMsg = msg
+      this.isError = true
+    },
     onSave() {
-      this.$emit('step-1-save', { id: this.location.id })
+      const validFields = this.validateStepOne()
+      validFields
+        ? this.$emit('step-1-save', { id: this.location.id })
+        : this.showErr('Please ensure all fields are filled out')
     },
     onUsps(key, val) {
       this.$emit('step-update', { key, val, id: this.location.id })
