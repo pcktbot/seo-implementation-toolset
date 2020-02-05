@@ -99,12 +99,10 @@
 import Papa from 'papaparse'
 import FormStepper from '~/components/form-stepper'
 import g5Nav from '~/components/nav'
-import initialSelections from '~/components/initial-selections'
 export default {
   components: {
     FormStepper,
-    g5Nav,
-    initialSelections
+    g5Nav
   },
   data () {
     return {
