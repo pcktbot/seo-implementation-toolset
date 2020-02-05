@@ -1,23 +1,25 @@
 <template>
   <b-container fluid>
-    <b-row>
-      <b-alert
-        :show="isError"
-        @dismissed="isError=false"
-        dismissible
-        variant="danger"
-      >
-        {{ errorMsg }}
-      </b-alert>
-    </b-row>
     <b-row class="pb-2 pl-3">
-      <b-btn
-        @click="onSave"
-        variant="outline-secondary--darken3"
-        class="px-4"
-      >
-        Save
-      </b-btn>
+      <b-col class="text-left">
+        <b-alert
+          :show="isError"
+          @dismissed="isError=false"
+          dismissible
+          variant="danger"
+        >
+          {{ errorMsg }}
+        </b-alert>
+      </b-col>
+      <b-col class="text-right">
+        <b-btn
+          @click="onSave"
+          variant="outline-secondary--darken3"
+          class="px-4"
+        >
+          Save
+        </b-btn>
+      </b-col>
     </b-row>
     <b-row>
       <b-col
@@ -50,6 +52,19 @@
           @change="onUsps('uspsvalid', $event)"
         />
       </b-col>
+      <b-col
+        cols="4"
+        class="align-self-center pt-3"
+      >
+        <b-btn
+          :href="uspsLink"
+          target="_blank"
+          variant="outline-secondary--darken3"
+          class="px-4"
+        >
+          Verify Address
+        </b-btn>
+      </b-col>
     </b-row>
   </b-container>
 </template>
@@ -79,7 +94,8 @@ export default {
   data () {
     return {
       isError: false,
-      errorMsg: ''
+      errorMsg: '',
+      uspsLink: 'https://tools.usps.com/zip-code-lookup.htm?byaddress'
     }
   },
   computed: {
@@ -100,9 +116,6 @@ export default {
     }
   },
   methods: {
-    updateErr() {
-      this.errorMsg = false
-    },
     validateStepOne() {
       let valid = true
       for (const prop in this.form) {

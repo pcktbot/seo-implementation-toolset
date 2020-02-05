@@ -12,20 +12,12 @@
             </b-card-header>
             <b-card-body class="py-5">
               <b-alert
-                :show="isError"
-                @dismissed="isError=false"
+                :show="showMsg"
+                :variant="alertvariant"
+                @dismissed="showMsg=false"
                 dismissible
-                variant="danger"
               >
-                {{ errorMsg }}
-              </b-alert>
-              <b-alert
-                :show="successfulUpload"
-                @dismissed="successfulUpload=false"
-                dismissible
-                variant="success"
-              >
-                {{ successMsg }}
+                {{ msg }}
               </b-alert>
               <b-row>
                 <b-col
@@ -116,10 +108,9 @@ export default {
       selectedLocation: null,
       lpId: null,
       file: [],
-      isError: false,
-      successfulUpload: false,
-      successMsg: '',
-      errorMsg: '',
+      showMsg: false,
+      msg: '',
+      alertvariant: '',
       selects: {
         verticals: {
           selected: null,
@@ -151,8 +142,7 @@ export default {
       location: {
         selected: null,
         options: [
-          { value: null, text: 'Select Locaiton' },
-          { value: 'loc1', text: 'Loc 1' }
+          { value: null, text: 'Select Locaiton' }
         ]
       }
     }
@@ -213,8 +203,9 @@ export default {
     },
     onUpload() {
       if (!this.validDropDowns(this.selects) || !this.validLPID()) {
-        this.errorMsg = 'Please ensure vertical, domain strategy and chain branding drop downs have selections. LP field cannot be blank'
-        this.isError = true
+        this.msg = 'Please ensure vertical, domain strategy and chain branding drop downs have selections. LP field cannot be blank'
+        this.alertvariant = 'danger'
+        this.showMsg = true
       } else {
         try {
           Papa.parse(this.file, {
@@ -242,14 +233,16 @@ export default {
                       return { value: location.id, text: `${name} - ${properties.street_address_1}` }
                     })
                   ]
-                  this.successMsg = 'Your CSV has been successfully imported, please select a location below'
-                  this.successfulUpload = true
+                  this.msg = 'Your CSV has been successfully imported, please select a location below'
+                  this.alertvariant = 'success'
+                  this.showMsg = true
                 })
             }
           })
         } catch (err) {
-          this.errorMsg = 'There was an error uploading the csv'
-          this.isError = true
+          this.msg = 'There was an error uploading the csv'
+          this.alertvariant = 'danger'
+          this.showMsg = true
         }
       }
     }
