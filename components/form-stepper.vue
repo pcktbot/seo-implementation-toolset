@@ -8,8 +8,16 @@
     <b-tabs card content-class="my-2">
       <b-tab>
         <template v-slot:title>
-          <!-- SOME COMPLETED INDICATION HERE -->
-          Name / Adress Validation
+          <div class="d-flex justify-content-start align-items-center mb-0">
+            <div v-if="!stepOneComplete">
+              <b-icon icon="x-circle" variant="warning" />
+            </div>
+            <div v-else>
+              <b-icon icon="check-circle" variant="success" />
+            </div>
+            <!-- SOME COMPLETED INDICATION HERE -->
+            Name / Adress Validation
+          </div>
         </template>
         <name-address
           :inputs="validation.fields"
@@ -51,6 +59,7 @@ export default {
   },
   data () {
     return {
+      stepOneComplete: false,
       validation: {
         fields: [
           'name',
@@ -77,6 +86,7 @@ export default {
       this.$emit('stepper-updated', data)
     },
     saveStepOne(data) {
+      this.stepOneComplete = true
       const valFieldKeys = this.validation.fields
       this.$emit('step-1-save', data, valFieldKeys)
     }

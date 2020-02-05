@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 <template>
   <div>
     <g5-nav />
@@ -98,10 +99,12 @@
 import Papa from 'papaparse'
 import FormStepper from '~/components/form-stepper'
 import g5Nav from '~/components/nav'
+import initialSelections from '~/components/initial-selections'
 export default {
   components: {
     FormStepper,
-    g5Nav
+    g5Nav,
+    initialSelections
   },
   data () {
     return {
@@ -190,8 +193,7 @@ export default {
         })
     },
     stepOneSave({ key, val, id }, fields) {
-      // eslint-disable-next-line no-console
-      console.log(fields)
+
     },
     onUpdate({ key, val, id }) {
       const i = this.locations.findIndex(loc => loc.id === id)
