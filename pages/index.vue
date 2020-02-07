@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 <template>
   <div>
     <g5-nav />
@@ -12,53 +11,12 @@
               </h3>
             </b-card-header>
             <b-card-body class="py-5">
-              <b-alert
-                :show="showMsg"
-                :variant="alertvariant"
-                @dismissed="showMsg=false"
-                dismissible
-              >
-                {{ msg }}
-              </b-alert>
-              <b-row>
-                <b-col
-                  v-for="select in selects"
-                  :key="select.selected"
-                  cols="4"
-                  class="mb-4"
-                >
-                  <b-form-select
-                    v-model="select.selected"
-                    :options="select.options"
-                  />
-                </b-col>
-                <b-col cols="5">
-                  <b-form-file
-                    v-model="file"
-                    accept=".csv"
-                    placeholder="Choose a file or drop it here..."
-                    drop-placeholder="Drop file here..."
-                  />
-                </b-col>
-                <b-col>
-                  <b-form-input
-                    id="input-1"
-                    v-model="lpId"
-                    required
-                    placeholder="Enter LP project Id"
-                  />
-                </b-col>
-                <b-col>
-                  <b-btn
-                    @click="onUpload"
-                    variant="outline-primary--darken3"
-                    block
-                    class="px-4"
-                  >
-                    Upload
-                  </b-btn>
-                </b-col>
-              </b-row>
+              <initial-selections
+                :initialSelect="initialSelect"
+                @upload-data="onUpload"
+                @err-upld="setMsgConfig"
+                @field-update="updateField"
+              />
             </b-card-body>
           </b-card>
         </b-col>
@@ -99,46 +57,26 @@
 import Papa from 'papaparse'
 import FormStepper from '~/components/form-stepper'
 import g5Nav from '~/components/nav'
+import initialSelections from '~/components/initial-selections'
 export default {
   components: {
     FormStepper,
-    g5Nav
+    g5Nav,
+    initialSelections
   },
   data () {
     return {
-      selectedLocation: null,
-      lpId: null,
-      file: [],
-      showMsg: false,
-      msg: '',
-      alertvariant: '',
-      selects: {
-        verticals: {
-          selected: null,
-          options: [
-            { value: null, text: 'Select Vertical' },
-            { value: 'mf', text: 'Multi-Family' },
-            { value: 'ss', text: 'Self Storage' },
-            { value: 'sl', text: 'Senior Living' }
-          ]
-        },
-        domain: {
-          selected: null,
-          options: [
-            { value: null, text: 'Select Domain Strategy' },
-            { value: 'multi', text: 'Multi Domain' },
-            { value: 'single', text: 'Single Domain' }
-          ]
-        },
-        branding: {
-          selected: null,
-          options: [
-            { value: null, text: 'Select Chain Branding' },
-            { value: 'yes', text: 'Yes' },
-            { value: 'no', text: 'No' }
-          ]
-        }
+      initialSelect: {
+        lpId: null,
+        file: [],
+        showMsg: false,
+        msg: '',
+        alertvariant: '',
+        vertical: '',
+        domain: '',
+        branding: ''
       },
+      selectedLocation: null,
       locations: [],
       location: {
         selected: null,
@@ -154,39 +92,12 @@ export default {
       console.log(payload)
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
     },
-    reject(obj, keys) {
-      const vkeys = Object.keys(obj)
-        .filter(k => !keys.includes(k))
-      return this.pick(obj, vkeys)
-    },
-    pick(obj, keys) {
-      return keys.map(k => k in obj ? { [k]: obj[k] } : {})
-        .reduce((res, o) => Object.assign(res, o), {})
-    },
-    validDropDowns(obj) {
-      let val = true
-      let i = 0
-      const keys = Object.keys(obj)
-      while (val && i < keys.length) {
-        if (!this.selects[keys[i]].selected) {
-          val = false
-        }
-        i++
-      }
-      return val
-    },
-    validLPID() {
-      return this.lpId && !isNaN(this.lpId)
-    },
-    hasFile() {
-      return this.file.length > 0
-    },
     onSave(event) {
       this.$emit('on-save', event)
       // TODO validate save payload
       this.$axios
         .$put('api/locations/update', {
-          lpId: this.lpId,
+          lpId: this.initialSelect.lpId,
           locations: this.locations
         })
     },
@@ -201,49 +112,56 @@ export default {
         this.locations[i].properties[key] = val
       }
     },
+    updateField({ key, val }) {
+      this.initialSelect[key] = val
+    },
+    reject(obj, keys) {
+      const vkeys = Object.keys(obj)
+        .filter(k => !keys.includes(k))
+      return this.pick(obj, vkeys)
+    },
+    pick(obj, keys) {
+      return keys.map(k => k in obj ? { [k]: obj[k] } : {})
+        .reduce((res, o) => Object.assign(res, o), {})
+    },
+    setMsgConfig(msg, variant, msgOn) {
+      this.initialSelect.msg = msg
+      this.initialSelect.alertvariant = variant
+      this.initialSelect.showMsg = msgOn
+    },
     onUpload() {
-      if (!this.validDropDowns(this.selects) || !this.validLPID()) {
-        this.msg = 'Please ensure vertical, domain strategy and chain branding drop downs have selections. LP field cannot be blank'
-        this.alertvariant = 'danger'
-        this.showMsg = true
-      } else {
-        try {
-          Papa.parse(this.file, {
-            header: true,
-            complete: (res) => {
-              const locations = res.data.map((location) => {
-                const { name } = location
-                const properties = this.reject(location, ['name'])
-                properties.population = null
-                properties.uspsvalid = null
-                return { name, properties }
-              })
-              // writes parsed csv to database
-              this.$axios
-                .$post('api/locations', {
-                  lpId: this.lpId,
-                  locations
-                }).then((res) => {
+      try {
+        Papa.parse(this.initialSelect.file, {
+          header: true,
+          complete: (res) => {
+            const locations = res.data.map((location) => {
+              const { name } = location
+              const properties = this.reject(location, ['name'])
+              properties.population = null
+              properties.uspsvalid = null
+              return { name, properties }
+            })
+            // writes parsed csv to database
+            this.$axios
+              .$post('api/locations', {
+                lpId: this.initialSelect.lpId,
+                locations
+              }).then((res) => {
                 // adds location data to front end and fills out location drop down
-                  this.locations = res
-                  this.location.options = [
-                    { value: null, text: 'Select Location' },
-                    ...res.map((location) => {
-                      const { name, properties } = location
-                      return { value: location.id, text: `${name} - ${properties.street_address_1}` }
-                    })
-                  ]
-                  this.msg = 'Your CSV has been successfully imported, please select a location below'
-                  this.alertvariant = 'success'
-                  this.showMsg = true
-                })
-            }
-          })
-        } catch (err) {
-          this.msg = 'There was an error uploading the csv'
-          this.alertvariant = 'danger'
-          this.showMsg = true
-        }
+                this.locations = res
+                this.location.options = [
+                  { value: null, text: 'Select Location' },
+                  ...res.map((location) => {
+                    const { name, properties } = location
+                    return { value: location.id, text: `${name} - ${properties.street_address_1}` }
+                  })
+                ]
+                this.setMsgConfig('Your CSV has been successfully imported, please select a location below', 'success', true)
+              })
+          }
+        })
+      } catch (err) {
+        this.setMsgConfig('There was an error uploading the csv', 'danger', true)
       }
     }
   }

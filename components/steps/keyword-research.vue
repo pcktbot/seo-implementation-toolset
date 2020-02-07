@@ -42,29 +42,6 @@
           />
         </b-form-group>
       </b-col>
-      <b-col
-        cols="4"
-        class="align-self-center pt-3"
-      >
-        <b-form-select
-          :value="form.uspsvalid"
-          :options="uspsvalid.options"
-          @change="onInput('uspsvalid', $event)"
-        />
-      </b-col>
-      <b-col
-        cols="4"
-        class="align-self-center pt-3"
-      >
-        <b-btn
-          :href="uspsLink"
-          target="_blank"
-          variant="outline-secondary--darken3"
-          class="px-4"
-        >
-          Verify Address
-        </b-btn>
-      </b-col>
     </b-row>
   </b-container>
 </template>
@@ -83,34 +60,24 @@ export default {
       default() {
         return {}
       }
-    },
-    uspsvalid: {
-      type: Object,
-      default() {
-        return {}
-      }
     }
   },
   data () {
     return {
       hasMsg: false,
       msg: '',
-      alertvariant: '',
-      uspsLink: 'https://tools.usps.com/zip-code-lookup.htm?byaddress'
+      alertvariant: ''
     }
   },
   computed: {
     form: {
       get() {
         return {
-          name: this.location.name,
-          street_address_1: this.location.properties.street_address_1,
-          city: this.location.properties.city,
-          state: this.location.properties.state,
-          postal_code: this.location.properties.postal_code,
-          country: this.location.properties.country,
-          population: this.location.properties.population,
-          uspsvalid: this.location.properties.uspsvalid
+          neighborhood: this.location.properties.neighborhood,
+          neighborhood_2: this.location.properties.neighborhood_2,
+          landmark_1_name: this.location.properties.landmark_1_name,
+          apartment_amenity_1: this.location.properties.apartment_amenity_1,
+          community_amenity_1: this.location.properties.community_amenity_1
         }
       },
       set(val) {}

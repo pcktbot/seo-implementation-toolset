@@ -20,15 +20,34 @@
           </div>
         </template>
         <name-address
-          :inputs="validation.fields"
+          :inputs="validation.steponefields"
           :location="location"
           :uspsvalid="uspsvalid"
           @step-update="onUpdate"
           @step-1-save="saveStepOne"
+          @update-step-status="updateProp"
         />
       </b-tab>
-      <b-tab title="Keyword Research">
-        <p>I'm the second tab</p>
+      <b-tab>
+        <template v-slot:title>
+          <div class="d-flex justify-content-start align-items-center mb-0">
+            <div v-if="!stepTwoComplete">
+              <b-icon icon="x-circle" variant="warning" />
+            </div>
+            <div v-else>
+              <b-icon icon="check-circle" variant="success" />
+            </div>
+            <!-- SOME COMPLETED INDICATION HERE -->
+            Keyword Research
+          </div>
+        </template>
+        <keyword-research
+          :inputs="validation.steptwofields"
+          :location="location"
+          @step-update="onUpdate"
+          @step-2-save="saveStepOne"
+          @update-step-status="updateProp"
+        />
       </b-tab>
       <b-tab title="Context">
         <p>I'm the second tab</p>
@@ -45,9 +64,11 @@
 
 <script>
 import NameAddress from '~/components/steps/name-address'
+import KeywordResearch from '~/components/steps/keyword-research'
 export default {
   components: {
-    NameAddress
+    NameAddress,
+    KeywordResearch
   },
   props: {
     location: {
@@ -60,8 +81,9 @@ export default {
   data () {
     return {
       stepOneComplete: false,
+      stepTwoComplete: false,
       validation: {
-        fields: [
+        steponefields: [
           'name',
           'street_address_1',
           'city',
@@ -69,6 +91,13 @@ export default {
           'postal_code',
           'country',
           'population'
+        ],
+        steptwofields: [
+          'neighborhood',
+          'neighborhood_2',
+          'landmark_1_name',
+          'apartment_amenity_1',
+          'community_amenity_1'
         ]
       },
       uspsvalid: {
@@ -84,6 +113,9 @@ export default {
   methods: {
     onUpdate(data) {
       this.$emit('stepper-updated', data)
+    },
+    updateProp(prop, value) {
+      this[prop] = value
     },
     saveStepOne(data) {
       this.stepOneComplete = true
