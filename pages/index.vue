@@ -12,10 +12,11 @@
             </b-card-header>
             <b-card-body class="py-5">
               <initial-selections
-                :initialSelect="initialSelect"
+                :form="form"
                 @upload-data="onUpload"
                 @err-upld="setMsgConfig"
-                @field-update="updateField"
+                @field-update="updateSelect"
+                @input-update="updateInput"
               />
             </b-card-body>
           </b-card>
@@ -67,15 +68,44 @@ export default {
   },
   data () {
     return {
-      initialSelect: {
-        lpId: null,
-        file: [],
+      form: {
+        inputs: {
+          lpId: null,
+          file: []
+        },
         showMsg: false,
         msg: '',
         alertvariant: '',
-        vertical: '',
-        domain: '',
-        branding: ''
+        selects: [
+          {
+            id: 'vertical',
+            value: '',
+            options: [
+              { value: null, text: 'Select Vertical' },
+              { value: 'mf', text: 'Multi-Family' },
+              { value: 'ss', text: 'Self Storage' },
+              { value: 'sl', text: 'Senior Living' }
+            ]
+          },
+          {
+            id: 'domain',
+            value: '',
+            options: [
+              { value: null, text: 'Select Domain Strategy' },
+              { value: 'multi', text: 'Multi Domain' },
+              { value: 'single', text: 'Single Domain' }
+            ]
+          },
+          {
+            id: 'branding',
+            value: '',
+            options: [
+              { value: null, text: 'Select Chain Branding' },
+              { value: 'yes', text: 'Yes' },
+              { value: 'no', text: 'No' }
+            ]
+          }
+        ]
       },
       selectedLocation: null,
       locations: [],
@@ -89,8 +119,6 @@ export default {
   },
   methods: {
     loadLocation(payload) {
-      // eslint-disable-next-line no-console
-      console.log(payload)
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
     },
     onSave(event) {
@@ -113,8 +141,14 @@ export default {
         this.locations[i].properties[key] = val
       }
     },
-    updateField({ key, val }) {
-      this.initialSelect[key] = val
+    updateSelect({ key, val }) {
+      const i = this.form.selects.findIndex(select => select.id === key)
+      this.form.selects[i].value = val
+    },
+    updateInput({ key, val }) {
+      (key === 'file')
+        ? this.form.inputs[key] = [val]
+        : this.form.inputs[key] = val
     },
     reject(obj, keys) {
       const vkeys = Object.keys(obj)
@@ -132,7 +166,7 @@ export default {
     },
     onUpload() {
       try {
-        Papa.parse(this.initialSelect.file, {
+        Papa.parse(this.form.inputs.file, {
           header: true,
           complete: (res) => {
             const locations = res.data.map((location) => {
@@ -142,6 +176,7 @@ export default {
               properties.uspsvalid = null
               return { name, properties }
             })
+            this.locations = locations
             // writes parsed csv to database
             this.$axios
               .$post('api/locations', {
@@ -157,12 +192,12 @@ export default {
                     return { value: location.id, text: `${name} - ${properties.street_address_1}` }
                   })
                 ]
-                this.setMsgConfig('Your CSV has been successfully imported, please select a location below', 'success', true)
+                // this.setMsgConfig('Your CSV has been successfully imported, please select a location below', 'success', true)
               })
           }
         })
       } catch (err) {
-        this.setMsgConfig('There was an error uploading the csv', 'danger', true)
+        // this.setMsgConfig('There was an error uploading the csv', 'danger', true)
       }
     }
   }
