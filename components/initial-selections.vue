@@ -24,8 +24,7 @@
       </b-col>
       <b-col cols="5">
         <b-form-file
-          v-model="file"
-          @input="onInput('file', $event)"
+          v-model="form.inputs.file"
           accept=".csv"
           placeholder="Choose a file or drop it here..."
           drop-placeholder="Drop file here..."

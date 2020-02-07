@@ -45,7 +45,7 @@
           <form-stepper
             v-if="selectedLocation"
             :location="selectedLocation"
-            :initialSelect="initialSelect"
+            :form="form"
             @stepper-updated="onUpdate"
             @step-1-save="stepOneSave"
           />
@@ -79,7 +79,7 @@ export default {
         selects: [
           {
             id: 'vertical',
-            value: '',
+            value: null,
             options: [
               { value: null, text: 'Select Vertical' },
               { value: 'mf', text: 'Multi-Family' },
@@ -89,7 +89,7 @@ export default {
           },
           {
             id: 'domain',
-            value: '',
+            value: null,
             options: [
               { value: null, text: 'Select Domain Strategy' },
               { value: 'multi', text: 'Multi Domain' },
@@ -98,7 +98,7 @@ export default {
           },
           {
             id: 'branding',
-            value: '',
+            value: null,
             options: [
               { value: null, text: 'Select Chain Branding' },
               { value: 'yes', text: 'Yes' },
@@ -126,7 +126,7 @@ export default {
       // TODO validate save payload
       this.$axios
         .$put('api/locations/update', {
-          lpId: this.initialSelect.lpId,
+          lpId: this.form.inputs.lpId,
           locations: this.locations
         })
     },
@@ -160,9 +160,9 @@ export default {
         .reduce((res, o) => Object.assign(res, o), {})
     },
     setMsgConfig(msg, variant, msgOn) {
-      this.initialSelect.msg = msg
-      this.initialSelect.alertvariant = variant
-      this.initialSelect.showMsg = msgOn
+      this.form.msg = msg
+      this.form.alertvariant = variant
+      this.form.showMsg = msgOn
     },
     onUpload() {
       try {
@@ -176,11 +176,11 @@ export default {
               properties.uspsvalid = null
               return { name, properties }
             })
-            this.locations = locations
+            // this.locations = locations
             // writes parsed csv to database
             this.$axios
               .$post('api/locations', {
-                lpId: this.initialSelect.lpId,
+                lpId: this.form.inputs.lpId,
                 locations
               }).then((res) => {
                 // adds location data to front end and fills out location drop down

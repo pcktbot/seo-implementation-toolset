@@ -113,12 +113,12 @@ export default {
       type: Object,
       default() {
         return {}
-      },
-      initialSelect: {
-        type: Object,
-        default() {
-          return {}
-        }
+      }
+    },
+    form: {
+      type: Object,
+      default() {
+        return {}
       }
     }
   },
@@ -130,20 +130,20 @@ export default {
     }
   },
   computed: {
-    form: {
-      adjustColWidth() {
-        return this.initialSelect.vertical === 'mf' ? 4 : 6
-      },
-      get() {
-        return {
-          neighborhood: this.location.properties.neighborhood,
-          neighborhood_2: this.location.properties.neighborhood_2,
-          landmark_1_name: this.location.properties.landmark_1_name,
-          apartment_amenity_1: this.location.properties.apartment_amenity_1,
-          community_amenity_1: this.location.properties.community_amenity_1
-        }
-      },
-      set(val) {}
+    adjustColWidth() {
+      return this.form.selects[0].value === 'mf' ? 4 : 6
+    },
+    get() {
+      return {
+        neighborhood: this.location.properties.neighborhood,
+        neighborhood_2: this.location.properties.neighborhood_2,
+        landmark_1_name: this.location.properties.landmark_1_name,
+        apartment_amenity_1: this.location.properties.apartment_amenity_1,
+        community_amenity_1: this.location.properties.community_amenity_1
+      }
+    },
+    set(val) {
+      return {}
     }
   },
   methods: {

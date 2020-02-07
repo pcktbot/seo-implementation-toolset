@@ -46,7 +46,7 @@
           :keywords="stepTwoKeywordAreas"
           :phrases="stepTwoPhraseAreas"
           :location="location"
-          :initialSelect="initialSelect"
+          :form="form"
           @step-update="onUpdate"
           @step-2-save="saveStepOne"
           @update-step-status="updateProp"
@@ -80,7 +80,7 @@ export default {
         return {}
       }
     },
-    initialSelect: {
+    form: {
       type: Object,
       default() {
         return {}
@@ -134,7 +134,6 @@ export default {
               'amenity phrases'
             ],
             other: [
-
               'neighborhood phrases',
               'landmark phrases'
             ]
@@ -153,17 +152,17 @@ export default {
   },
   computed: {
     stepTwoFields() {
-      return this.initialSelect.vertical === 'mf'
+      return this.form.selects[0].value === 'mf'
         ? this.validation.steptwofields.inputs.mf
         : this.validation.steptwofields.inputs.other
     },
     stepTwoKeywordAreas() {
-      return this.initialSelect.vertical === 'mf'
+      return this.form.selects[0].value === 'mf'
         ? this.validation.steptwofields.keywords.mf
         : this.validation.steptwofields.keywords.other
     },
     stepTwoPhraseAreas() {
-      return this.initialSelect.vertical === 'mf'
+      return this.form.selects[0].value === 'mf'
         ? this.validation.steptwofields.phrases.mf
         : this.validation.steptwofields.phrases.other
     }
