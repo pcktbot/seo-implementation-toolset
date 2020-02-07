@@ -19,9 +19,6 @@
                 @input-update="updateInput"
               />
             </b-card-body>
-            <b-card-footer>
-              {{ form }}
-            </b-card-footer>
           </b-card>
         </b-col>
       </b-row>
@@ -168,7 +165,7 @@ export default {
     },
     onUpload() {
       try {
-        Papa.parse(this.initialSelect.file, {
+        Papa.parse(this.form.inputs.file, {
           header: true,
           complete: (res) => {
             const locations = res.data.map((location) => {
@@ -178,6 +175,7 @@ export default {
               properties.uspsvalid = null
               return { name, properties }
             })
+            this.locations = locations
             // writes parsed csv to database
             this.$axios
               .$post('api/locations', {
@@ -193,12 +191,12 @@ export default {
                     return { value: location.id, text: `${name} - ${properties.street_address_1}` }
                   })
                 ]
-                this.setMsgConfig('Your CSV has been successfully imported, please select a location below', 'success', true)
+                // this.setMsgConfig('Your CSV has been successfully imported, please select a location below', 'success', true)
               })
           }
         })
       } catch (err) {
-        this.setMsgConfig('There was an error uploading the csv', 'danger', true)
+        // this.setMsgConfig('There was an error uploading the csv', 'danger', true)
       }
     }
   }
