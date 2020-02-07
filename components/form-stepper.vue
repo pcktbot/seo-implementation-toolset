@@ -42,21 +42,24 @@
           </div>
         </template>
         <keyword-research
-          :inputs="validation.steptwofields"
+          :inputs="stepTwoFields"
+          :keywords="stepTwoKeywordAreas"
+          :phrases="stepTwoPhraseAreas"
           :location="location"
+          :initialSelect="initialSelect"
           @step-update="onUpdate"
           @step-2-save="saveStepOne"
           @update-step-status="updateProp"
         />
       </b-tab>
       <b-tab title="Context">
-        <p>I'm the second tab</p>
+        <p>I'm the third tab</p>
       </b-tab>
       <b-tab title="Redirects">
-        <p>I'm the second tab</p>
+        <p>I'm the fourth tab</p>
       </b-tab>
       <b-tab title="Notes">
-        <p>I'm the second tab</p>
+        <p>I'm the fifth tab</p>
       </b-tab>
     </b-tabs>
   </b-card>
@@ -72,6 +75,12 @@ export default {
   },
   props: {
     location: {
+      type: Object,
+      default() {
+        return {}
+      }
+    },
+    initialSelect: {
       type: Object,
       default() {
         return {}
@@ -92,13 +101,45 @@ export default {
           'country',
           'population'
         ],
-        steptwofields: [
-          'neighborhood',
-          'neighborhood_2',
-          'landmark_1_name',
-          'apartment_amenity_1',
-          'community_amenity_1'
-        ]
+        steptwofields: {
+          inputs: {
+            mf: [
+              'neighborhood',
+              'neighborhood_2',
+              'landmark_1_name',
+              'apartment_amenity_1',
+              'community_amenity_1'
+            ],
+            other: [
+              'neighborhood',
+              'neighborhood_2',
+              'landmark_1_name'
+            ]
+          },
+          keywords: {
+            mf: [
+              'neighborhood keywords',
+              'landmark keywords',
+              'amenity keywords'
+            ],
+            other: [
+              'neighborhood keywords',
+              'landmark keywords'
+            ]
+          },
+          phrases: {
+            mf: [
+              'neighborhood phrases',
+              'landmark phrases',
+              'amenity phrases'
+            ],
+            other: [
+
+              'neighborhood phrases',
+              'landmark phrases'
+            ]
+          }
+        }
       },
       uspsvalid: {
         selected: null,
@@ -108,6 +149,23 @@ export default {
           { value: false, text: 'No - Not USPS Verified' }
         ]
       }
+    }
+  },
+  computed: {
+    stepTwoFields() {
+      return this.initialSelect.vertical === 'mf'
+        ? this.validation.steptwofields.inputs.mf
+        : this.validation.steptwofields.inputs.other
+    },
+    stepTwoKeywordAreas() {
+      return this.initialSelect.vertical === 'mf'
+        ? this.validation.steptwofields.keywords.mf
+        : this.validation.steptwofields.keywords.other
+    },
+    stepTwoPhraseAreas() {
+      return this.initialSelect.vertical === 'mf'
+        ? this.validation.steptwofields.phrases.mf
+        : this.validation.steptwofields.phrases.other
     }
   },
   methods: {

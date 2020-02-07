@@ -3,7 +3,7 @@
     <b-alert
       :show="initialSelect.showMsg"
       :variant="initialSelect.alertvariant"
-      @dismissed="initialSelect.showMsg=false, initialSelect.msg='',initialSelect.alertvarianbt"
+      @dismissed="initialSelect.showMsg=false, initialSelect.msg='',initialSelect.alertvariant=''"
       dismissible
     >
       {{ initialSelect.msg }}
@@ -12,7 +12,7 @@
       <b-col
         v-for="select in selects"
         :key="select.selected"
-        @change="onInput(select.key, $event)"
+        @change="onInput(select.key, $event.target.value)"
         cols="4"
         class="mb-4"
       >
