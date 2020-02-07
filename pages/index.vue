@@ -12,12 +12,16 @@
             </b-card-header>
             <b-card-body class="py-5">
               <initial-selections
-                :initialSelect="initialSelect"
+                :form="form"
                 @upload-data="onUpload"
                 @err-upld="setMsgConfig"
-                @field-update="updateField"
+                @field-update="updateSelect"
+                @input-update="updateInput"
               />
             </b-card-body>
+            <b-card-footer>
+              {{ form }}
+            </b-card-footer>
           </b-card>
         </b-col>
       </b-row>
@@ -66,15 +70,44 @@ export default {
   },
   data () {
     return {
-      initialSelect: {
-        lpId: null,
-        file: [],
+      form: {
+        inputs: {
+          lpId: null,
+          file: []
+        },
         showMsg: false,
         msg: '',
         alertvariant: '',
-        vertical: '',
-        domain: '',
-        branding: ''
+        selects: [
+          {
+            id: 'vertical',
+            value: '',
+            options: [
+              { value: null, text: 'Select Vertical' },
+              { value: 'mf', text: 'Multi-Family' },
+              { value: 'ss', text: 'Self Storage' },
+              { value: 'sl', text: 'Senior Living' }
+            ]
+          },
+          {
+            id: 'domain',
+            value: '',
+            options: [
+              { value: null, text: 'Select Domain Strategy' },
+              { value: 'multi', text: 'Multi Domain' },
+              { value: 'single', text: 'Single Domain' }
+            ]
+          },
+          {
+            id: 'branding',
+            value: '',
+            options: [
+              { value: null, text: 'Select Chain Branding' },
+              { value: 'yes', text: 'Yes' },
+              { value: 'no', text: 'No' }
+            ]
+          }
+        ]
       },
       selectedLocation: null,
       locations: [],
@@ -88,8 +121,6 @@ export default {
   },
   methods: {
     loadLocation(payload) {
-      // eslint-disable-next-line no-console
-      console.log(payload)
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
     },
     onSave(event) {
@@ -112,8 +143,14 @@ export default {
         this.locations[i].properties[key] = val
       }
     },
-    updateField({ key, val }) {
-      this.initialSelect[key] = val.target.value
+    updateSelect({ key, val }) {
+      const i = this.form.selects.findIndex(select => select.id === key)
+      this.form.selects[i].value = val
+    },
+    updateInput({ key, val }) {
+      (key === 'file')
+        ? this.form.inputs[key] = [val]
+        : this.form.inputs[key] = val
     },
     reject(obj, keys) {
       const vkeys = Object.keys(obj)

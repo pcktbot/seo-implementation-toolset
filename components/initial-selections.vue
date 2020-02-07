@@ -1,29 +1,30 @@
 <template>
   <b-container fluid>
     <b-alert
-      :show="initialSelect.showMsg"
-      :variant="initialSelect.alertvariant"
-      @dismissed="initialSelect.showMsg=false, initialSelect.msg='',initialSelect.alertvarianbt"
+      :show="form.showMsg"
+      :variant="form.alertvariant"
+      @dismissed="form.showMsg = false, form.msg='', form.alertvarianbt"
       dismissible
     >
-      {{ initialSelect.msg }}
+      {{ form.msg }}
     </b-alert>
     <b-row>
       <b-col
-        v-for="select in selects"
-        :key="select.selected"
-        @change="onInput(select.key, $event)"
+        v-for="select in form.selects"
+        :key="select.id"
         cols="4"
         class="mb-4"
       >
         <b-form-select
-          v-model="select.selected"
+          :id="select.id"
+          :value="select.value"
           :options="select.options"
+          @change="onChange(select.id, $event)"
         />
       </b-col>
       <b-col cols="5">
         <b-form-file
-          v-model="initialSelect.file"
+          v-model="form.inputs.file"
           accept=".csv"
           placeholder="Choose a file or drop it here..."
           drop-placeholder="Drop file here..."
@@ -32,7 +33,7 @@
       <b-col>
         <b-form-input
           id="input-1"
-          :value="form.lpId"
+          :value="form.inputs.lpId"
           @input="onInput('lpId', $event)"
           placeholder="Enter LP project Id"
           required
@@ -55,62 +56,11 @@
 <script>
 export default {
   props: {
-    initialSelect: {
+    form: {
       type: Object,
       default() {
         return {}
       }
-    }
-  },
-  data () {
-    return {
-      selects: {
-        verticals: {
-          key: 'vertical',
-          selected: null,
-          options: [
-            { value: null, text: 'Select Vertical' },
-            { value: 'mf', text: 'Multi-Family' },
-            { value: 'ss', text: 'Self Storage' },
-            { value: 'sl', text: 'Senior Living' }
-          ]
-        },
-        domain: {
-          key: 'domain',
-          selected: null,
-          options: [
-            { value: null, text: 'Select Domain Strategy' },
-            { value: 'multi', text: 'Multi Domain' },
-            { value: 'single', text: 'Single Domain' }
-          ]
-        },
-        branding: {
-          key: 'branding',
-          selected: null,
-          options: [
-            { value: null, text: 'Select Chain Branding' },
-            { value: 'yes', text: 'Yes' },
-            { value: 'no', text: 'No' }
-          ]
-        }
-      }
-    }
-  },
-  computed: {
-    form: {
-      get() {
-        return {
-          lpId: this.initialSelect.lpId,
-          file: this.initialSelect.file,
-          showMsg: this.initialSelect.showMsg,
-          msg: this.initialSelect.msg,
-          alertvariant: this.initialSelect.alertvariant,
-          vertical: this.initialSelect.vertical,
-          domain: this.initialSelect.domain,
-          branding: this.initialSelect.branding
-        }
-      },
-      set(val) {}
     }
   },
   methods: {
@@ -126,17 +76,20 @@ export default {
       }
       return val
     },
-    onInput(key, val) {
+    onChange(key, val) {
       this.$emit('field-update', { key, val })
     },
-    validLPID() {
-      return this.initialSelect.lpId && !isNaN(this.initialSelect.lpId)
+    onInput(key, val) {
+      this.$emit('input-update', { key, val })
+    },
+    validId() {
+      return this.form.inputs.lpId && !isNaN(this.forms.inputs.lpId)
     },
     hasFile() {
-      return this.initialSelect.file.length > 0
+      return this.form.inputs.file.length > 0
     },
     onUpload() {
-      if (!this.validDropDowns(this.selects) || !this.validLPID()) {
+      if (!this.validDropDowns(this.form.selects) || !this.validId()) {
         this.$emit('err-upld',
           'Please ensure vertical, domain strategy and chain branding drop downs have selections. LP field cannot be blank',
           'danger',
