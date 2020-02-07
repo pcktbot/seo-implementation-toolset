@@ -44,6 +44,7 @@
           <form-stepper
             v-if="selectedLocation"
             :location="selectedLocation"
+            :initialSelect="initialSelect"
             @stepper-updated="onUpdate"
             @step-1-save="stepOneSave"
           />
@@ -113,7 +114,7 @@ export default {
       }
     },
     updateField({ key, val }) {
-      this.initialSelect[key] = val.target.value
+      this.initialSelect[key] = val
     },
     reject(obj, keys) {
       const vkeys = Object.keys(obj)

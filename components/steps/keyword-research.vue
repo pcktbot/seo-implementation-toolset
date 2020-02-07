@@ -43,6 +43,48 @@
         </b-form-group>
       </b-col>
     </b-row>
+    <h3 class="text-center">
+      Keywords
+    </h3>
+    <b-row>
+      <b-col
+        v-for="keyword in keywords"
+        :key="keyword"
+        :cols="adjustColWidth"
+      >
+        <b-form-textarea
+          :id="`textarea-${keyword}`"
+          :label="keyword"
+          :label-for="`input-${keyword}`"
+          :placeholder="`Paste your comma seperated ${keyword} Keywords here`"
+          class="text-left"
+          required
+        >
+          <!-- NEEDS VALUE BELOW TO PULL IN -->
+        </b-form-textarea>
+      </b-col>
+    </b-row>
+    <h3 class="text-center">
+      Phrases
+    </h3>
+    <b-row>
+      <b-col
+        v-for="phrase in phrases"
+        :key="phrase"
+        :cols="adjustColWidth"
+      >
+        <b-form-textarea
+          :id="`textarea-${phrase}`"
+          :label="phrase"
+          :label-for="`input-${phrase}`"
+          :placeholder="`${phrase} Phrases will auto-populate here after running generate keywords`"
+          class="text-left"
+          required
+        >
+          <!-- NEEDS VALUE BELOW TO PULL IN -->
+        </b-form-textarea>
+      </b-col>
+    </b-row>
   </b-container>
 </template>
 
@@ -55,10 +97,28 @@ export default {
         return {}
       }
     },
+    keywords: {
+      type: Array,
+      default() {
+        return {}
+      }
+    },
+    phrases: {
+      type: Array,
+      default() {
+        return {}
+      }
+    },
     location: {
       type: Object,
       default() {
         return {}
+      },
+      initialSelect: {
+        type: Object,
+        default() {
+          return {}
+        }
       }
     }
   },
@@ -71,6 +131,9 @@ export default {
   },
   computed: {
     form: {
+      adjustColWidth() {
+        return this.initialSelect.vertical === 'mf' ? 4 : 6
+      },
       get() {
         return {
           neighborhood: this.location.properties.neighborhood,
