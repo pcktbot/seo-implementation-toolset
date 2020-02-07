@@ -12,13 +12,13 @@
       <b-col
         v-for="select in selects"
         :key="select.selected"
+        @change="onInput(select.key, $event)"
         cols="4"
         class="mb-4"
       >
         <b-form-select
           v-model="select.selected"
           :options="select.options"
-          @change="onInput(select.key, select.selected)"
         />
       </b-col>
       <b-col cols="5">
@@ -127,10 +127,6 @@ export default {
       return val
     },
     onInput(key, val) {
-      // eslint-disable-next-line no-console
-      console.log(key)
-      // eslint-disable-next-line no-console
-      console.log(val)
       this.$emit('field-update', { key, val })
     },
     validLPID() {

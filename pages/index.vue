@@ -113,7 +113,7 @@ export default {
       }
     },
     updateField({ key, val }) {
-      this.initialSelect[key] = val
+      this.initialSelect[key] = val.target.value
     },
     reject(obj, keys) {
       const vkeys = Object.keys(obj)
