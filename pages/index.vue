@@ -174,6 +174,7 @@ export default {
               const properties = this.reject(location, ['name'])
               properties.population = null
               properties.uspsvalid = null
+              properties.recommended_name = null
               return { name, properties }
             })
             // this.locations = locations

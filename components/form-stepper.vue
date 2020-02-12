@@ -42,24 +42,22 @@
           </div>
         </template>
         <keyword-research
-          :inputs="stepTwoFields"
+          :inputs="stepTwoInputs"
           :keywords="stepTwoKeywordAreas"
           :phrases="stepTwoPhraseAreas"
           :location="location"
           :form="form"
+          :validation="validation"
           @step-update="onUpdate"
           @step-2-save="saveStepOne"
           @update-step-status="updateProp"
         />
       </b-tab>
-      <b-tab title="Context">
+      <b-tab title="Redirects">
         <p>I'm the third tab</p>
       </b-tab>
-      <b-tab title="Redirects">
-        <p>I'm the fourth tab</p>
-      </b-tab>
       <b-tab title="Notes">
-        <p>I'm the fifth tab</p>
+        <p>I'm the fourth tab</p>
       </b-tab>
     </b-tabs>
   </b-card>
@@ -94,6 +92,7 @@ export default {
       validation: {
         steponefields: [
           'name',
+          'recommended_name',
           'street_address_1',
           'city',
           'state',
@@ -108,34 +107,51 @@ export default {
               'neighborhood_2',
               'landmark_1_name',
               'apartment_amenity_1',
-              'community_amenity_1'
+              'community_amenity_1',
+              'floor_plans',
+              'custom_slug'
             ],
             other: [
               'neighborhood',
               'neighborhood_2',
-              'landmark_1_name'
+              'landmark_1_name',
+              'custom_slug'
             ]
           },
           keywords: {
             mf: [
-              'neighborhood keywords',
-              'landmark keywords',
-              'amenity keywords'
+              'neighborhood_keywords',
+              'landmark_keywords',
+              'amenity_keywords'
             ],
             other: [
-              'neighborhood keywords',
-              'landmark keywords'
+              'neighborhood_keywords',
+              'landmark_keywords'
             ]
           },
           phrases: {
             mf: [
-              'neighborhood phrases',
-              'landmark phrases',
-              'amenity phrases'
+              'neighborhood_phrases',
+              'landmark_phrases',
+              'amenity_phrases'
             ],
             other: [
               'neighborhood phrases',
               'landmark phrases'
+            ]
+          },
+          propertyvalue: {
+            selected: null,
+            options: [
+              { value: null, text: 'Select Property Feature' },
+              { value: 'Affordable', text: 'Affordable' },
+              { value: 'Gated', text: 'Gated' },
+              { value: 'Furnished', text: 'Furnished' },
+              { value: 'Garden Style', text: 'Garden Style' },
+              { value: 'High Rise', text: 'High Rise' },
+              { value: 'New', text: 'New' },
+              { value: 'Upgraded', text: 'Upgraded' },
+              { value: 'Modern', text: 'Modern' }
             ]
           }
         }
@@ -151,10 +167,13 @@ export default {
     }
   },
   computed: {
-    stepTwoFields() {
-      return this.form.selects[0].value === 'mf'
+    stepTwoInputs() {
+      const inputs = this.form.selects[0].value === 'mf'
         ? this.validation.steptwofields.inputs.mf
         : this.validation.steptwofields.inputs.other
+      return this.form.selects[1].value === 'multi'
+        ? inputs.slice(0, -1)
+        : inputs
     },
     stepTwoKeywordAreas() {
       return this.form.selects[0].value === 'mf'
@@ -168,6 +187,11 @@ export default {
     }
   },
   methods: {
+    selectedPropertyValue() {
+      return this.form.selects[0].value === 'mf' && this.location.properties.property_feature_1
+        ? this.location.properties.property_feature_1
+        : null
+    },
     onUpdate(data) {
       this.$emit('stepper-updated', data)
     },

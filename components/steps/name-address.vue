@@ -29,7 +29,7 @@
       >
         <b-form-group
           :id="`input-group-${input}`"
-          :label="input"
+          :label="input.replace(/_/g,' ')"
           :label-for="`input-${input}`"
           class="text-left text-uppercase"
         >
@@ -44,9 +44,11 @@
       </b-col>
       <b-col
         cols="4"
-        class="align-self-center pt-3"
+        class="align-self-center mb-4"
       >
+        <label for="uspsvalid">USPS Verified</label>
         <b-form-select
+          id="uspsvalid"
           :value="form.uspsvalid"
           :options="uspsvalid.options"
           @change="onInput('uspsvalid', $event)"
@@ -104,6 +106,7 @@ export default {
       get() {
         return {
           name: this.location.name,
+          recommendedname: this.location.properties.recommendedname,
           street_address_1: this.location.properties.street_address_1,
           city: this.location.properties.city,
           state: this.location.properties.state,

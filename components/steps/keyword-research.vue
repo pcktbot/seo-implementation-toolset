@@ -25,46 +25,88 @@
       <b-col
         v-for="input in inputs"
         :key="input"
-        cols="4"
+        cols="3"
       >
         <b-form-group
           :id="`input-group-${input}`"
-          :label="input"
+          :label="input.replace(/_/g,' ')"
           :label-for="`input-${input}`"
           class="text-left text-uppercase"
         >
           <b-form-input
             :id="`input-${input}`"
-            :value="form[input]"
-            :placeholder="`Enter ${input}`"
+            :value="compform[input]"
+            :placeholder="`Enter ${input.replace(/_/g,' ')}`"
             @input="onInput(input, $event)"
             required
           />
         </b-form-group>
       </b-col>
+      <b-col
+        cols="3"
+        class="align-self-center mb-4"
+      >
+        <div v-if="form.selects[0].value === 'mf'">
+          <b-form-group
+            label="PROPERTY FEATURE"
+            for="property_feature_1"
+            class="text-left text-uppercase"
+          >
+            <b-form-select
+              id="property_feature_1"
+              :value="pickPropertyVal"
+              :options="validation.steptwofields.propertyvalue.options"
+              @change="onInput('property_feature_1', $event)"
+            />
+          </b-form-group>
+        </div>
+      </b-col>
     </b-row>
-    <h3 class="text-center">
-      Keywords
-    </h3>
+    <b-row>
+      <b-col cols="4" />
+      <b-col
+        cols="4"
+      >
+        <h3 class="text-center">
+          Keywords
+        </h3>
+      </b-col>
+      <b-col
+        class="text-right"
+        cols="4"
+      >
+        <b-btn
+          @click="getKeywords"
+          variant="outline-secondary--darken3"
+          class="px-4"
+        >
+          Get Keywords / Phrases
+        </b-btn>
+      </b-col>
+    </b-row>
     <b-row>
       <b-col
         v-for="keyword in keywords"
         :key="keyword"
         :cols="adjustColWidth"
       >
-        <b-form-textarea
-          :id="`textarea-${keyword}`"
-          :label="keyword"
-          :label-for="`input-${keyword}`"
-          :placeholder="`Paste your comma seperated ${keyword} Keywords here`"
-          class="text-left"
-          required
+        <b-form-group
+          :for="`textarea-${keyword}`"
+          :label="`PASTE ${keyword.replace(/_/g,' ').toUpperCase()} HERE`"
+          class="pb-0 text-left text-uppercase"
         >
-          <!-- NEEDS VALUE BELOW TO PULL IN -->
-        </b-form-textarea>
+          <b-form-textarea
+            :id="`textarea-${keyword}`"
+            :placeholder="`Paste your comma seperated ${keyword.replace(/_/g,' ')} Keywords here`"
+            @input="onInput(keyword, $event)"
+            :value="compform[keyword]"
+            class="text-left"
+            required
+          />
+        </b-form-group>
       </b-col>
     </b-row>
-    <h3 class="text-center">
+    <h3 class="text-center mt-3">
       Phrases
     </h3>
     <b-row>
@@ -75,9 +117,8 @@
       >
         <b-form-textarea
           :id="`textarea-${phrase}`"
-          :label="phrase"
-          :label-for="`input-${phrase}`"
-          :placeholder="`${phrase} Phrases will auto-populate here after running generate keywords`"
+          :placeholder="`${phrase.replace(/_/g,' ')} will auto-populate here after running generate keywords`"
+          @input="onInput(phrase, $event)"
           class="text-left"
           required
         >
@@ -120,6 +161,12 @@ export default {
       default() {
         return {}
       }
+    },
+    validation: {
+      type: Object,
+      default() {
+        return {}
+      }
     }
   },
   data () {
@@ -133,17 +180,27 @@ export default {
     adjustColWidth() {
       return this.form.selects[0].value === 'mf' ? 4 : 6
     },
-    get() {
-      return {
-        neighborhood: this.location.properties.neighborhood,
-        neighborhood_2: this.location.properties.neighborhood_2,
-        landmark_1_name: this.location.properties.landmark_1_name,
-        apartment_amenity_1: this.location.properties.apartment_amenity_1,
-        community_amenity_1: this.location.properties.community_amenity_1
-      }
+    pickPropertyVal() {
+      const propertyFeatureVal = this.location.properties.property_feature_1
+      return propertyFeatureVal || null
     },
-    set(val) {
-      return {}
+    compform: {
+      get() {
+        return {
+          neighborhood: this.location.properties.neighborhood,
+          neighborhood_2: this.location.properties.neighborhood_2,
+          landmark_1_name: this.location.properties.landmark_1_name,
+          apartment_amenity_1: this.location.properties.apartment_amenity_1,
+          community_amenity_1: this.location.properties.community_amenity_1,
+          neighborhood_keywords: this.location.properties.neighborhood_keywords,
+          landmark_keywords: this.location.properties.landmark_keywords,
+          amenity_keywords: this.location.properties.amenity_keywords,
+          floor_plans: this.location.properties.floor_plans,
+          property_feature_1: this.location.properties.property_feature_1,
+          custom_slug: this.location.properties.custom_slug
+        }
+      },
+      set(val) {}
     }
   },
   methods: {
@@ -171,6 +228,9 @@ export default {
         this.showMsg('Please ensure all fields are filled out')
         this.$emit('update-step-status', 'stepOneComplete', false)
       }
+    },
+    getKeywords() {
+      // needs to send vertical, address to back end to call Google Places API
     },
     onInput(key, val) {
       this.$emit('step-update', { key, val, id: this.location.id })
