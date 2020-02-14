@@ -28,6 +28,5 @@ async function updateLocations (locations) {
 }
 
 function getLocations (lpId) {
-  console.log(lpId)
   return models.location.findAll({where: {lpId}})
 }
