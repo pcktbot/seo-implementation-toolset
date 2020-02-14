@@ -112,7 +112,7 @@ export default {
       location: {
         selected: null,
         options: [
-          { value: null, text: 'Select Locaiton' }
+          { value: null, text: 'Select Location' }
         ]
       }
     }
