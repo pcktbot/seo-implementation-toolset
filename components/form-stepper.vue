@@ -1,9 +1,12 @@
 <template>
-  <b-card no-body class="my-5 py-2">
-    <b-card-header class="text-left">
-      <h4 class="mb-0">
+  <b-card no-body class="my-5">
+    <b-card-header class="d-flex justify-content-between text-left">
+      <h3 class="my-auto">
         Step 3: Fill in Client Data
-      </h4>
+      </h3>
+      <div class="my-auto">
+        {{ `Address: ${location.properties.street_address_1} ${location.properties.city} ${location.properties.state} ${location.properties.postal_code}` }}
+      </div>
     </b-card-header>
     <b-tabs card content-class="my-2">
       <b-tab>
@@ -24,7 +27,7 @@
           :location="location"
           :uspsvalid="uspsvalid"
           @step-update="onUpdate"
-          @step-1-save="saveStepOne"
+          @step-1-save="onSave"
           @update-step-status="updateProp"
         />
       </b-tab>
@@ -49,12 +52,28 @@
           :form="form"
           :validation="validation"
           @step-update="onUpdate"
-          @step-2-save="saveStepOne"
           @update-step-status="updateProp"
         />
       </b-tab>
-      <b-tab title="Redirects">
-        <p>I'm the third tab</p>
+      <b-tab>
+        <template v-slot:title>
+          <div class="d-flex justify-content-start align-items-center mb-0">
+            <div v-if="!stepThreeComplete">
+              <b-icon icon="x-circle" variant="warning" />
+            </div>
+            <div v-else>
+              <b-icon icon="check-circle" variant="success" />
+            </div>
+            <!-- SOME COMPLETED INDICATION HERE -->
+            Redirects
+          </div>
+        </template>
+        <redirects
+          :location="location"
+          :validation="validation"
+          @step-update="onUpdate"
+          @update-step-status="updateProp"
+        />
       </b-tab>
       <b-tab title="Notes">
         <p>I'm the fourth tab</p>
@@ -66,10 +85,12 @@
 <script>
 import NameAddress from '~/components/steps/name-address'
 import KeywordResearch from '~/components/steps/keyword-research'
+import Redirects from '~/components/steps/redirects'
 export default {
   components: {
     NameAddress,
-    KeywordResearch
+    KeywordResearch,
+    Redirects
   },
   props: {
     location: {
@@ -89,6 +110,7 @@ export default {
     return {
       stepOneComplete: false,
       stepTwoComplete: false,
+      stepThreeComplete: false,
       validation: {
         steponefields: [
           'name',
@@ -153,6 +175,17 @@ export default {
               { value: 'Upgraded', text: 'Upgraded' },
               { value: 'Modern', text: 'Modern' }
             ]
+          },
+          strategies: {
+            selected: null,
+            options: [
+              { value: null, text: 'Select Strategy' },
+              { value: 'Same Domain', text: 'Same Domain' },
+              { value: 'Cross Domain', text: 'Cross Domain' },
+              { value: 'Secure Cross Domain', text: 'Secure Cross Domain' },
+              { value: 'Secure Naked Same Domain', text: 'Secure Naked Same Domain' },
+              { value: 'No Redirects', text: 'No Redirects' }
+            ]
           }
         }
       },
@@ -198,10 +231,9 @@ export default {
     updateProp(prop, value) {
       this[prop] = value
     },
-    saveStepOne(data) {
+    onSave(data) {
       this.stepOneComplete = true
-      const valFieldKeys = this.validation.fields
-      this.$emit('step-1-save', data, valFieldKeys)
+      this.$emit('save-step', data)
     }
   }
 }

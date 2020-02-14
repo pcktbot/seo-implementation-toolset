@@ -47,7 +47,7 @@
             :location="selectedLocation"
             :form="form"
             @stepper-updated="onUpdate"
-            @step-1-save="stepOneSave"
+            @save-step="onSave"
           />
         </b-col>
       </b-row>
@@ -121,17 +121,17 @@ export default {
     loadLocation(payload) {
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
     },
-    onSave(event) {
-      this.$emit('on-save', event)
+    onSave(locationID) {
       // TODO validate save payload
+      // Only save data for location matching id variable
+      const { id } = locationID
+      // eslint-disable-next-line no-console
+      console.log(id)
       this.$axios
         .$put('api/locations/update', {
           lpId: this.form.inputs.lpId,
           locations: this.locations
         })
-    },
-    stepOneSave({ key, val, id }, fields) {
-
     },
     onUpdate({ key, val, id }) {
       const i = this.locations.findIndex(loc => loc.id === id)
@@ -175,6 +175,9 @@ export default {
               properties.population = null
               properties.uspsvalid = null
               properties.recommended_name = null
+              properties.redirects = {}
+              properties.redirecttext = ''
+              properties.redirectstrat = ''
               return { name, properties }
             })
             // this.locations = locations
