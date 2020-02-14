@@ -231,9 +231,9 @@ export default {
     updateProp(prop, value) {
       this[prop] = value
     },
-    onSave(data) {
+    onSave() {
       this.stepOneComplete = true
-      this.$emit('save-step', data)
+      this.$emit('save-step')
     }
   }
 }

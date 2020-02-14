@@ -123,12 +123,8 @@ export default {
     },
     onSave(locationID) {
       // TODO validate save payload
-      // Only save data for location matching id variable
-      const { id } = locationID
-      // eslint-disable-next-line no-console
-      console.log(id)
       this.$axios
-        .$put('api/locations/update', {
+        .$put('api/locations', {
           lpId: this.form.inputs.lpId,
           locations: this.locations
         })

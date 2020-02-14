@@ -20,13 +20,13 @@ async function createLocations (lpId, locations) {
 }
 
 async function updateLocations (locations) {
-  for(let i = 0; i < locations.length; i++) {
-    const {id, name, properties} = locations[i]
-    await models.location.update({name, properties}, {where: {id}})
+  for (let i = 0; i < locations.length; i++) {
+    const { id, name, properties } = locations[i]
+    await models.location.update({ name, properties }, { where: { id } })
   }
   return
 }
 
 function getLocations (lpId) {
-  return models.location.findAll({where: {lpId}})
+  return models.location.findAll({ where: { lpId } })
 }

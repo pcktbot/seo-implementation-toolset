@@ -139,7 +139,7 @@ export default {
       this.hasMsg = false
       const validFields = this.validateStepOne()
       if (validFields) {
-        this.$emit('step-1-save', { id: this.location.id })
+        this.$emit('step-1-save')
       } else {
         this.showMsg('Please ensure all fields are filled out')
         this.$emit('update-step-status', 'stepOneComplete', false)

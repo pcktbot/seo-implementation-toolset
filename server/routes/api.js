@@ -7,14 +7,14 @@ module.exports = (app) => {
   })
 
   app.put('/api/locations', async (req, res) => {
-    const {locations} = req.body
+    const { locations } = req.body
     await newLocations.updateLocations(locations)
     res.sendStatus(200)
   })
 
   app.get('/api/locations/:lpId', async (req, res) => {
-    const {lpId} = req.params
-    const locations = await newLocations.getLocations(lpId) 
+    const { lpId } = req.params
+    const locations = await newLocations.getLocations(lpId)
     res.json(locations)
   })
 }
