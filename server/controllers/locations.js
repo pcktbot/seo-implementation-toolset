@@ -1,6 +1,8 @@
 const models = require('../models')
 module.exports = {
-  createLocations
+  createLocations,
+  updateLocations,
+  getLocations
 }
 
 async function createLocations (lpId, locations) {
@@ -15,4 +17,17 @@ async function createLocations (lpId, locations) {
     returnLocations.push(location)
   }
   return returnLocations
+}
+
+async function updateLocations (locations) {
+  for(let i = 0; i < locations.length; i++) {
+    const {id, name, properties} = locations[i]
+    await models.location.update({name, properties}, {where: {id}})
+  }
+  return
+}
+
+function getLocations (lpId) {
+  console.log(lpId)
+  return models.location.findAll({where: {lpId}})
 }
