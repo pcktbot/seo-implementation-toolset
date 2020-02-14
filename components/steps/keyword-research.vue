@@ -226,7 +226,7 @@ export default {
         this.$emit('step-1-save', { id: this.location.id })
       } else {
         this.showMsg('Please ensure all fields are filled out')
-        this.$emit('update-step-status', 'stepOneComplete', false)
+        this.$emit('update-step-status', 'stepTwoComplete', false)
       }
     },
     getKeywords() {
