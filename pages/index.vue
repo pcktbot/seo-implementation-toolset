@@ -171,7 +171,10 @@ export default {
               properties.population = null
               properties.uspsvalid = null
               properties.recommended_name = null
-              properties.redirects = {}
+              properties.redirects = [
+                { age: 22, first_name: 'bill', last_name: null },
+                { age: 33, first_name: 'john', last_name: null }
+              ]
               properties.redirecttext = ''
               properties.redirectstrat = ''
               return { name, properties }

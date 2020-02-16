@@ -51,6 +51,7 @@
           :location="location"
           :form="form"
           :validation="validation"
+          @step-2-save="onSave"
           @step-update="onUpdate"
           @update-step-status="updateProp"
         />
@@ -71,6 +72,7 @@
         <redirects
           :location="location"
           :validation="validation"
+          @step-3-save="onSave"
           @step-update="onUpdate"
           @update-step-status="updateProp"
         />
@@ -173,7 +175,8 @@ export default {
               { value: 'High Rise', text: 'High Rise' },
               { value: 'New', text: 'New' },
               { value: 'Upgraded', text: 'Upgraded' },
-              { value: 'Modern', text: 'Modern' }
+              { value: 'Modern', text: 'Modern' },
+              { value: 'Luxury', text: 'Luxury' }
             ]
           },
           strategies: {
@@ -231,8 +234,8 @@ export default {
     updateProp(prop, value) {
       this[prop] = value
     },
-    onSave() {
-      this.stepOneComplete = true
+    onSave(prop, value) {
+      this.updateProp(prop, value)
       this.$emit('save-step')
     }
   }

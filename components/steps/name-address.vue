@@ -123,6 +123,7 @@ export default {
     validateStepOne() {
       let valid = true
       for (const prop in this.form) {
+        console.log(prop)
         if (this.form[prop] === '' || this.form[prop] === null) {
           valid = false
           break
@@ -139,7 +140,7 @@ export default {
       this.hasMsg = false
       const validFields = this.validateStepOne()
       if (validFields) {
-        this.$emit('step-1-save')
+        this.$emit('step-1-save', 'stepOneComplete', true)
       } else {
         this.showMsg('Please ensure all fields are filled out')
         this.$emit('update-step-status', 'stepOneComplete', false)

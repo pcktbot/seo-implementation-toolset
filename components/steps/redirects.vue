@@ -48,6 +48,16 @@
         />
       </b-col>
     </b-row>
+    <b-row>
+      <b-col>
+        <b-table
+          :items="location.properties.redirects"
+          responsive
+          striped
+          hover
+        />
+      </b-col>
+    </b-row>
   </b-container>
 </template>
 
@@ -102,24 +112,26 @@ export default {
       this.alertvariant = 'danger'
       this.hasMsg = true
     },
+    getRedirectsArr() {
+      const arrVal = this.form.redirecttext.split(/\n|,/g)
+      return arrVal.filter((item, index) => arrVal
+        .indexOf(item) === index).filter(item => Boolean(item.trim()))
+    },
     formatRedirects() {
-
+      const redirectArr = this.getRedirectsArr()
+      console.log(redirectArr)
     },
     onSave() {
       this.hasMsg = false
       const validFields = this.validateStepOne()
       if (validFields) {
-        this.$emit('step-1-save')
+        this.$emit('step-3-save', 'stepThreeComplete', true)
       } else {
         this.showMsg('Please ensure all fields are filled out')
-        this.$emit('update-step-status', 'stepTwoComplete', false)
+        this.$emit('update-step-status', 'stepThreeComplete', false)
       }
     },
     onInput(key, val) {
-      // eslint-disable-next-line no-console
-      console.log(key)
-      // eslint-disable-next-line no-console
-      console.log(val)
       this.$emit('step-update', { key, val, id: this.location.id })
     }
   }

@@ -173,7 +173,18 @@ export default {
     return {
       hasMsg: false,
       msg: '',
-      alertvariant: ''
+      alertvariant: '',
+      mfRequiredFields: [
+        'landmark_1_name',
+        'apartment_amenity_1',
+        'community_amenity_1',
+        'floor_plans',
+        'custom_slug',
+        'property_feature_1'
+      ],
+      otherRequiredFields: [
+        'custom_slug'
+      ]
     }
   },
   computed: {
@@ -204,10 +215,17 @@ export default {
     }
   },
   methods: {
-    validateStepOne() {
+    getFields() {
+      return this.form.selects[0].value === 'mf'
+        ? this.mfRequiredFields
+        : this.otherRequiredFields
+    },
+    validateStepTwo() {
       let valid = true
-      for (const prop in this.form) {
-        if (this.form[prop] === '' || this.form[prop] === null) {
+      const reqFields = this.getFields()
+      for (const index in reqFields) {
+        const field = this.compform[reqFields[index]]
+        if (field === '' || field === null) {
           valid = false
           break
         }
@@ -221,9 +239,9 @@ export default {
     },
     onSave() {
       this.hasMsg = false
-      const validFields = this.validateStepOne()
+      const validFields = this.validateStepTwo()
       if (validFields) {
-        this.$emit('step-1-save')
+        this.$emit('step-2-save', 'stepTwoComplete', true)
       } else {
         this.showMsg('Please ensure all fields are filled out')
         this.$emit('update-step-status', 'stepTwoComplete', false)
