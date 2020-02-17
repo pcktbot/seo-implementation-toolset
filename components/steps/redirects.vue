@@ -1,6 +1,18 @@
 <template>
   <b-container fluid>
     <b-row>
+      <b-col class="text-left">
+        <b-alert
+          :show="hasMsg"
+          :variant="alertvariant"
+          @dismissed="hasMsg=false, alertvariant='', msg=''"
+          dismissible
+        >
+          {{ msg }}
+        </b-alert>
+      </b-col>
+    </b-row>
+    <b-row>
       <b-col class="text-center">
         <p class="font-italic">
           Please select a strategy and paste all redirects below
@@ -13,6 +25,7 @@
           id="strategy-selection"
           :value="validation.steptwofields.strategies.selected"
           :options="validation.steptwofields.strategies.options"
+          @change="onInput('redirectstrat', $event)"
           class="w-50"
         />
       </b-col>
@@ -51,10 +64,12 @@
     <b-row>
       <b-col>
         <b-table
-          :items="location.properties.redirects"
+          :fields="location.properties.redirects.fields"
+          :items="location.properties.redirects.items"
           responsive
           striped
           hover
+          head-variant="dark"
         />
       </b-col>
     </b-row>
@@ -117,9 +132,47 @@ export default {
       return arrVal.filter((item, index) => arrVal
         .indexOf(item) === index).filter(item => Boolean(item.trim()))
     },
+    validURL(str) {
+      const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+      '(\\#[-a-z\\d_]*)?$', 'i') // fragment locator
+      return !!pattern.test(str)
+    },
+    // need to refactor this method
+    formatRedirect(redirect, strategy) {
+      let formatted = 'N/A'
+      if (strategy === 'Same Domain' && this.validURL(redirect)) {
+        formatted = redirect.split(/\.com\/|\.com|\.net\/|\.org\/|\.co\//)[1] // strips everthing left of the TLD (ex: www.myapartments.com/units -> units)
+          .split(/\.html|[?]/)[0] // strips everything to the right of .html or ?
+        formatted = formatted.substr(-1) === '/' ? formatted.slice(0, -1) : formatted
+        formatted = formatted.replace(/%20|\s/g, '\\s')
+          .replace(/[[\]{}()*+?.,^$|#]/g, '\\$&') // escapes special characters with \
+          .replace(/\/\//g, '/+') // replaces // with /+
+          .replace(/%5B|%5b/g, '\\[')
+          .replace(/%5D|%5d/g, '\\]')
+          .replace(/%7C/g, '\\|')
+        formatted = formatted.length === 1 ? `[${formatted}]` : `${formatted}$`
+      }
+      return formatted
+    },
     formatRedirects() {
       const redirectArr = this.getRedirectsArr()
-      console.log(redirectArr)
+      const currentStrat = this.location.properties.redirectstrat
+      if (redirectArr.length < 1 || !currentStrat) {
+        this.showMsg('Please select strategy and paste redirects below')
+      } else {
+        const table = []
+        redirectArr.forEach((redirect) => {
+          const cloudFormatted = this.formatRedirect(redirect, currentStrat)
+          table.push(
+            { isActive: true, strategy: currentStrat, current_url: redirect, formatted_url: cloudFormatted, wildcard: 'No' }
+          )
+        })
+        this.$emit('add-rows', table, { id: this.location.id })
+      }
     },
     onSave() {
       this.hasMsg = false

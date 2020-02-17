@@ -48,6 +48,7 @@
             :form="form"
             @stepper-updated="onUpdate"
             @save-step="onSave"
+            @add-rows="addRows"
           />
         </b-col>
       </b-row>
@@ -114,6 +115,27 @@ export default {
         options: [
           { value: null, text: 'Select Location' }
         ]
+      },
+      tableheaders: {
+        fields: [
+          {
+            key: 'strategy',
+            label: 'Strategy'
+          },
+          {
+            key: 'current_url',
+            label: 'Current URL'
+          },
+          {
+            key: 'formatted_url',
+            label: 'Formatted URL'
+          },
+          {
+            key: 'wildcard',
+            label: 'Wildcard'
+          }
+        ],
+        items: []
       }
     }
   },
@@ -136,6 +158,10 @@ export default {
       } else {
         this.locations[i].properties[key] = val
       }
+    },
+    addRows(val, { id }) {
+      const i = this.locations.findIndex(loc => loc.id === id)
+      this.locations[i].properties.redirects.items.push(...val)
     },
     updateSelect({ key, val }) {
       const i = this.form.selects.findIndex(select => select.id === key)
@@ -171,10 +197,7 @@ export default {
               properties.population = null
               properties.uspsvalid = null
               properties.recommended_name = null
-              properties.redirects = [
-                { age: 22, first_name: 'bill', last_name: null },
-                { age: 33, first_name: 'john', last_name: null }
-              ]
+              properties.redirects = this.tableheaders
               properties.redirecttext = ''
               properties.redirectstrat = ''
               return { name, properties }

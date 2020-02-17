@@ -72,6 +72,7 @@
         <redirects
           :location="location"
           :validation="validation"
+          @add-rows="addRows"
           @step-3-save="onSave"
           @step-update="onUpdate"
           @update-step-status="updateProp"
@@ -237,6 +238,9 @@ export default {
     onSave(prop, value) {
       this.updateProp(prop, value)
       this.$emit('save-step')
+    },
+    addRows(rows, id) {
+      this.$emit('add-rows', rows, id)
     }
   }
 }

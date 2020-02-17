@@ -123,7 +123,6 @@ export default {
     validateStepOne() {
       let valid = true
       for (const prop in this.form) {
-        console.log(prop)
         if (this.form[prop] === '' || this.form[prop] === null) {
           valid = false
           break
