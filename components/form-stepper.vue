@@ -76,6 +76,7 @@
           @step-3-save="onSave"
           @step-update="onUpdate"
           @update-step-status="updateProp"
+          @cell-update="updateCell"
         />
       </b-tab>
       <b-tab title="Notes">
@@ -179,7 +180,9 @@ export default {
               { value: 'Modern', text: 'Modern' },
               { value: 'Luxury', text: 'Luxury' }
             ]
-          },
+          }
+        },
+        stepthreefields: {
           strategies: {
             selected: null,
             options: [
@@ -189,6 +192,14 @@ export default {
               { value: 'Secure Cross Domain', text: 'Secure Cross Domain' },
               { value: 'Secure Naked Same Domain', text: 'Secure Naked Same Domain' },
               { value: 'No Redirects', text: 'No Redirects' }
+            ]
+          },
+          wildcard: {
+            selected: 'no',
+            options: [
+              { value: null, text: 'Select' },
+              { value: 'no', text: 'No' },
+              { value: 'yes', text: 'Yes' }
             ]
           }
         }
@@ -241,6 +252,9 @@ export default {
     },
     addRows(rows, id) {
       this.$emit('add-rows', rows, id)
+    },
+    updateCell(key, val, index, col, id) {
+      this.$emit('cell-update', key, val, index, col, id)
     }
   }
 }

@@ -23,8 +23,8 @@
       <b-col class="align-self-center px-0 pb-3">
         <b-form-select
           id="strategy-selection"
-          :value="validation.steptwofields.strategies.selected"
-          :options="validation.steptwofields.strategies.options"
+          :value="validation.stepthreefields.strategies.selected"
+          :options="validation.stepthreefields.strategies.options"
           @change="onInput('redirectstrat', $event)"
           class="w-50"
         />
@@ -66,11 +66,48 @@
         <b-table
           :fields="location.properties.redirects.fields"
           :items="location.properties.redirects.items"
+          sticky-header="50rem"
           responsive
           striped
           hover
           head-variant="dark"
-        />
+          class="self-align-center table mt-4"
+        >
+          <template v-slot:cell(strategy)="data" class="align-self-center">
+            <b-col
+              style= "width:10rem"
+              class="p-0 m-0"
+            >
+              <b-form-select
+                id="strat-selection"
+                :value="data.value"
+                :options="validation.stepthreefields.strategies.options"
+                @change="onChangeCell('redirects', $event, data.index, 'strategy')"
+              />
+            </b-col>
+          </template>
+          <template v-slot:cell(current_url)="data">
+            <b-form-input
+              v-model="data.value"
+              @input="onChangeCell('redirects', $event, data.index, 'current_url')"
+            />
+          </template>
+          <template v-slot:cell(formatted_url)="data">
+            <b-form-input
+              v-model="data.value"
+              @input="onChangeCell('redirects', $event, data.index, 'formatted_url')"
+            />
+          </template>
+          <template v-slot:cell(wildcard)="data">
+            <b-form-select
+              id="wildcard-selection"
+              :value="validation.stepthreefields.wildcard.selected"
+              :options="validation.stepthreefields.wildcard.options"
+              @change="onChangeCell('redirects', $event, data.index, 'wildcard')"
+              class="w-50"
+            />
+          </template>
+        </b-table>
       </b-col>
     </b-row>
   </b-container>
@@ -128,6 +165,7 @@ export default {
       this.hasMsg = true
     },
     getRedirectsArr() {
+      // need to filter array for bad filetypes (css,pdf,etc)
       const arrVal = this.form.redirecttext.split(/\n|,/g)
       return arrVal.filter((item, index) => arrVal
         .indexOf(item) === index).filter(item => Boolean(item.trim()))
@@ -183,6 +221,9 @@ export default {
         this.showMsg('Please ensure all fields are filled out')
         this.$emit('update-step-status', 'stepThreeComplete', false)
       }
+    },
+    onChangeCell(key, val, index, col) {
+      this.$emit('cell-update', { key, val, index, col, id: this.location.id })
     },
     onInput(key, val) {
       this.$emit('step-update', { key, val, id: this.location.id })

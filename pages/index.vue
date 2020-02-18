@@ -49,6 +49,7 @@
             @stepper-updated="onUpdate"
             @save-step="onSave"
             @add-rows="addRows"
+            @cell-update="updateCell"
           />
         </b-col>
       </b-row>
@@ -124,7 +125,8 @@ export default {
           },
           {
             key: 'current_url',
-            label: 'Current URL'
+            label: 'Current URL',
+            sortable: true
           },
           {
             key: 'formatted_url',
@@ -158,6 +160,10 @@ export default {
       } else {
         this.locations[i].properties[key] = val
       }
+    },
+    updateCell({ key, val, index, col, id }) {
+      const i = this.locations.findIndex(loc => loc.id === id)
+      this.locations[i].properties.redirects.items[index][col] = val
     },
     addRows(val, { id }) {
       const i = this.locations.findIndex(loc => loc.id === id)
