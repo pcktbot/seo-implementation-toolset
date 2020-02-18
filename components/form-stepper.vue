@@ -77,6 +77,7 @@
           @step-update="onUpdate"
           @update-step-status="updateProp"
           @cell-update="updateCell"
+          @del-row="removeRow"
         />
       </b-tab>
       <b-tab title="Notes">
@@ -255,6 +256,9 @@ export default {
     },
     updateCell(key, val, index, col, id) {
       this.$emit('cell-update', key, val, index, col, id)
+    },
+    removeRow(index, id) {
+      this.$emit('del-row', index, id)
     }
   }
 }

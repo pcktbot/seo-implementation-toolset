@@ -75,7 +75,7 @@
         >
           <template v-slot:cell(strategy)="data" class="align-self-center">
             <b-col
-              style= "width:10rem"
+              style="width:10rem"
               class="p-0 m-0"
             >
               <b-form-select
@@ -106,6 +106,17 @@
               @change="onChangeCell('redirects', $event, data.index, 'wildcard')"
               class="w-50"
             />
+          </template>
+          <template v-slot:cell(remove)="data">
+            <b-btn
+              @click="removeRow(data.index)"
+              variant="danger"
+              class="px-4"
+              size="sm"
+              pill
+            >
+              Delete
+            </b-btn>
           </template>
         </b-table>
       </b-col>
@@ -227,6 +238,9 @@ export default {
     },
     onInput(key, val) {
       this.$emit('step-update', { key, val, id: this.location.id })
+    },
+    removeRow(index) {
+      this.$emit('del-row', { index, id: this.location.id })
     }
   }
 }

@@ -50,6 +50,7 @@
             @save-step="onSave"
             @add-rows="addRows"
             @cell-update="updateCell"
+            @del-row="removeRow"
           />
         </b-col>
       </b-row>
@@ -130,12 +131,14 @@ export default {
           },
           {
             key: 'formatted_url',
-            label: 'Formatted URL'
+            label: 'Formatted URL',
+            sortable: true
           },
           {
             key: 'wildcard',
             label: 'Wildcard'
-          }
+          },
+          'remove'
         ],
         items: []
       }
@@ -164,6 +167,10 @@ export default {
     updateCell({ key, val, index, col, id }) {
       const i = this.locations.findIndex(loc => loc.id === id)
       this.locations[i].properties.redirects.items[index][col] = val
+    },
+    removeRow({ index, id }) {
+      const i = this.locations.findIndex(loc => loc.id === id)
+      this.locations[i].properties.redirects.items.splice(index, 1)
     },
     addRows(val, { id }) {
       const i = this.locations.findIndex(loc => loc.id === id)
