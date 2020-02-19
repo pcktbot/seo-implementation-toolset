@@ -176,10 +176,15 @@ export default {
       this.hasMsg = true
     },
     getRedirectsArr() {
-      // need to filter array for bad filetypes (css,pdf,etc)
+      // removes duplicates, non urls, urls already in table, bad file types
+      const redirectsInTbl = this.getCurrentRedirects()
       const arrVal = this.form.redirecttext.split(/\n|,/g)
-      return arrVal.filter((item, index) => arrVal
-        .indexOf(item) === index).filter(item => Boolean(item.trim()))
+      const arrWODuplicates = arrVal.filter((item, index) => arrVal.indexOf(item) === index).filter(item => Boolean(item.trim()))
+      return arrWODuplicates.filter((redirect) => {
+        if (!redirectsInTbl.includes(redirect) && !this.invalidFile(redirect)) {
+          return redirect
+        }
+      })
     },
     validURL(str) {
       const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
@@ -189,6 +194,13 @@ export default {
       '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
       '(\\#[-a-z\\d_]*)?$', 'i') // fragment locator
       return !!pattern.test(str)
+    },
+    invalidFile(str) {
+      const pattern = new RegExp('\\.(js|jpg|gif|json|jpeg|svg|xml|sitemap|pdf|css|svg|png)$', 'ig') // fragment locator
+      const value = !!pattern.test(str)
+      // eslint-disable-next-line no-console
+      console.log(value)
+      return value
     },
     // need to refactor this method
     formatRedirect(redirect, strategy) {
@@ -207,18 +219,19 @@ export default {
       }
       return formatted
     },
+    getCurrentRedirects() {
+      return this.location.properties.redirects.items.map(redirect => redirect.current_url)
+    },
     formatRedirects() {
-      const redirectArr = this.getRedirectsArr()
+      const table = []
       const currentStrat = this.location.properties.redirectstrat
-      if (redirectArr.length < 1 || !currentStrat) {
+      if (!currentStrat) {
         this.showMsg('Please select strategy and paste redirects below')
       } else {
-        const table = []
+        const redirectArr = this.getRedirectsArr()
         redirectArr.forEach((redirect) => {
           const cloudFormatted = this.formatRedirect(redirect, currentStrat)
-          table.push(
-            { isActive: true, strategy: currentStrat, current_url: redirect, formatted_url: cloudFormatted, wildcard: 'No' }
-          )
+          table.push({ isActive: true, strategy: currentStrat, current_url: redirect, formatted_url: cloudFormatted, wildcard: 'No' })
         })
         this.$emit('add-rows', table, { id: this.location.id })
       }
