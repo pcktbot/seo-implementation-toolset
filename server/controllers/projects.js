@@ -1,6 +1,7 @@
 const models =require ('../models')
 module.exports = {
-    createProject
+    createProject,
+    getProject
 }
 
 async function createProject (lpId, selects) {
@@ -15,3 +16,6 @@ async function createProject (lpId, selects) {
     return newProject
 }
 
+function getProject (lpId) {
+    return models.project.findAll({ where: {lpId} })
+}
