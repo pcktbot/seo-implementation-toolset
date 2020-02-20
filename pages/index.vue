@@ -233,6 +233,11 @@ export default {
                 ]
                 // this.setMsgConfig('Your CSV has been successfully imported, please select a location below', 'success', true)
               })
+            this.$axios
+              .$post('lp-project', {
+                lpId: this.form.inputs.lpId,
+                selects: this.form.selects
+              })
           }
         })
       } catch (err) {

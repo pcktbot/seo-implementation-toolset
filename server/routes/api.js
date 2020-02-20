@@ -1,5 +1,7 @@
 const newLocations = require('../controllers/locations')
+const newProject = require('../controllers/projects')
 module.exports = (app) => {
+  //location routes
   app.post('/api/locations', async (req, res) => {
     const { lpId, locations } = req.body
     const data = await newLocations.createLocations(lpId, locations)
@@ -16,5 +18,12 @@ module.exports = (app) => {
     const { lpId } = req.params
     const locations = await newLocations.getLocations(lpId)
     res.json(locations)
+  })
+
+  //project routes
+  app.post('/api/lp-project', async (req, res) => {
+    const { lpId } = req.body
+    const projectData = await newProject.createProject( lpId, selects)
+    res.json(projectData)
   })
 }
