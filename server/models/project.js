@@ -11,10 +11,10 @@ module.exports = sequelize => sequelize.define('project', {
   vertical: {
     type: STRING
   },
-  domainStrategy: {
+  domain: {
       type: STRING
   },
-  chainBranding: {
-      type: BOOLEAN
+  branding: {
+      type: STRING
   }
 })
