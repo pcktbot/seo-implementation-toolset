@@ -181,7 +181,7 @@ export default {
       const arrVal = this.form.redirecttext.split(/\n|,/g)
       const arrWODuplicates = arrVal.filter((item, index) => arrVal.indexOf(item) === index).filter(item => Boolean(item.trim()))
       return arrWODuplicates.filter((redirect) => {
-        if (!redirectsInTbl.includes(redirect) && !this.invalidFile(redirect)) {
+        if (!redirectsInTbl.includes(redirect) && !this.invalidFile(redirect) && this.validURL(redirect)) {
           return redirect
         }
       })
@@ -203,6 +203,7 @@ export default {
       return value
     },
     // need to refactor this method
+    // https://stackoverflow.com/questions/16576983/replace-multiple-characters-in-one-replace-call
     formatRedirect(redirect, strategy) {
       let formatted = 'N/A'
       if (strategy === 'Same Domain' && this.validURL(redirect)) {
@@ -223,11 +224,11 @@ export default {
       return this.location.properties.redirects.items.map(redirect => redirect.current_url)
     },
     formatRedirects() {
-      const table = []
       const currentStrat = this.location.properties.redirectstrat
       if (!currentStrat) {
         this.showMsg('Please select strategy and paste redirects below')
       } else {
+        const table = []
         const redirectArr = this.getRedirectsArr()
         redirectArr.forEach((redirect) => {
           const cloudFormatted = this.formatRedirect(redirect, currentStrat)

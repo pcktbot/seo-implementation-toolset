@@ -144,17 +144,20 @@ export default {
       }
     }
   },
-  computed: {
-    getAddPropFields() {
-      return {
-        population: null,
-        uspsvalid: null,
-        recommended_name: null,
-        redirects: this.tableheaders,
-        redirecttext: '',
-        redirectstrat: ''
-      }
-    }
+  created() {
+    const { lpID } = this.$nuxt._route.params
+    this.$axios.$get(`api/locations/${lpID}`).then((res) => {
+      // adds location data to front end and fills out location drop down
+      this.locations = res
+      this.location.options = [
+        { value: null, text: 'Select Location' },
+        ...res.map((location) => {
+          const { name, properties } = location
+          return { value: location.id, text: `${name} - ${properties.street_address_1}` }
+        })
+      ]
+      this.setMsgConfig('Successfully loaded locations', 'success', true)
+    })
   },
   methods: {
     loadLocation(payload) {
@@ -211,41 +214,45 @@ export default {
       this.form.alertvariant = variant
       this.form.showMsg = msgOn
     },
-    loadLocations(locations) {
-      this.$axios.$post('api/locations', {
-        lpId: this.form.inputs.lpId,
-        locations
-      }).then((res) => {
-        // adds location data to front end and fills out location drop down
-        this.locations = res
-        this.location.options = [
-          { value: null, text: 'Select Location' },
-          ...res.map((location) => {
-            const { name, properties } = location
-            return { value: location.id, text: `${name} - ${properties.street_address_1}` }
-          })
-        ]
-        this.setMsgConfig('Your CSV has been successfully imported, please select a location below', 'success', true)
-      })
-    },
-    async onUpload() {
+    onUpload() {
       try {
-        await Papa.parse(this.form.inputs.file, {
+        Papa.parse(this.form.inputs.file, {
           header: true,
           complete: (res) => {
             const locations = res.data.map((location) => {
               const { name } = location
-              const properties = this.reject(location, ['name'])
-              for (const prop in this.getAddPropFields) {
-                properties[prop] = this.getAddPropFields[prop]
-              }
+              let properties = this.reject(location, ['name'])
+              properties = this.setProperties(properties)
+              properties.population = null
+              properties.uspsvalid = null
+              properties.recommended_name = null
+              properties.redirects = this.tableheaders
+              properties.redirecttext = ''
+              properties.redirectstrat = ''
               return { name, properties }
             })
-            locations[0].name ? this.loadLocations(locations) : this.setMsgConfig('There was an error uploading the csv', 'danger', true)
+            // this.locations = locations
+            // writes parsed csv to database
+            this.$axios
+              .$post('api/locations', {
+                lpId: this.form.inputs.lpId,
+                locations
+              }).then((res) => {
+                // adds location data to front end and fills out location drop down
+                this.locations = res
+                this.location.options = [
+                  { value: null, text: 'Select Location' },
+                  ...res.map((location) => {
+                    const { name, properties } = location
+                    return { value: location.id, text: `${name} - ${properties.street_address_1}` }
+                  })
+                ]
+                // this.setMsgConfig('Your CSV has been successfully imported, please select a location below', 'success', true)
+              })
           }
         })
       } catch (err) {
-        this.setMsgConfig('There was an error uploading the csv', 'danger', true)
+        // this.setMsgConfig('There was an error uploading the csv', 'danger', true)
       }
     }
   }
