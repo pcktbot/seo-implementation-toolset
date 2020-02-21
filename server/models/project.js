@@ -12,9 +12,9 @@ module.exports = sequelize => sequelize.define('project', {
     type: STRING
   },
   domain: {
-      type: STRING
+    type: STRING
   },
   branding: {
-      type: STRING
+    type: STRING
   }
 })
