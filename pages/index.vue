@@ -257,6 +257,12 @@ export default {
       } catch (err) {
         this.setMsgConfig('There was an error uploading the csv', 'danger', true)
       }
+      // Create Project in project table
+      this.$axios
+        .$post('api/lp-project', {
+          lpId: this.form.inputs.lpId,
+          selects: this.form.selects
+        })
     }
   }
 }
