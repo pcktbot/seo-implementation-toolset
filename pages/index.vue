@@ -152,7 +152,12 @@ export default {
         recommended_name: null,
         redirects: this.tableheaders,
         redirecttext: '',
-        redirectstrat: ''
+        redirectstrat: '',
+        stepOneComplete: false,
+        stepTwoComplete: false,
+        stepThreeComplete: false,
+        stepFourComplete: false,
+        locationComplete: false
       }
     }
   },
@@ -160,7 +165,7 @@ export default {
     loadLocation(payload) {
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
     },
-    onSave(locationID) {
+    onSave() {
       // TODO validate save payload
       this.$axios
         .$put('api/locations', {
@@ -241,7 +246,12 @@ export default {
               }
               return { name, properties }
             })
-            locations[0].name ? this.loadLocations(locations) : this.setMsgConfig('There was an error uploading the csv', 'danger', true)
+            if (locations[0].name) {
+              this.loadLocations(locations)
+              // make second call here
+            } else {
+              this.setMsgConfig('There was an error uploading the csv', 'danger', true)
+            }
           }
         })
       } catch (err) {

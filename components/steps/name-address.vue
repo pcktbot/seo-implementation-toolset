@@ -135,17 +135,18 @@ export default {
       this.alertvariant = 'danger'
       this.hasMsg = true
     },
+    onInput(key, val) {
+      this.$emit('step-update', { key, val, id: this.location.id })
+    },
     onSave() {
       this.hasMsg = false
-      const validFields = this.validateStepOne()
-      if (validFields) {
-        this.$emit('step-1-save', 'stepOneComplete', true)
+      const key = 'stepOneComplete'
+      const val = this.validateStepOne()
+      if (val) {
+        this.$emit('step-save')
       } else {
         this.showMsg('Please ensure all fields are filled out')
-        this.$emit('update-step-status', 'stepOneComplete', false)
       }
-    },
-    onInput(key, val) {
       this.$emit('step-update', { key, val, id: this.location.id })
     }
   }

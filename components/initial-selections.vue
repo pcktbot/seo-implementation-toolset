@@ -9,6 +9,21 @@
       {{ form.msg }}
     </b-alert>
     <b-row>
+      <b-col class="text-center mb-3">
+        <b-form-group>
+          <b-form-radio-group
+            id="btn-radios-2"
+            v-model="selected"
+            :options="options"
+            buttons
+            button-variant="outline-primary"
+            size="lg"
+            name="radio-btn-outline"
+          />
+        </b-form-group>
+      </b-col>
+    </b-row>
+    <b-row v-if="selected === 'upload'">
       <b-col
         v-for="select in form.selects"
         :key="select.id"
@@ -50,6 +65,27 @@
         </b-btn>
       </b-col>
     </b-row>
+    <b-row v-else>
+      <b-col>
+        <b-form-input
+          id="input-1"
+          :value="form.inputs.lpId"
+          @input="onInput('lpId', $event)"
+          placeholder="Enter LP project Id"
+          required
+        />
+      </b-col>
+      <b-col>
+        <b-btn
+          @click="onUpload"
+          variant="outline-primary--darken3"
+          block
+          class="px-4"
+        >
+          Load LP Project Upload
+        </b-btn>
+      </b-col>
+    </b-row>
   </b-container>
 </template>
 
@@ -65,7 +101,12 @@ export default {
   },
   data() {
     return {
-      file: []
+      file: [],
+      selected: 'upload',
+      options: [
+        { text: 'New LP Project', value: 'upload' },
+        { text: 'Load LP Project', value: 'import' }
+      ]
     }
   },
   methods: {

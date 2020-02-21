@@ -12,7 +12,7 @@
       <b-tab>
         <template v-slot:title>
           <div class="d-flex justify-content-start align-items-center mb-0">
-            <div v-if="!stepOneComplete">
+            <div v-if="!location.properties.stepOneComplete">
               <b-icon icon="x-circle" variant="warning" />
             </div>
             <div v-else>
@@ -27,14 +27,13 @@
           :location="location"
           :uspsvalid="uspsvalid"
           @step-update="onUpdate"
-          @step-1-save="onSave"
-          @update-step-status="updateProp"
+          @step-save="onSave"
         />
       </b-tab>
       <b-tab>
         <template v-slot:title>
           <div class="d-flex justify-content-start align-items-center mb-0">
-            <div v-if="!stepTwoComplete">
+            <div v-if="!location.properties.stepTwoComplete">
               <b-icon icon="x-circle" variant="warning" />
             </div>
             <div v-else>
@@ -51,15 +50,14 @@
           :location="location"
           :form="form"
           :validation="validation"
-          @step-2-save="onSave"
+          @step-save="onSave"
           @step-update="onUpdate"
-          @update-step-status="updateProp"
         />
       </b-tab>
       <b-tab>
         <template v-slot:title>
           <div class="d-flex justify-content-start align-items-center mb-0">
-            <div v-if="!stepThreeComplete">
+            <div v-if="!location.properties.stepThreeComplete">
               <b-icon icon="x-circle" variant="warning" />
             </div>
             <div v-else>
@@ -73,9 +71,8 @@
           :location="location"
           :validation="validation"
           @add-rows="addRows"
-          @step-3-save="onSave"
+          @step-save="onSave"
           @step-update="onUpdate"
-          @update-step-status="updateProp"
           @cell-update="updateCell"
           @del-row="removeRow"
         />
@@ -113,9 +110,6 @@ export default {
   },
   data () {
     return {
-      stepOneComplete: false,
-      stepTwoComplete: false,
-      stepThreeComplete: false,
       validation: {
         steponefields: [
           'name',
@@ -242,13 +236,11 @@ export default {
         : null
     },
     onUpdate(data) {
+      // eslint-disable-next-line no-console
+      console.log(data)
       this.$emit('stepper-updated', data)
     },
-    updateProp(prop, value) {
-      this[prop] = value
-    },
     onSave(prop, value) {
-      this.updateProp(prop, value)
       this.$emit('save-step')
     },
     addRows(rows, id) {
