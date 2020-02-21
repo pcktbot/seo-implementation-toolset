@@ -9,7 +9,6 @@ async function createProject (lpId, selects) {
     for(let i = 0; i < selects.length; i++ ) {
         const key = selects[i].id
         const value = selects[i].value
-        console.log(key + " " + value)
         project[key] = value
     }
     const newProject = await models.project.create(project)

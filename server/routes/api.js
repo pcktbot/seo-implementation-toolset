@@ -23,7 +23,6 @@ module.exports = (app) => {
   //project routes
   app.post('/api/lp-project', async (req, res) => {
     const { lpId, selects } = req.body
-    console.log(selects)
     // loop through (for) create empty object then add key-value pairs
     const projectData = await newProject.createProject( lpId, selects)
     res.json(projectData)
