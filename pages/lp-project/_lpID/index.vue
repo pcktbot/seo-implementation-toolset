@@ -7,7 +7,7 @@
           <b-card no-body class="my-5">
             <b-card-header>
               <h3 class="mb-1">
-                Step 1: Complete Options Below
+                Complete Options Below
               </h3>
             </b-card-header>
             <b-card-body class="py-5">
@@ -144,6 +144,23 @@ export default {
       }
     }
   },
+  computed: {
+    getAddPropFields() {
+      return {
+        population: null,
+        uspsvalid: null,
+        recommended_name: null,
+        redirects: this.tableheaders,
+        redirecttext: '',
+        redirectstrat: '',
+        stepOneComplete: false,
+        stepTwoComplete: false,
+        stepThreeComplete: false,
+        stepFourComplete: false,
+        locationComplete: false
+      }
+    }
+  },
   created() {
     const { lpID } = this.$nuxt._route.params
     this.$axios.$get(`api/locations/${lpID}`).then((res) => {
@@ -163,7 +180,7 @@ export default {
     loadLocation(payload) {
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
     },
-    onSave(locationID) {
+    onSave() {
       // TODO validate save payload
       this.$axios
         .$put('api/locations', {
@@ -214,6 +231,31 @@ export default {
       this.form.alertvariant = variant
       this.form.showMsg = msgOn
     },
+    loadLocations(locations) {
+      this.$axios.$post('api/locations', {
+        lpId: this.form.inputs.lpId,
+        locations
+      }).then((res) => {
+        // adds location data to front end and fills out location drop down
+        this.locations = res
+        this.location.options = [
+          { value: null, text: 'Select Location' },
+          ...res.map((location) => {
+            const { name, properties } = location
+            return { value: location.id, text: `${name} - ${properties.street_address_1}` }
+          })
+        ]
+        this.setMsgConfig('Your CSV has been successfully imported, please select a location below', 'success', true)
+      })
+    },
+    createProject() {
+      // Create Project in project table
+      this.$axios
+        .$post('api/lp-project', {
+          lpId: this.form.inputs.lpId,
+          selects: this.form.selects
+        })
+    },
     onUpload() {
       try {
         Papa.parse(this.form.inputs.file, {
@@ -221,38 +263,22 @@ export default {
           complete: (res) => {
             const locations = res.data.map((location) => {
               const { name } = location
-              let properties = this.reject(location, ['name'])
-              properties = this.setProperties(properties)
-              properties.population = null
-              properties.uspsvalid = null
-              properties.recommended_name = null
-              properties.redirects = this.tableheaders
-              properties.redirecttext = ''
-              properties.redirectstrat = ''
+              const properties = this.reject(location, ['name'])
+              for (const prop in this.getAddPropFields) {
+                properties[prop] = this.getAddPropFields[prop]
+              }
               return { name, properties }
             })
-            // this.locations = locations
-            // writes parsed csv to database
-            this.$axios
-              .$post('api/locations', {
-                lpId: this.form.inputs.lpId,
-                locations
-              }).then((res) => {
-                // adds location data to front end and fills out location drop down
-                this.locations = res
-                this.location.options = [
-                  { value: null, text: 'Select Location' },
-                  ...res.map((location) => {
-                    const { name, properties } = location
-                    return { value: location.id, text: `${name} - ${properties.street_address_1}` }
-                  })
-                ]
-                // this.setMsgConfig('Your CSV has been successfully imported, please select a location below', 'success', true)
-              })
+            if (locations[0].name) {
+              this.loadLocations(locations)
+              this.createProject()
+            } else {
+              this.setMsgConfig('There was an error uploading the csv', 'danger', true)
+            }
           }
         })
       } catch (err) {
-        // this.setMsgConfig('There was an error uploading the csv', 'danger', true)
+        this.setMsgConfig('There was an error uploading the csv', 'danger', true)
       }
     }
   }

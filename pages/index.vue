@@ -74,9 +74,10 @@ export default {
       form: {
         inputs: {
           lpId: null,
-          file: []
+          file: null
         },
         showMsg: false,
+        loading: false,
         msg: '',
         alertvariant: '',
         selects: [
@@ -231,11 +232,21 @@ export default {
           })
         ]
         this.setMsgConfig('Your CSV has been successfully imported, please select a location below', 'success', true)
+        this.form.loading = false
       })
     },
-    async onUpload() {
+    createProject() {
+      // Create Project in project table
+      this.$axios
+        .$post('api/lp-project', {
+          lpId: this.form.inputs.lpId,
+          selects: this.form.selects
+        })
+    },
+    onUpload() {
       try {
-        await Papa.parse(this.form.inputs.file, {
+        this.form.loading = true
+        Papa.parse(this.form.inputs.file, {
           header: true,
           complete: (res) => {
             const locations = res.data.map((location) => {
@@ -248,7 +259,7 @@ export default {
             })
             if (locations[0].name) {
               this.loadLocations(locations)
-              // make second call here
+              this.createProject()
             } else {
               this.setMsgConfig('There was an error uploading the csv', 'danger', true)
             }
@@ -256,13 +267,8 @@ export default {
         })
       } catch (err) {
         this.setMsgConfig('There was an error uploading the csv', 'danger', true)
+        this.form.loading = false
       }
-      // Create Project in project table
-      this.$axios
-        .$post('api/lp-project', {
-          lpId: this.form.inputs.lpId,
-          selects: this.form.selects
-        })
     }
   }
 }

@@ -8,7 +8,7 @@
     >
       {{ form.msg }}
     </b-alert>
-    <b-row>
+    <b-row v-if="!onLpPage">
       <b-col class="text-center mb-3">
         <b-form-group>
           <b-form-radio-group
@@ -17,10 +17,15 @@
             :options="options"
             buttons
             button-variant="outline-primary"
-            size="lg"
+            size="md"
             name="radio-btn-outline"
           />
         </b-form-group>
+      </b-col>
+    </b-row>
+    <b-row v-else>
+      <b-col class="text-center mb-3">
+        <p>To Add Locations, first select a file and Click Add Locations</p>
       </b-col>
     </b-row>
     <b-row v-if="selected === 'upload'">
@@ -61,7 +66,10 @@
           block
           class="px-4"
         >
-          Upload
+          <div class="d-flex justify-content-center">
+            {{ btnText }}
+            <b-spinner v-if="form.loading" class="mt-1 ml-5" small label="Loading..." />
+          </div>
         </b-btn>
       </b-col>
     </b-row>
@@ -73,11 +81,13 @@
           @input="onInput('lpId', $event)"
           placeholder="Enter LP project Id"
           required
+          type="number"
         />
       </b-col>
       <b-col>
         <b-btn
-          @click="onUpload"
+          :disabled="isDisabled"
+          :href="loadLPLink"
           variant="outline-primary--darken3"
           block
           class="px-4"
@@ -109,7 +119,36 @@ export default {
       ]
     }
   },
+  computed: {
+    btnText() {
+      return this.$nuxt._route.params.lpID ? 'Add Locations' : 'Upload'
+    },
+    onLpPage() {
+      return !!this.$nuxt._route.params.lpID
+    },
+    loadLPLink() {
+      return this.form.inputs.lpId ? `/lp-project/${this.form.inputs.lpId}` : ''
+    },
+    getLPLink() {
+      return this.validateFields() ? `/lp-project/${this.form.inputs.lpId}` : ''
+    },
+    isDisabled() {
+      return !this.form.inputs.lpId
+    }
+  },
   methods: {
+    validateFields() {
+      const values = [this.form.inputs.lpId]
+      this.form.selects.forEach(select => values.push(select.value))
+      let valid = true
+      for (let i = 0; i < values.length; i++) {
+        if (!values[i]) {
+          valid = false
+          break
+        }
+      }
+      return !!(valid && this.form.inputs.file)
+    },
     onChange(key, val) {
       this.$emit('field-update', { key, val })
     },
@@ -117,7 +156,11 @@ export default {
       this.$emit('input-update', { key, val })
     },
     onUpload() {
-      this.$emit('upload-data')
+      if (this.validateFields()) {
+        this.$emit('upload-data')
+      } else {
+        this.$emit('err-upld', 'All fields must be filled out to continue', 'danger', true)
+      }
     }
   }
 }
