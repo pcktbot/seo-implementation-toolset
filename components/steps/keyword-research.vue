@@ -239,13 +239,14 @@ export default {
     },
     onSave() {
       this.hasMsg = false
-      const validFields = this.validateStepTwo()
-      if (validFields) {
-        this.$emit('step-2-save', 'stepTwoComplete', true)
+      const val = this.validateStepTwo()
+      const key = 'stepTwoComplete'
+      if (val) {
+        this.$emit('step-save')
       } else {
         this.showMsg('Please ensure all fields are filled out')
-        this.$emit('update-step-status', 'stepTwoComplete', false)
       }
+      this.$emit('step-update', { key, val, id: this.location.id })
     },
     getKeywords() {
       // needs to send vertical, address to back end to call Google Places API

@@ -160,15 +160,8 @@ export default {
     }
   },
   methods: {
-    validateStepOne() {
-      let valid = true
-      for (const prop in this.form) {
-        if (this.form[prop] === '' || this.form[prop] === null) {
-          valid = false
-          break
-        }
-      }
-      return valid
+    validateStepThree() {
+      return this.location.properties.redirects.items.length > 0
     },
     showMsg(msg) {
       this.msg = msg
@@ -181,7 +174,7 @@ export default {
       const arrVal = this.form.redirecttext.split(/\n|,/g)
       const arrWODuplicates = arrVal.filter((item, index) => arrVal.indexOf(item) === index).filter(item => Boolean(item.trim()))
       return arrWODuplicates.filter((redirect) => {
-        if (!currentRedirects.includes(redirect) && !this.invalidFile(redirect)) {
+        if (!redirectsInTbl.includes(redirect) && !this.invalidFile(redirect) && this.validURL(redirect)) {
           return redirect
         }
       })
@@ -200,6 +193,7 @@ export default {
       return !!pattern.test(str)
     },
     // need to refactor this method
+    // https://stackoverflow.com/questions/16576983/replace-multiple-characters-in-one-replace-call
     formatRedirect(redirect, strategy) {
       let formatted = 'N/A'
       if (strategy === 'Same Domain' && this.validURL(redirect)) {
@@ -220,11 +214,13 @@ export default {
       return this.location.properties.redirects.items.map(redirect => redirect.current_url)
     },
     formatRedirects() {
-      const table = []
       const currentStrat = this.location.properties.redirectstrat
       if (!currentStrat) {
         this.showMsg('Please select strategy and paste redirects below')
       } else {
+        const table = currentStrat === 'No Redirects'
+          ? [{ isActive: true, strategy: currentStrat, current_url: 'N/A', formatted_url: 'N/A', wildcard: 'No' }]
+          : []
         const redirectArr = this.getRedirectsArr()
         redirectArr.forEach((redirect) => {
           const cloudFormatted = this.formatRedirect(redirect, currentStrat)
@@ -235,13 +231,14 @@ export default {
     },
     onSave() {
       this.hasMsg = false
-      const validFields = this.validateStepOne()
-      if (validFields) {
-        this.$emit('step-3-save', 'stepThreeComplete', true)
+      const key = 'stepThreeComplete'
+      const val = this.validateStepThree()
+      if (val) {
+        this.$emit('step-save')
       } else {
-        this.showMsg('Please ensure all fields are filled out')
-        this.$emit('update-step-status', 'stepThreeComplete', false)
+        this.showMsg('Please ensure table has itleast one row')
       }
+      this.$emit('step-update', { key, val, id: this.location.id })
     },
     onChangeCell(key, val, index, col) {
       this.$emit('cell-update', { key, val, index, col, id: this.location.id })
@@ -250,6 +247,9 @@ export default {
       this.$emit('step-update', { key, val, id: this.location.id })
     },
     removeRow(index) {
+      if (this.location.properties.redirects.items.length === 1) {
+        this.$emit('step-update', { key: 'stepThreeComplete', val: false, id: this.location.id })
+      }
       this.$emit('del-row', { index, id: this.location.id })
     }
   }

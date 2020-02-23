@@ -7,7 +7,7 @@
           <b-card no-body class="my-5">
             <b-card-header>
               <h3 class="mb-1">
-                Step 1: Complete Options Below
+                Complete Options Below
               </h3>
             </b-card-header>
             <b-card-body class="py-5">
@@ -74,10 +74,9 @@ export default {
       form: {
         inputs: {
           lpId: null,
-          file: null
+          file: []
         },
         showMsg: false,
-        loading: false,
         msg: '',
         alertvariant: '',
         selects: [
@@ -162,6 +161,21 @@ export default {
       }
     }
   },
+  created() {
+    const { lpID } = this.$nuxt._route.params
+    this.$axios.$get(`api/locations/${lpID}`).then((res) => {
+      // adds location data to front end and fills out location drop down
+      this.locations = res
+      this.location.options = [
+        { value: null, text: 'Select Location' },
+        ...res.map((location) => {
+          const { name, properties } = location
+          return { value: location.id, text: `${name} - ${properties.street_address_1}` }
+        })
+      ]
+      this.setMsgConfig('Successfully loaded locations', 'success', true)
+    })
+  },
   methods: {
     loadLocation(payload) {
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
@@ -232,7 +246,6 @@ export default {
           })
         ]
         this.setMsgConfig('Your CSV has been successfully imported, please select a location below', 'success', true)
-        this.form.loading = false
       })
     },
     createProject() {
@@ -245,7 +258,6 @@ export default {
     },
     onUpload() {
       try {
-        this.form.loading = true
         Papa.parse(this.form.inputs.file, {
           header: true,
           complete: (res) => {
@@ -267,7 +279,6 @@ export default {
         })
       } catch (err) {
         this.setMsgConfig('There was an error uploading the csv', 'danger', true)
-        this.form.loading = false
       }
     }
   }
