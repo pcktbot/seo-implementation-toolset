@@ -177,11 +177,11 @@ export default {
     },
     getRedirectsArr() {
       // removes duplicates, non urls, urls already in table, bad file types
-      const redirectsInTbl = this.getCurrentRedirects()
+      const currentRedirects = this.getCurrentRedirects()
       const arrVal = this.form.redirecttext.split(/\n|,/g)
       const arrWODuplicates = arrVal.filter((item, index) => arrVal.indexOf(item) === index).filter(item => Boolean(item.trim()))
       return arrWODuplicates.filter((redirect) => {
-        if (!redirectsInTbl.includes(redirect) && !this.invalidFile(redirect)) {
+        if (!currentRedirects.includes(redirect) && !this.invalidFile(redirect)) {
           return redirect
         }
       })
@@ -196,11 +196,8 @@ export default {
       return !!pattern.test(str)
     },
     invalidFile(str) {
-      const pattern = new RegExp('\\.(js|jpg|gif|json|jpeg|svg|xml|sitemap|pdf|css|svg|png)$', 'ig') // fragment locator
-      const value = !!pattern.test(str)
-      // eslint-disable-next-line no-console
-      console.log(value)
-      return value
+      const pattern = new RegExp('\\.(js|jpg|gif|json|jpeg|svg|xml|sitemap|pdf|css|svg|png)$', 'ig')
+      return !!pattern.test(str)
     },
     // need to refactor this method
     formatRedirect(redirect, strategy) {
