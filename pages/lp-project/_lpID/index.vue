@@ -79,6 +79,7 @@ export default {
         showMsg: false,
         msg: '',
         alertvariant: '',
+        successLoadMsg: 'Successfully loaded locations',
         selects: [
           {
             id: 'vertical',
@@ -163,6 +164,13 @@ export default {
   },
   created() {
     const { lpID } = this.$nuxt._route.params
+    // loads selections
+    this.$axios.$get(`api/lp-project/${lpID}`).then((res) => {
+      this.form.inputs.lpId = res[0].lpId
+      this.form.selects.forEach((select) => {
+        select.value = res[0][select.id]
+      })
+    })
     this.$axios.$get(`api/locations/${lpID}`).then((res) => {
       // adds location data to front end and fills out location drop down
       this.locations = res
@@ -173,7 +181,7 @@ export default {
           return { value: location.id, text: `${name} - ${properties.street_address_1}` }
         })
       ]
-      this.setMsgConfig('Successfully loaded locations', 'success', true)
+      this.setMsgConfig(this.form.successLoadMsg, 'success', true)
     })
   },
   methods: {

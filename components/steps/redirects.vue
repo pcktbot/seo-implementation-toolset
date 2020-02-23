@@ -174,7 +174,7 @@ export default {
       const arrVal = this.form.redirecttext.split(/\n|,/g)
       const arrWODuplicates = arrVal.filter((item, index) => arrVal.indexOf(item) === index).filter(item => Boolean(item.trim()))
       return arrWODuplicates.filter((redirect) => {
-        if (!redirectsInTbl.includes(redirect) && !this.invalidFile(redirect) && this.validURL(redirect)) {
+        if (!currentRedirects.includes(redirect) && !this.invalidFile(redirect) && this.validURL(redirect)) {
           return redirect
         }
       })

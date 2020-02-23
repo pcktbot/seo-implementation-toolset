@@ -7,7 +7,7 @@
           <b-card no-body class="my-5">
             <b-card-header>
               <h3 class="mb-1">
-                Step 1: Complete Options Below
+                Complete Options Below
               </h3>
             </b-card-header>
             <b-card-body class="py-5">
@@ -80,6 +80,9 @@ export default {
         loading: false,
         msg: '',
         alertvariant: '',
+        csvSuccessMsg: 'Your CSV has been successfully imported, please select a location below',
+        csvErrMsg: 'There was an error uploading the csv',
+        existingLPMsg: 'There is already a LP project under this ID. To add additional locations, load the LP project',
         selects: [
           {
             id: 'vertical',
@@ -231,7 +234,7 @@ export default {
             return { value: location.id, text: `${name} - ${properties.street_address_1}` }
           })
         ]
-        this.setMsgConfig('Your CSV has been successfully imported, please select a location below', 'success', true)
+        this.setMsgConfig(this.form.csvSuccessMsg, 'success', true)
         this.form.loading = false
       })
     },
@@ -245,28 +248,36 @@ export default {
     },
     onUpload() {
       try {
-        this.form.loading = true
-        Papa.parse(this.form.inputs.file, {
-          header: true,
-          complete: (res) => {
-            const locations = res.data.map((location) => {
-              const { name } = location
-              const properties = this.reject(location, ['name'])
-              for (const prop in this.getAddPropFields) {
-                properties[prop] = this.getAddPropFields[prop]
+        const lpId = this.form.inputs.lpId
+        this.$axios.$get(`api/locations/${lpId}`).then((res) => {
+          // finds LP project in DB
+          if (!res.length) {
+            this.form.loading = true
+            Papa.parse(this.form.inputs.file, {
+              header: true,
+              complete: (res) => {
+                const locations = res.data.map((location) => {
+                  const { name } = location
+                  const properties = this.reject(location, ['name'])
+                  for (const prop in this.getAddPropFields) {
+                    properties[prop] = this.getAddPropFields[prop]
+                  }
+                  return { name, properties }
+                })
+                if (locations[0].name) {
+                  this.loadLocations(locations)
+                  this.createProject()
+                } else {
+                  this.setMsgConfig(this.form.csvErrMsg, 'danger', true)
+                }
               }
-              return { name, properties }
             })
-            if (locations[0].name) {
-              this.loadLocations(locations)
-              this.createProject()
-            } else {
-              this.setMsgConfig('There was an error uploading the csv', 'danger', true)
-            }
+          } else {
+            this.setMsgConfig(this.form.existingLPMsg, 'danger', true)
           }
         })
       } catch (err) {
-        this.setMsgConfig('There was an error uploading the csv', 'danger', true)
+        this.setMsgConfig(this.form.csvErrMsg, 'danger', true)
         this.form.loading = false
       }
     }

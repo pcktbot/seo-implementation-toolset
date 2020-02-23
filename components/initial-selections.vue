@@ -54,6 +54,7 @@
         <b-form-input
           id="input-1"
           :value="form.inputs.lpId"
+          :disabled="onLpPage"
           @input="onInput('lpId', $event)"
           placeholder="Enter LP project Id"
           required
@@ -86,7 +87,7 @@
       </b-col>
       <b-col>
         <b-btn
-          :disabled="isDisabled"
+          :disabled="disabled"
           :href="loadLPLink"
           variant="outline-primary--darken3"
           block
@@ -132,7 +133,8 @@ export default {
     getLPLink() {
       return this.validateFields() ? `/lp-project/${this.form.inputs.lpId}` : ''
     },
-    isDisabled() {
+    disabled() {
+      // need to verify length of LP Input
       return !this.form.inputs.lpId
     }
   },
