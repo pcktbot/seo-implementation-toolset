@@ -57,11 +57,13 @@
           :disabled="onLpPage"
           @input="onInput('lpId', $event)"
           placeholder="Enter LP project Id"
+          type="number"
           required
         />
       </b-col>
       <b-col>
         <b-btn
+          :disabled="disabledUpload"
           @click="onUpload"
           variant="outline-primary--darken3"
           block
@@ -117,7 +119,8 @@ export default {
       options: [
         { text: 'New LP Project', value: 'upload' },
         { text: 'Load LP Project', value: 'import' }
-      ]
+      ],
+      missingFields: 'All fields must be filled out to continue'
     }
   },
   computed: {
@@ -130,16 +133,10 @@ export default {
     loadLPLink() {
       return this.form.inputs.lpId ? `/lp-project/${this.form.inputs.lpId}` : ''
     },
-    getLPLink() {
-      return this.validateFields() ? `/lp-project/${this.form.inputs.lpId}` : ''
-    },
     disabled() {
-      // need to verify length of LP Input
-      return !this.form.inputs.lpId
-    }
-  },
-  methods: {
-    validateFields() {
+      return !(this.form.inputs.lpId && this.form.inputs.lpId.toString().length === 6)
+    },
+    disabledUpload() {
       const values = [this.form.inputs.lpId]
       this.form.selects.forEach(select => values.push(select.value))
       let valid = true
@@ -149,8 +146,10 @@ export default {
           break
         }
       }
-      return !!(valid && this.form.inputs.file)
-    },
+      return !(valid && this.form.inputs.file && this.form.inputs.lpId.toString().length === 6)
+    }
+  },
+  methods: {
     onChange(key, val) {
       this.$emit('field-update', { key, val })
     },
@@ -158,11 +157,7 @@ export default {
       this.$emit('input-update', { key, val })
     },
     onUpload() {
-      if (this.validateFields()) {
-        this.$emit('upload-data')
-      } else {
-        this.$emit('err-upld', 'All fields must be filled out to continue', 'danger', true)
-      }
+      this.$emit('upload-data')
     }
   }
 }
