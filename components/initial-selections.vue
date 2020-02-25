@@ -8,102 +8,50 @@
     >
       {{ form.msg }}
     </b-alert>
-    <b-row v-if="!onLpPage">
-      <b-col class="text-center mb-3">
-        <b-form-group>
-          <b-form-radio-group
-            id="btn-radios-2"
-            v-model="selected"
-            :options="options"
-            buttons
-            button-variant="outline-primary"
-            size="md"
-            name="radio-btn-outline"
-          />
-        </b-form-group>
+    <instructions
+      :form="form"
+      :toggle="toggle"
+    />
+    <dropdowns
+      v-if="toggle.selected === 'upload'"
+      :form="form"
+      @field-update="onChange"
+    />
+    <b-row>
+      <b-col v-if="toggle.selected === 'upload'" cols="4">
+        <loadfile :form="form" />
       </b-col>
-    </b-row>
-    <b-row v-else>
-      <b-col class="text-center mb-3">
-        <p>To Add Locations, first select a file and Click Add Locations</p>
-      </b-col>
-    </b-row>
-    <b-row v-if="selected === 'upload'">
-      <b-col
-        v-for="select in form.selects"
-        :key="select.id"
-        cols="4"
-        class="mb-4"
-      >
-        <b-form-select
-          :id="select.id"
-          :value="select.value"
-          :options="select.options"
-          @change="onChange(select.id, $event)"
-        />
-      </b-col>
-      <b-col cols="5">
-        <b-form-file
-          v-model="form.inputs.file"
-          accept=".csv"
-          placeholder="Choose a file or drop it here..."
-          drop-placeholder="Drop file here..."
+      <b-col>
+        <lpinput
+          :form="form"
+          @input-update="onInput"
         />
       </b-col>
       <b-col>
-        <b-form-input
-          id="input-1"
-          :value="form.inputs.lpId"
-          :disabled="onLpPage"
-          @input="onInput('lpId', $event)"
-          placeholder="Enter LP project Id"
-          type="number"
-          required
+        <loadbtn
+          :form="form"
+          :selected="toggle.selected"
+          @upload-data="onUpload"
         />
-      </b-col>
-      <b-col>
-        <b-btn
-          :disabled="disabledUpload"
-          @click="onUpload"
-          variant="outline-primary--darken3"
-          block
-          class="px-4"
-        >
-          <div class="d-flex justify-content-center">
-            {{ btnText }}
-            <b-spinner v-if="form.loading" class="mt-1 ml-5" small label="Loading..." />
-          </div>
-        </b-btn>
-      </b-col>
-    </b-row>
-    <b-row v-else>
-      <b-col>
-        <b-form-input
-          id="input-1"
-          :value="form.inputs.lpId"
-          @input="onInput('lpId', $event)"
-          placeholder="Enter LP project Id"
-          required
-          type="number"
-        />
-      </b-col>
-      <b-col>
-        <b-btn
-          :disabled="disabled"
-          :href="loadLPLink"
-          variant="outline-primary--darken3"
-          block
-          class="px-4"
-        >
-          Load LP Project Upload
-        </b-btn>
       </b-col>
     </b-row>
   </b-container>
 </template>
 
 <script>
+import lpinput from '~/components/init-selections/lpinput'
+import loadbtn from '~/components/init-selections/loadbtn'
+import dropdowns from '~/components/init-selections/dropdowns'
+import loadfile from '~/components/init-selections/loadfile'
+import instructions from '~/components/init-selections/instructions'
 export default {
+  components: {
+    lpinput,
+    loadbtn,
+    dropdowns,
+    loadfile,
+    instructions
+  },
   props: {
     form: {
       type: Object,
@@ -115,38 +63,14 @@ export default {
   data() {
     return {
       file: [],
-      selected: 'upload',
-      options: [
-        { text: 'New LP Project', value: 'upload' },
-        { text: 'Load LP Project', value: 'import' }
-      ],
+      toggle: {
+        selected: 'upload',
+        options: [
+          { text: 'New LP Project', value: 'upload' },
+          { text: 'Load LP Project', value: 'import' }
+        ]
+      },
       missingFields: 'All fields must be filled out to continue'
-    }
-  },
-  computed: {
-    btnText() {
-      return this.$nuxt._route.params.lpID ? 'Add Locations' : 'Upload'
-    },
-    onLpPage() {
-      return !!this.$nuxt._route.params.lpID
-    },
-    loadLPLink() {
-      return this.form.inputs.lpId ? `/lp-project/${this.form.inputs.lpId}` : ''
-    },
-    disabled() {
-      return !(this.form.inputs.lpId && this.form.inputs.lpId.toString().length === 6)
-    },
-    disabledUpload() {
-      const values = [this.form.inputs.lpId]
-      this.form.selects.forEach(select => values.push(select.value))
-      let valid = true
-      for (let i = 0; i < values.length; i++) {
-        if (!values[i]) {
-          valid = false
-          break
-        }
-      }
-      return !(valid && this.form.inputs.file && this.form.inputs.lpId.toString().length === 6)
     }
   },
   methods: {
