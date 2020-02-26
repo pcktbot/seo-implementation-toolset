@@ -4,7 +4,7 @@
     :value="form.inputs.lpId"
     :disabled="onLpPage"
     @input="onInput('lpId', $event)"
-    placeholder="Enter LP project Id"
+    placeholder="Enter 6 digit LP Id"
     required
     type="number"
   />

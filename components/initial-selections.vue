@@ -1,13 +1,5 @@
 <template>
   <b-container fluid>
-    <b-alert
-      :show="form.showMsg"
-      :variant="form.alertvariant"
-      @dismissed="form.showMsg = false, form.msg='', form.alertvarianbt"
-      dismissible
-    >
-      {{ form.msg }}
-    </b-alert>
     <instructions
       :form="form"
       :toggle="toggle"
@@ -35,6 +27,15 @@
         />
       </b-col>
     </b-row>
+    <b-alert
+      :show="form.showMsg"
+      :variant="form.alertvariant"
+      @dismissed="form.showMsg = false, form.msg='', form.alertvarianbt"
+      class="mt-3 mb-0"
+      dismissible
+    >
+      {{ form.msg }}
+    </b-alert>
   </b-container>
 </template>
 

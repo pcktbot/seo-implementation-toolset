@@ -27,7 +27,7 @@
           <b-card no-body>
             <b-card-header>
               <h3>
-                Step 2: Select Location
+                Select Location
               </h3>
             </b-card-header>
             <b-card-body>
@@ -80,6 +80,9 @@ export default {
         msg: '',
         alertvariant: '',
         successLoadMsg: 'Successfully loaded locations',
+        errLoadMsg: 'Error loading locations, check to ensure the url is using the correct LP ID',
+        csvSuccessMsg: 'Your CSV has been successfully imported, please select a location below',
+        csvErrMsg: 'There was an error uploading the csv',
         selects: [
           {
             id: 'vertical',
@@ -181,7 +184,9 @@ export default {
           return { value: location.id, text: `${name} - ${properties.street_address_1}` }
         })
       ]
-      this.setMsgConfig(this.form.successLoadMsg, 'success', true)
+      this.location.options.length > 1
+        ? this.setMsgConfig(this.form.successLoadMsg, 'success', true)
+        : this.setMsgConfig(this.form.errLoadMsg, 'danger', true)
     })
   },
   methods: {
@@ -245,24 +250,15 @@ export default {
         locations
       }).then((res) => {
         // adds location data to front end and fills out location drop down
-        this.locations = res
-        this.location.options = [
-          { value: null, text: 'Select Location' },
+        this.locations.push(...res)
+        this.location.options.push(...[
           ...res.map((location) => {
             const { name, properties } = location
             return { value: location.id, text: `${name} - ${properties.street_address_1}` }
           })
-        ]
-        this.setMsgConfig('Your CSV has been successfully imported, please select a location below', 'success', true)
+        ])
+        this.setMsgConfig(this.csvSuccessMsg, 'success', true)
       })
-    },
-    createProject() {
-      // Create Project in project table
-      this.$axios
-        .$post('api/lp-project', {
-          lpId: this.form.inputs.lpId,
-          selects: this.form.selects
-        })
     },
     onUpload() {
       try {
@@ -276,17 +272,16 @@ export default {
                 properties[prop] = this.getAddPropFields[prop]
               }
               return { name, properties }
-            })
+            }).filter(location => location.name)
             if (locations[0].name) {
               this.loadLocations(locations)
-              this.createProject()
             } else {
-              this.setMsgConfig('There was an error uploading the csv', 'danger', true)
+              this.setMsgConfig(this.csvErrMsg, 'danger', true)
             }
           }
         })
       } catch (err) {
-        this.setMsgConfig('There was an error uploading the csv', 'danger', true)
+        this.setMsgConfig(this.csvErrMsg, 'danger', true)
       }
     }
   }

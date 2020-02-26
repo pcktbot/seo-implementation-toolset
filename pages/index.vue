@@ -22,50 +22,16 @@
           </b-card>
         </b-col>
       </b-row>
-      <b-row>
-        <b-col>
-          <b-card no-body>
-            <b-card-header>
-              <h3>
-                Step 2: Select Location
-              </h3>
-            </b-card-header>
-            <b-card-body>
-              <b-form-select
-                v-model="location.selected"
-                :options="location.options"
-                @change="loadLocation"
-              />
-            </b-card-body>
-          </b-card>
-        </b-col>
-      </b-row>
-      <b-row no-gutters>
-        <b-col cols="12">
-          <form-stepper
-            v-if="selectedLocation"
-            :location="selectedLocation"
-            :form="form"
-            @stepper-updated="onUpdate"
-            @save-step="onSave"
-            @add-rows="addRows"
-            @cell-update="updateCell"
-            @del-row="removeRow"
-          />
-        </b-col>
-      </b-row>
     </b-container>
   </div>
 </template>
 
 <script>
 import Papa from 'papaparse'
-import FormStepper from '~/components/form-stepper'
 import g5Nav from '~/components/nav'
 import initialSelections from '~/components/initial-selections'
 export default {
   components: {
-    FormStepper,
     g5Nav,
     initialSelections
   },
@@ -114,14 +80,6 @@ export default {
           }
         ]
       },
-      selectedLocation: null,
-      locations: [],
-      location: {
-        selected: null,
-        options: [
-          { value: null, text: 'Select Location' }
-        ]
-      },
       tableheaders: {
         fields: [
           {
@@ -166,37 +124,6 @@ export default {
     }
   },
   methods: {
-    loadLocation(payload) {
-      this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
-    },
-    onSave() {
-      // TODO validate save payload
-      this.$axios
-        .$put('api/locations', {
-          lpId: this.form.inputs.lpId,
-          locations: this.locations
-        })
-    },
-    onUpdate({ key, val, id }) {
-      const i = this.locations.findIndex(loc => loc.id === id)
-      if (key === 'name') {
-        this.locations[i][key] = val
-      } else {
-        this.locations[i].properties[key] = val
-      }
-    },
-    updateCell({ key, val, index, col, id }) {
-      const i = this.locations.findIndex(loc => loc.id === id)
-      this.locations[i].properties.redirects.items[index][col] = val
-    },
-    removeRow({ index, id }) {
-      const i = this.locations.findIndex(loc => loc.id === id)
-      this.locations[i].properties.redirects.items.splice(index, 1)
-    },
-    addRows(val, { id }) {
-      const i = this.locations.findIndex(loc => loc.id === id)
-      this.locations[i].properties.redirects.items.push(...val)
-    },
     updateSelect({ key, val }) {
       const i = this.form.selects.findIndex(select => select.id === key)
       this.form.selects[i].value = val
@@ -220,31 +147,20 @@ export default {
       this.form.alertvariant = variant
       this.form.showMsg = msgOn
     },
-    loadLocations(locations) {
+    postToDB(locations) {
       this.$axios.$post('api/locations', {
         lpId: this.form.inputs.lpId,
         locations
       }).then((res) => {
-        // adds location data to front end and fills out location drop down
-        this.locations = res
-        this.location.options = [
-          { value: null, text: 'Select Location' },
-          ...res.map((location) => {
-            const { name, properties } = location
-            return { value: location.id, text: `${name} - ${properties.street_address_1}` }
+        this.$axios
+          .$post('api/lp-project', {
+            lpId: this.form.inputs.lpId,
+            selects: this.form.selects
+          }).then((res) => {
+            window.open(`/lp-project/${this.form.inputs.lpId}`)
+            this.form.loading = false
           })
-        ]
-        this.setMsgConfig(this.form.csvSuccessMsg, 'success', true)
-        this.form.loading = false
       })
-    },
-    createProject() {
-      // Create Project in project table
-      this.$axios
-        .$post('api/lp-project', {
-          lpId: this.form.inputs.lpId,
-          selects: this.form.selects
-        })
     },
     onUpload() {
       try {
@@ -256,19 +172,19 @@ export default {
             Papa.parse(this.form.inputs.file, {
               header: true,
               complete: (res) => {
-                const locations = res.data.map((location) => {
+                const locations = res.data[0].name ? res.data.map((location) => {
                   const { name } = location
                   const properties = this.reject(location, ['name'])
                   for (const prop in this.getAddPropFields) {
                     properties[prop] = this.getAddPropFields[prop]
                   }
                   return { name, properties }
-                })
-                if (locations[0].name) {
-                  this.loadLocations(locations)
-                  this.createProject()
+                }).filter(location => location.name) : []
+                if (locations.length) {
+                  this.postToDB(locations)
                 } else {
                   this.setMsgConfig(this.form.csvErrMsg, 'danger', true)
+                  this.form.loading = false
                 }
               }
             })

@@ -2,7 +2,7 @@
   <b-card no-body class="my-5">
     <b-card-header class="d-flex justify-content-between text-left">
       <h3 class="my-auto">
-        Step 3: Fill in Client Data
+        Fill in Client Data
       </h3>
       <div class="my-auto">
         {{ `Address: ${location.properties.street_address_1} ${location.properties.city} ${location.properties.state} ${location.properties.postal_code}` }}

@@ -2,7 +2,7 @@
   <b-form-file
     v-model="form.inputs.file"
     accept=".csv"
-    placeholder="Choose a file or drop it here..."
+    placeholder="Choose file"
     drop-placeholder="Drop file here..."
   />
 </template>
