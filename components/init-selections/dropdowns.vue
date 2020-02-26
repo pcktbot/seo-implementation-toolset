@@ -1,17 +1,24 @@
 <template>
   <b-row>
     <b-col
-      v-for="select in form.selects"
+      v-for="(select, index) in form.selects"
       :key="select.id"
       cols="4"
       class="mb-4"
     >
-      <b-form-select
-        :id="select.id"
-        :value="select.value"
-        :options="select.options"
-        @change="onChange(select.id, $event)"
-      />
+      <b-form>
+        <b-form-select
+          :id="select.id"
+          :state="validation(select.id, index)"
+          :value="select.value"
+          :options="select.options"
+          @change="onChange(select.id, $event)"
+        />
+        <b-form-invalid-feedback :state="validation">
+          Select an option from the dropdown
+        </b-form-invalid-feedback>
+        <b-form-valid-feedback :state="validation" />
+      </b-form>
     </b-col>
   </b-row>
 </template>
@@ -29,7 +36,11 @@ export default {
   methods: {
     onChange(key, val) {
       this.$emit('field-update', key, val)
+    },
+    validation(id, index) {
+      return !!this.form.selects[index].value
     }
+
   }
 }
 </script>

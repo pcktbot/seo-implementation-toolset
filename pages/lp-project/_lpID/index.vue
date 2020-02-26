@@ -26,9 +26,7 @@
         <b-col>
           <b-card no-body>
             <b-card-header>
-              <h3>
-                Select Location
-              </h3>
+              <h3>Select Location</h3>
             </b-card-header>
             <b-card-body>
               <b-form-select
