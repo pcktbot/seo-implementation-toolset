@@ -22,22 +22,10 @@
           </b-card>
         </b-col>
       </b-row>
-      <b-row>
-        <b-col>
-          <b-card no-body>
-            <b-card-header>
-              <h3>Select Location</h3>
-            </b-card-header>
-            <b-card-body>
-              <b-form-select
-                v-model="location.selected"
-                :options="location.options"
-                @change="loadLocation"
-              />
-            </b-card-body>
-          </b-card>
-        </b-col>
-      </b-row>
+      <select-location
+        :location="location"
+        @load-location="loadLocation"
+      />
       <b-row no-gutters>
         <b-col cols="12">
           <form-stepper
@@ -58,11 +46,13 @@
 
 <script>
 import Papa from 'papaparse'
+import SelectLocation from '~/components/select-location'
 import FormStepper from '~/components/form-stepper'
 import g5Nav from '~/components/nav'
 import initialSelections from '~/components/initial-selections'
 export default {
   components: {
+    SelectLocation,
     FormStepper,
     g5Nav,
     initialSelections
@@ -75,11 +65,12 @@ export default {
           file: []
         },
         showMsg: false,
+        loading: false,
         msg: '',
         alertvariant: '',
         successLoadMsg: 'Successfully loaded locations',
         errLoadMsg: 'Error loading locations, check to ensure the url is using the correct LP ID',
-        csvSuccessMsg: 'Your CSV has been successfully imported, please select a location below',
+        csvSuccessMsg: 'Your new locations have beeen successfully added, please select a location below',
         csvErrMsg: 'There was an error uploading the csv',
         selects: [
           {
@@ -255,11 +246,13 @@ export default {
             return { value: location.id, text: `${name} - ${properties.street_address_1}` }
           })
         ])
-        this.setMsgConfig(this.csvSuccessMsg, 'success', true)
+        this.form.loading = false
+        this.setMsgConfig(this.form.csvSuccessMsg, 'success', true)
       })
     },
     onUpload() {
       try {
+        this.form.loading = true
         Papa.parse(this.form.inputs.file, {
           header: true,
           complete: (res) => {
@@ -275,11 +268,13 @@ export default {
               this.loadLocations(locations)
             } else {
               this.setMsgConfig(this.csvErrMsg, 'danger', true)
+              this.form.loading = false
             }
           }
         })
       } catch (err) {
-        this.setMsgConfig(this.csvErrMsg, 'danger', true)
+        this.setMsgConfig(this.form.csvErrMsg, 'danger', true)
+        this.form.loading = false
       }
     }
   }
