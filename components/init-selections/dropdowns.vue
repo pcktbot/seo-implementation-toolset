@@ -14,10 +14,6 @@
           :options="select.options"
           @change="onChange(select.id, $event)"
         />
-        <b-form-invalid-feedback :state="validation">
-          Select an option from the dropdown
-        </b-form-invalid-feedback>
-        <b-form-valid-feedback :state="validation" />
       </b-form>
     </b-col>
   </b-row>
@@ -38,7 +34,9 @@ export default {
       this.$emit('field-update', key, val)
     },
     validation(id, index) {
-      return !!this.form.selects[index].value
+      // eslint-disable-next-line no-console
+      console.log(!!(this.form.selects[index].value))
+      return !!(this.form.selects[index].value)
     }
 
   }

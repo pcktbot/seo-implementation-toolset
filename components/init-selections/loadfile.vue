@@ -1,7 +1,6 @@
 <template>
   <b-form>
     <b-form-file
-      id="feedback-user"
       v-model="form.inputs.file"
       :state="validation"
       accept=".csv"
@@ -27,6 +26,8 @@ export default {
   },
   computed: {
     validation() {
+      // eslint-disable-next-line no-console
+      console.log(!!(this.form.inputs.file))
       return !!(this.form.inputs.file)
     }
   }
