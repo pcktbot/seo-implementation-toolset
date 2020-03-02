@@ -21,7 +21,7 @@
       block
       class="px-4"
     >
-      Load LP Project Upload
+      Load LP Project
     </b-btn>
   </b-container>
 </template>
