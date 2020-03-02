@@ -2,7 +2,8 @@ const models = require('../models')
 module.exports = {
   createLocations,
   updateLocations,
-  getLocations
+  getLocations,
+  deleteLocation
 }
 
 async function createLocations (lpId, locations) {
@@ -29,4 +30,10 @@ async function updateLocations (locations) {
 
 function getLocations (lpId) {
   return models.location.findAll({ where: { lpId } })
+}
+
+function deleteLocation (id) {
+  return models.location.destroy({
+    where: { id }
+  })  
 }
