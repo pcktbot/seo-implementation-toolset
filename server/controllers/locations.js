@@ -33,6 +33,8 @@ function getLocations (lpId) {
 }
 
 function deleteLocation (id) {
+  // eslint-disable-next-line no-console
+  console.log(id)
   return models.location.destroy({
     where: { id }
   })
