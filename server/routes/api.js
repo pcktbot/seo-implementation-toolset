@@ -14,13 +14,14 @@ module.exports = (app) => {
     res.sendStatus(200)
   })
 
+  // Get locations associated to an LP Project
   app.get('/api/locations/:lpId', async (req, res) => {
     const { lpId } = req.params
     const locations = await newLocations.getLocations(lpId)
     res.json(locations)
   })
 
-  // project routes
+  // Create New Projects on Upload
   app.post('/api/lp-project', async (req, res) => {
     const { lpId, selects } = req.body
     // loop through (for) create empty object then add key-value pairs
@@ -28,10 +29,10 @@ module.exports = (app) => {
     res.json(projectData)
   })
 
-  //Project Destroy Route
+  // Project Destroy Route
   app.delete('/api/lp-project/:lpID/:locationId', async (req, res) => {
-    const { locationId, lpID } = req.params
-    await newLocations.deleteLocation(locationId)  
+    const { locationId } = req.params
+    await newLocations.deleteLocation(locationId)
     res.sendStatus(200)
   })
 
