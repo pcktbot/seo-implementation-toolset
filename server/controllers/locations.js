@@ -25,7 +25,7 @@ async function updateLocations (locations) {
     const { id, name, properties } = locations[i]
     await models.location.update({ name, properties }, { where: { id } })
   }
-  return
+  // return
 }
 
 function getLocations (lpId) {
@@ -35,5 +35,5 @@ function getLocations (lpId) {
 function deleteLocation (id) {
   return models.location.destroy({
     where: { id }
-  })  
+  })
 }
