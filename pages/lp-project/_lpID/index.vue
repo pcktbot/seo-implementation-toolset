@@ -24,6 +24,7 @@
       </b-row>
       <select-location
         :location="location"
+        :selectedLocation="selectedLocation"
         @load-location="loadLocation"
         @delete-location="onDelete"
       />
@@ -190,8 +191,8 @@ export default {
         this.locations = this.locations.filter(location => location.id !== locID || null)
         this.selectedLocation = null
         this.location.selected = null
+        this.$axios.delete(`/api/lp-project/${this.form.inputs.lpId}/${locID}`)
       }
-      this.$axios.delete(`/api/lp-project/${this.form.inputs.lpId}/${locID}`)
     },
     onSave() {
       // TODO validate save payload
@@ -201,6 +202,10 @@ export default {
           locations: this.locations
         })
     },
+    locationComplete() {
+      const locProp = this.selectedLocation.properties
+      return locProp.stepOneComplete && locProp.stepTwoComplete && locProp.stepThreeComplete
+    },
     onUpdate({ key, val, id }) {
       const i = this.locations.findIndex(loc => loc.id === id)
       if (key === 'name') {
@@ -208,6 +213,7 @@ export default {
       } else {
         this.locations[i].properties[key] = val
       }
+      this.locationComplete() ? this.locations[i].properties.locationComplete = true : this.locations[i].properties.locationComplete = false
     },
     updateCell({ key, val, index, col, id }) {
       const i = this.locations.findIndex(loc => loc.id === id)

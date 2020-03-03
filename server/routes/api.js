@@ -30,7 +30,6 @@ module.exports = (app) => {
 
   // Project Destroy Route
   app.delete('/api/lp-project/:lpID/:locationId', async (req, res) => {
-
     const { locationId } = req.params
     await newLocations.deleteLocation(locationId)
     res.sendStatus(200)

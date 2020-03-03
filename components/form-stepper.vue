@@ -39,7 +39,6 @@
             <div v-else>
               <b-icon icon="check-circle" variant="success" />
             </div>
-            <!-- SOME COMPLETED INDICATION HERE -->
             Keyword Research
           </div>
         </template>
@@ -236,8 +235,6 @@ export default {
         : null
     },
     onUpdate(data) {
-      // eslint-disable-next-line no-console
-      console.log(data)
       this.$emit('stepper-updated', data)
     },
     onSave(prop, value) {
