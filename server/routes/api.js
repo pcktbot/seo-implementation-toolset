@@ -28,10 +28,11 @@ module.exports = (app) => {
     res.json(projectData)
   })
 
-  //Project Destroy Route
+  // Project Destroy Route
   app.delete('/api/lp-project/:lpID/:locationId', async (req, res) => {
-    const { locationId, lpID } = req.params
-    await newLocations.deleteLocation(locationId)  
+
+    const { locationId } = req.params
+    await newLocations.deleteLocation(locationId)
     res.sendStatus(200)
   })
 

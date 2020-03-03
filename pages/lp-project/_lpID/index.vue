@@ -25,6 +25,7 @@
       <select-location
         :location="location"
         @load-location="loadLocation"
+        @delete-location="onDelete"
       />
       <b-row no-gutters>
         <b-col cols="12">
@@ -181,6 +182,16 @@ export default {
   methods: {
     loadLocation(payload) {
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
+    },
+    onDelete() {
+      const locID = this.selectedLocation ? this.selectedLocation.id : null
+      if (locID) {
+        this.location.options = this.location.options.filter(location => location.value !== locID || null)
+        this.locations = this.locations.filter(location => location.id !== locID || null)
+        this.selectedLocation = null
+        this.location.selected = null
+      }
+      this.$axios.delete(`/api/lp-project/${this.form.inputs.lpId}/${locID}`)
     },
     onSave() {
       // TODO validate save payload

@@ -7,21 +7,30 @@
         </b-card-header>
         <b-card-body>
           <b-row>
-            <b-col cols="10">
+            <b-col cols="8">
               <b-form-select
                 v-model="location.selected"
                 :options="location.options"
                 @change="loadLocation"
               />
             </b-col>
-            <b-col class="text-right" cols="2">
+            <b-col class="text-right" cols="4">
               <b-btn
-                @click="onDelete"
+                v-b-modal.modal-1
                 variant="danger"
                 class="px-4"
               >
                 Delete Location
               </b-btn>
+              <b-modal
+                id="modal-1"
+                @ok="onDelete"
+                title="BootstrapVue"
+              >
+                <p class="my-4">
+                  Sure you want to delete this location?
+                </p>
+              </b-modal>
             </b-col>
           </b-row>
         </b-card-body>
@@ -43,6 +52,9 @@ export default {
   methods: {
     loadLocation(payload) {
       this.$emit('load-location', payload)
+    },
+    onDelete() {
+      this.$emit('delete-location')
     }
   }
 }
