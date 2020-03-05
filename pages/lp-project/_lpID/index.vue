@@ -4,7 +4,7 @@
     <b-container fluid class="px-5">
       <b-row>
         <b-col>
-          <b-card no-body class="my-5">
+          <b-card no-body class="my-3">
             <b-card-header>
               <h3 class="mb-1">
                 Complete Options Below
@@ -22,11 +22,12 @@
           </b-card>
         </b-col>
       </b-row>
-      <select-location
-        :location="location"
+      <location-table
+        :locationtbl="locationtbl"
         :selectedLocation="selectedLocation"
-        @load-location="loadLocation"
         @delete-location="onDelete"
+        @select-location="onRowSelected"
+        @load-location="loadLocation"
       />
       <b-row no-gutters>
         <b-col cols="12">
@@ -48,13 +49,13 @@
 
 <script>
 import Papa from 'papaparse'
-import SelectLocation from '~/components/select-location'
+import LocationTable from '~/components/location-table'
 import FormStepper from '~/components/form-stepper'
 import g5Nav from '~/components/nav'
 import initialSelections from '~/components/initial-selections'
 export default {
   components: {
-    SelectLocation,
+    LocationTable,
     FormStepper,
     g5Nav,
     initialSelections
@@ -113,7 +114,32 @@ export default {
           { value: null, text: 'Select Location' }
         ]
       },
-      tableheaders: {
+      locationtbl: {
+        fields: [
+          {
+            key: 'select',
+            label: 'Select'
+          },
+          {
+            key: 'location',
+            label: 'Location Name',
+            sortable: true
+          },
+          {
+            key: 'edit',
+            label: 'Edit'
+          },
+          {
+            key: 'status',
+            label: 'Complete',
+            sortable: true
+          }
+        ],
+        items: [],
+        selectMode: 'multi',
+        selected: []
+      },
+      redirecttbl: {
         fields: [
           {
             key: 'strategy',
@@ -145,7 +171,7 @@ export default {
         population: null,
         uspsvalid: null,
         recommended_name: null,
-        redirects: this.tableheaders,
+        redirects: this.redirecttbl,
         redirecttext: '',
         redirectstrat: '',
         stepOneComplete: false,
@@ -168,11 +194,19 @@ export default {
     this.$axios.$get(`api/locations/${lpID}`).then((res) => {
       // adds location data to front end and fills out location drop down
       this.locations = res
+      // adds data to drop down
       this.location.options = [
         { value: null, text: 'Select Location' },
         ...res.map((location) => {
           const { name, properties } = location
           return { value: location.id, text: `${name} - ${properties.street_address_1}` }
+        })
+      ]
+      // adds data to table
+      this.locationtbl.items = [
+        ...res.map((location) => {
+          const { name, properties } = location
+          return { select: false, location: `${name} - ${properties.street_address_1}`, status: properties.locationComplete, value: location.id }
         })
       ]
       this.location.options.length > 1
@@ -182,17 +216,26 @@ export default {
   },
   methods: {
     loadLocation(payload) {
+      // eslint-disable-next-line no-console
+      console.log(payload)
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
     },
     onDelete() {
-      const locID = this.selectedLocation ? this.selectedLocation.id : null
-      if (locID) {
-        this.location.options = this.location.options.filter(location => location.value !== locID || null)
-        this.locations = this.locations.filter(location => location.id !== locID || null)
-        this.selectedLocation = null
-        this.location.selected = null
-        this.$axios.delete(`/api/lp-project/${this.form.inputs.lpId}/${locID}`)
+      const locIDs = this.locationtbl.selected
+        ? this.locationtbl.selected.map(selected => selected.value)
+        : null
+      if (locIDs) {
+        locIDs.forEach((locID) => {
+          this.locationtbl.items = this.locationtbl.items.filter(location => location.value !== locID || null)
+          this.locations = this.locations.filter(location => location.id !== locID || null)
+          this.selectedLocation = null
+          this.locationtbl.selected = []
+          this.$axios.delete(`/api/lp-project/${this.form.inputs.lpId}/${locID}`)
+        })
       }
+    },
+    onRowSelected(items) {
+      this.locationtbl.selected = items
     },
     onSave() {
       // TODO validate save payload

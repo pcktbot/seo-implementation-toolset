@@ -34,8 +34,6 @@ export default {
       this.$emit('field-update', key, val)
     },
     validation(id, index) {
-      // eslint-disable-next-line no-console
-      console.log(!!(this.form.selects[index].value))
       return !!(this.form.selects[index].value)
     }
 

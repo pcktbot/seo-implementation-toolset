@@ -32,8 +32,6 @@ export default {
       return !!this.$nuxt._route.params.lpID
     },
     validation() {
-      // eslint-disable-next-line no-console
-      console.log(!!(this.form.inputs.lpId && this.form.inputs.lpId.toString().length === 6))
       return !!(this.form.inputs.lpId && this.form.inputs.lpId.toString().length === 6)
     }
   },

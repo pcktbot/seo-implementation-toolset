@@ -7,22 +7,14 @@
         </b-card-header>
         <b-card-body>
           <b-row>
-            <b-col cols="6">
+            <b-col cols="8">
               <b-form-select
                 v-model="location.selected"
                 :options="location.options"
                 @change="loadLocation"
               />
             </b-col>
-            <b-col class="text-left" cols="3">
-              <div v-if="incompleteLocation">
-                <b-icon icon="x-circle" variant="warning" />
-              </div>
-              <div v-else>
-                <b-icon icon="check-circle" variant="success" />
-              </div>
-            </b-col>
-            <b-col class="text-right" cols="3">
+            <b-col class="text-right" cols="4">
               <b-btn
                 v-b-modal.modal-1
                 variant="danger"

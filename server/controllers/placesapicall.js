@@ -11,17 +11,18 @@ const returnObj = {
     locations: []
   }
 }
-*/
+
 const locationProperties = {
   vertical: '',
   domain: '',
   branding: '',
+  class: '',
   address: '',
   city: '',
   state: '',
   zip: ''
 }
-
+*/
 async function run(locationProperties) {
   const latAndLong = await getLatLong(locationProperties)
 }
