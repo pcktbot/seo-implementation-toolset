@@ -279,9 +279,9 @@ export default {
       this.$refs.redirectsTable.clearSelected()
     },
     onTblDelete() {
-      // eslint-disable-next-line no-console
-      console.log(this.redirecttbl.selected.length > 0)
-      // if (this.redirecttbl.selected.length > 0) this.$emit('delete-location', 'redirecttbl')
+      if (this.location.properties.redirects.selected.length > 0) {
+        this.$emit('delete-redirects')
+      }
     }
   }
 }

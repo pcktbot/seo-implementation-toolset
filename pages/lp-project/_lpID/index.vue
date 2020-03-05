@@ -37,7 +37,7 @@
             @cell-update="updateCell"
             @del-row="removeRow"
             @select-location="onRowSelected"
-            @delete-location="onDelete"
+            @delete-redirects="onDeleteRedirects"
           />
         </b-col>
       </b-row>
@@ -106,12 +106,6 @@ export default {
       },
       selectedLocation: null,
       locations: [],
-      location: {
-        selected: null,
-        options: [
-          { value: null, text: 'Select Location' }
-        ]
-      },
       locationtbl: {
         fields: [
           {
@@ -130,7 +124,8 @@ export default {
           {
             key: 'status',
             label: 'Complete',
-            sortable: true
+            sortable: true,
+            class: 'text-center'
           }
         ],
         items: [],
@@ -211,22 +206,36 @@ export default {
     loadLocation(payload) {
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
     },
-    onDelete(tblname) {
-      const locIDs = this[tblname].selected
-        ? this[tblname].selected.map(selected => selected.value)
+    onDeleteRedirects() {
+      const i = this.locations.findIndex(loc => loc.id === this.selectedLocation.id)
+      const selectedRedirects = this.locations[i].properties.redirects.selected
+      selectedRedirects.forEach((selection) => {
+        const url = selection.current_url
+        this.locations[i].properties.redirects.items = this.locations[i].properties.redirects.items.filter(item => item.current_url !== url)
+      })
+      this.locations[i].properties.redirects.selected = []
+    },
+    onDelete() {
+      const locIDs = this.locationtbl.selected
+        ? this.locationtbl.selected.map(selected => selected.value)
         : null
       if (locIDs) {
         locIDs.forEach((locID) => {
-          this[tblname].items = this[tblname].items.filter(location => location.value !== locID || null)
           this.locations = this.locations.filter(location => location.id !== locID || null)
           this.selectedLocation = null
-          this[tblname].selected = []
           this.$axios.delete(`/api/lp-project/${this.form.inputs.lpId}/${locID}`)
+          this.locationtbl.items = this.locationtbl.items.filter(location => location.value !== locID || null)
+          this.locationtbl.selected = []
         })
       }
     },
     onRowSelected(items, tblname) {
-      this[tblname].selected = items
+      if (tblname === 'locationtbl') {
+        this[tblname].selected = items
+      } else {
+        const i = this.locations.findIndex(loc => loc.id === this.selectedLocation.id)
+        this.locations[i].properties.redirects.selected = items
+      }
     },
     onSave() {
       // TODO validate save payload

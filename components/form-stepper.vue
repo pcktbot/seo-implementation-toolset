@@ -76,7 +76,7 @@
           @cell-update="updateCell"
           @del-row="removeRow"
           @select-location="onRowSelected"
-          @delete-location="onDelete"
+          @delete-redirects="onDelete"
         />
       </b-tab>
       <b-tab title="Notes">
@@ -261,10 +261,8 @@ export default {
     onRowSelected(items, tblname) {
       this.$emit('select-location', items, tblname)
     },
-    onDelete(tblname) {
-      // eslint-disable-next-line no-console
-      console.log(tblname)
-      // this.$emit('delete-location', tblname)
+    onDelete() {
+      this.$emit('delete-redirects')
     }
   }
 }

@@ -31,10 +31,10 @@
           <b-btn
             @click="loadLocation(data.index)"
             href="#loctable"
-            variant="success"
+            variant="outline-secondary--lighten1"
             class="px-4"
             size="sm"
-            pill
+            block
           >
             Edit
           </b-btn>
@@ -90,8 +90,6 @@ export default {
   },
   computed: {
     msg() {
-      // eslint-disable-next-line no-console
-      console.log(this.locationtbl.selected.length)
       return this.locationtbl.selected.length > 0
         ? 'Are you sure you want to delete these locations? This is permanent..' : 'Please select location/s to delete'
     }
@@ -111,7 +109,7 @@ export default {
       this.$emit('load-location', payload)
     },
     onDelete() {
-      if (this.locationtbl.selected.length > 0) this.$emit('delete-location', 'locationtbl')
+      if (this.locationtbl.selected.length > 0) this.$emit('delete-location')
     }
   }
 }
