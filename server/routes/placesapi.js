@@ -5,7 +5,6 @@ module.exports = (app) => {
   app.put('/placesapi/placesRequest', async (req, res) => {
     const { props } = req.body
     const latAndLong = await newPlacesRequest.getLatLong(props)
-    console.log(latAndLong)
     const type = new Type({ ...latAndLong, ...props })
     await type.run()
     res.json(type.results)
