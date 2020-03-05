@@ -26,8 +26,6 @@ export default {
   },
   computed: {
     validation() {
-      // eslint-disable-next-line no-console
-      console.log(!!(this.form.inputs.file))
       return !!(this.form.inputs.file)
     }
   }

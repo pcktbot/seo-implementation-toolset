@@ -20,15 +20,15 @@
                 variant="danger"
                 class="px-4"
               >
-                Delete Location
+                Delete
               </b-btn>
               <b-modal
                 id="modal-1"
                 @ok="onDelete"
-                title="BootstrapVue"
+                title="Delete Location"
               >
                 <p class="my-4">
-                  Sure you want to delete this location?
+                  {{ msg }}
                 </p>
               </b-modal>
             </b-col>
@@ -47,6 +47,28 @@ export default {
       default() {
         return {}
       }
+    },
+    selectedLocation: {
+      type: Object,
+      default() {
+        return {}
+      }
+    }
+  },
+  computed: {
+    msg() {
+      return this.location.selected
+        ? 'Are you sure you want to delete this location? This is permanent..' : 'Please select a location to delete'
+    },
+    // this needs work
+    incompleteLocation() {
+      let val = true
+      if (this.location.selected) {
+        if (this.selectedLocation) {
+          val = false
+        }
+      }
+      return val
     }
   },
   methods: {
@@ -54,7 +76,7 @@ export default {
       this.$emit('load-location', payload)
     },
     onDelete() {
-      this.$emit('delete-location')
+      if (this.location.selected) this.$emit('delete-location')
     }
   }
 }

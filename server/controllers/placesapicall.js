@@ -11,7 +11,7 @@ const returnObj = {
     locations: []  --- array of strings that would be the "type 1" terms
   },
   landmark: {
-    locations: []  -- array of stringsthat would be the type 2 terms from 
+    locations: []  -- array of stringsthat would be the type 2 terms from
   }
 }
 */

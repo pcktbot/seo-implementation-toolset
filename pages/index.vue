@@ -157,7 +157,7 @@ export default {
             lpId: this.form.inputs.lpId,
             selects: this.form.selects
           }).then((res) => {
-            window.open(`/lp-project/${this.form.inputs.lpId}`)
+            window.open(`/lp-project/${this.form.inputs.lpId}`, '_self')
             this.form.loading = false
           })
       })
