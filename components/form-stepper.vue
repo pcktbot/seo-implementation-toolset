@@ -1,11 +1,11 @@
 <template>
-  <b-card no-body class="my-5">
+  <b-card id="loctable" no-body class="my-2">
     <b-card-header class="d-flex justify-content-between text-left">
-      <h3 class="my-auto">
+      <h4 class="my-auto">
         Fill in Client Data
-      </h3>
+      </h4>
       <div class="my-auto">
-        {{ `Address: ${location.properties.street_address_1} ${location.properties.city} ${location.properties.state} ${location.properties.postal_code}` }}
+        {{ `Name: ${location.name} || Address: ${location.properties.street_address_1} ${location.properties.city} ${location.properties.state} ${location.properties.postal_code}` }}
       </div>
     </b-card-header>
     <b-tabs card content-class="my-2">

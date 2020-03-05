@@ -30,6 +30,7 @@
         <template v-slot:cell(edit)="data">
           <b-btn
             @click="loadLocation(data.index)"
+            href="#loctable"
             variant="success"
             class="px-4"
             size="sm"

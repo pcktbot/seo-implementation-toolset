@@ -5,12 +5,7 @@
       <b-row>
         <b-col>
           <b-card no-body class="my-3">
-            <b-card-header>
-              <h3 class="mb-1">
-                Complete Options Below
-              </h3>
-            </b-card-header>
-            <b-card-body class="py-5">
+            <b-card-body class="pt-3 pb-2">
               <initial-selections
                 :form="form"
                 @upload-data="onUpload"
@@ -18,17 +13,17 @@
                 @field-update="updateSelect"
                 @input-update="updateInput"
               />
+              <location-table
+                :locationtbl="locationtbl"
+                :selectedLocation="selectedLocation"
+                @delete-location="onDelete"
+                @select-location="onRowSelected"
+                @load-location="loadLocation"
+              />
             </b-card-body>
           </b-card>
         </b-col>
       </b-row>
-      <location-table
-        :locationtbl="locationtbl"
-        :selectedLocation="selectedLocation"
-        @delete-location="onDelete"
-        @select-location="onRowSelected"
-        @load-location="loadLocation"
-      />
       <b-row no-gutters>
         <b-col cols="12">
           <form-stepper
@@ -72,8 +67,8 @@ export default {
         msg: '',
         alertvariant: '',
         successLoadMsg: 'Successfully loaded locations',
-        errLoadMsg: 'Error loading locations, check to ensure the url is using the correct LP ID',
-        csvSuccessMsg: 'Your new locations have beeen successfully added, please select a location below',
+        errLoadMsg: 'Error loading location/s, check to ensure the url is using the correct LP ID',
+        csvSuccessMsg: 'Your new location/s have beeen successfully added, please select a location below',
         csvErrMsg: 'There was an error uploading the csv',
         selects: [
           {
@@ -192,16 +187,8 @@ export default {
       })
     })
     this.$axios.$get(`api/locations/${lpID}`).then((res) => {
-      // adds location data to front end and fills out location drop down
+      // adds location data to front end and fills out location table
       this.locations = res
-      // adds data to drop down
-      this.location.options = [
-        { value: null, text: 'Select Location' },
-        ...res.map((location) => {
-          const { name, properties } = location
-          return { value: location.id, text: `${name} - ${properties.street_address_1}` }
-        })
-      ]
       // adds data to table
       this.locationtbl.items = [
         ...res.map((location) => {
@@ -209,15 +196,13 @@ export default {
           return { select: false, location: `${name} - ${properties.street_address_1}`, status: properties.locationComplete, value: location.id }
         })
       ]
-      this.location.options.length > 1
+      this.locationtbl.items.length > 1
         ? this.setMsgConfig(this.form.successLoadMsg, 'success', true)
         : this.setMsgConfig(this.form.errLoadMsg, 'danger', true)
     })
   },
   methods: {
     loadLocation(payload) {
-      // eslint-disable-next-line no-console
-      console.log(payload)
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
     },
     onDelete() {
@@ -245,9 +230,15 @@ export default {
           locations: this.locations
         })
     },
-    locationComplete() {
+    updateLocationStatus(i) {
       const locProp = this.selectedLocation.properties
-      return locProp.stepOneComplete && locProp.stepTwoComplete && locProp.stepThreeComplete
+      if (locProp.stepOneComplete && locProp.stepTwoComplete && locProp.stepThreeComplete) {
+        this.locations[i].properties.locationComplete = true
+        this.locationtbl.items[i].status = true
+      } else {
+        this.locations[i].properties.locationComplete = false
+        this.locationtbl.items[i].status = false
+      }
     },
     onUpdate({ key, val, id }) {
       const i = this.locations.findIndex(loc => loc.id === id)
@@ -256,7 +247,7 @@ export default {
       } else {
         this.locations[i].properties[key] = val
       }
-      this.locationComplete() ? this.locations[i].properties.locationComplete = true : this.locations[i].properties.locationComplete = false
+      this.updateLocationStatus(i)
     },
     updateCell({ key, val, index, col, id }) {
       const i = this.locations.findIndex(loc => loc.id === id)
@@ -300,10 +291,10 @@ export default {
       }).then((res) => {
         // adds location data to front end and fills out location drop down
         this.locations.push(...res)
-        this.location.options.push(...[
+        this.locationtbl.items.push(...[
           ...res.map((location) => {
             const { name, properties } = location
-            return { value: location.id, text: `${name} - ${properties.street_address_1}` }
+            return { select: false, location: `${name} - ${properties.street_address_1}`, status: properties.locationComplete, value: location.id }
           })
         ])
         this.form.loading = false

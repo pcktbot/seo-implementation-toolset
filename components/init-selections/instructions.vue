@@ -17,7 +17,7 @@
     </b-row>
     <b-row v-else>
       <b-col class="text-center mb-3">
-        <p>To Add Locations, first select a file and Click Add Locations</p>
+        <h5>To Add Locations, first select a file and Click Add Locations</h5>
       </b-col>
     </b-row>
   </b-container>
