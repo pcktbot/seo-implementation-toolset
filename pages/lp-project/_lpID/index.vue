@@ -30,11 +30,14 @@
             v-if="selectedLocation"
             :location="selectedLocation"
             :form="form"
+            :redirecttbl="redirecttbl"
             @stepper-updated="onUpdate"
             @save-step="onSave"
             @add-rows="addRows"
             @cell-update="updateCell"
             @del-row="removeRow"
+            @select-location="onRowSelected"
+            @delete-location="onDelete"
           />
         </b-col>
       </b-row>
@@ -154,7 +157,10 @@ export default {
             key: 'wildcard',
             label: 'Wildcard'
           },
-          'remove'
+          {
+            key: 'select',
+            label: 'Select'
+          }
         ],
         items: []
       }
@@ -205,22 +211,22 @@ export default {
     loadLocation(payload) {
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
     },
-    onDelete() {
-      const locIDs = this.locationtbl.selected
-        ? this.locationtbl.selected.map(selected => selected.value)
+    onDelete(tblname) {
+      const locIDs = this[tblname].selected
+        ? this[tblname].selected.map(selected => selected.value)
         : null
       if (locIDs) {
         locIDs.forEach((locID) => {
-          this.locationtbl.items = this.locationtbl.items.filter(location => location.value !== locID || null)
+          this[tblname].items = this[tblname].items.filter(location => location.value !== locID || null)
           this.locations = this.locations.filter(location => location.id !== locID || null)
           this.selectedLocation = null
-          this.locationtbl.selected = []
+          this[tblname].selected = []
           this.$axios.delete(`/api/lp-project/${this.form.inputs.lpId}/${locID}`)
         })
       }
     },
-    onRowSelected(items) {
-      this.locationtbl.selected = items
+    onRowSelected(items, tblname) {
+      this[tblname].selected = items
     },
     onSave() {
       // TODO validate save payload

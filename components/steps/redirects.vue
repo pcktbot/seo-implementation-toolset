@@ -64,13 +64,16 @@
     <b-row>
       <b-col>
         <b-table
+          ref="redirectsTable"
           :fields="location.properties.redirects.fields"
           :items="location.properties.redirects.items"
-          sticky-header="50rem"
+          @row-selected="onRowSelected"
+          selectable
+          sticky-header="20rem"
           responsive
           striped
           hover
-          head-variant="dark"
+          head-variant="light"
           class="self-align-center table mt-4"
         >
           <template v-slot:cell(strategy)="data" class="align-self-center">
@@ -107,18 +110,26 @@
               class="w-50"
             />
           </template>
-          <template v-slot:cell(remove)="data">
-            <b-btn
-              @click="removeRow(data.index)"
-              variant="danger"
-              class="px-4"
-              size="sm"
-              pill
-            >
-              Delete
-            </b-btn>
+          <template v-slot:cell(select)="{ rowSelected }">
+            <template v-if="rowSelected">
+              <b-icon class="h4 mb-0" icon="check" variant="success" />
+            </template>
+            <template v-else>
+              <b-icon class="h4 mb-0" icon="square" />
+            </template>
           </template>
         </b-table>
+        <p>
+          <b-button @click="selectAllRows" size="sm">
+            Select all
+          </b-button>
+          <b-button @click="clearSelected" size="sm">
+            Clear selected
+          </b-button>
+          <b-button @click="onTblDelete" variant="danger" size="sm">
+            Delete Selected
+          </b-button>
+        </p>
       </b-col>
     </b-row>
   </b-container>
@@ -134,6 +145,12 @@ export default {
       }
     },
     validation: {
+      type: Object,
+      default() {
+        return {}
+      }
+    },
+    redirecttbl: {
       type: Object,
       default() {
         return {}
@@ -251,6 +268,20 @@ export default {
         this.$emit('step-update', { key: 'stepThreeComplete', val: false, id: this.location.id })
       }
       this.$emit('del-row', { index, id: this.location.id })
+    },
+    onRowSelected(items) {
+      this.$emit('select-location', items, 'redirecttbl')
+    },
+    selectAllRows() {
+      this.$refs.redirectsTable.selectAllRows()
+    },
+    clearSelected() {
+      this.$refs.redirectsTable.clearSelected()
+    },
+    onTblDelete() {
+      // eslint-disable-next-line no-console
+      console.log(this.redirecttbl.selected.length > 0)
+      // if (this.redirecttbl.selected.length > 0) this.$emit('delete-location', 'redirecttbl')
     }
   }
 }

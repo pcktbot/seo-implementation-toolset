@@ -69,11 +69,14 @@
         <redirects
           :location="location"
           :validation="validation"
+          :redirecttbl="redirecttbl"
           @add-rows="addRows"
           @step-save="onSave"
           @step-update="onUpdate"
           @cell-update="updateCell"
           @del-row="removeRow"
+          @select-location="onRowSelected"
+          @delete-location="onDelete"
         />
       </b-tab>
       <b-tab title="Notes">
@@ -101,6 +104,12 @@ export default {
       }
     },
     form: {
+      type: Object,
+      default() {
+        return {}
+      }
+    },
+    redirecttbl: {
       type: Object,
       default() {
         return {}
@@ -248,6 +257,14 @@ export default {
     },
     removeRow(index, id) {
       this.$emit('del-row', index, id)
+    },
+    onRowSelected(items, tblname) {
+      this.$emit('select-location', items, tblname)
+    },
+    onDelete(tblname) {
+      // eslint-disable-next-line no-console
+      console.log(tblname)
+      // this.$emit('delete-location', tblname)
     }
   }
 }

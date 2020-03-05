@@ -98,7 +98,7 @@ export default {
   },
   methods: {
     onRowSelected(items) {
-      this.$emit('select-location', items)
+      this.$emit('select-location', items, 'locationtbl')
     },
     selectAllRows() {
       this.$refs.selectableTable.selectAllRows()
@@ -111,7 +111,7 @@ export default {
       this.$emit('load-location', payload)
     },
     onDelete() {
-      if (this.locationtbl.selected.length > 0) this.$emit('delete-location')
+      if (this.locationtbl.selected.length > 0) this.$emit('delete-location', 'locationtbl')
     }
   }
 }
