@@ -13,6 +13,7 @@
       </b-col>
       <b-col class="text-right">
         <b-btn
+          :disabled="validateStepOne1"
           @click="onSave"
           variant="outline-secondary--darken3"
           class="px-4"
@@ -35,6 +36,7 @@
         >
           <b-form-input
             :id="`input-${input}`"
+            :state="validation(input)"
             :value="form[input]"
             :placeholder="`Enter ${input}`"
             @input="onInput(input, $event)"
@@ -102,6 +104,16 @@ export default {
     }
   },
   computed: {
+    validateStepOne1() {
+      let valid = false
+      for (const prop in this.form) {
+        if (this.form[prop] === '' || this.form[prop] === null) {
+          valid = true
+          break
+        }
+      }
+      return valid
+    },
     form: {
       get() {
         return {
@@ -120,6 +132,14 @@ export default {
     }
   },
   methods: {
+    validation(field) {
+      let valid = true
+      if (this.form[field] === '' || this.form[field] === null) {
+        valid = false
+      }
+      if (field === 'recommended_name') valid = null
+      return valid
+    },
     validateStepOne() {
       let valid = true
       for (const prop in this.form) {

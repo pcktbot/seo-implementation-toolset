@@ -101,7 +101,8 @@ export default {
             label: 'Select'
           }
         ],
-        items: []
+        items: [],
+        selected: []
       }
     }
   },
