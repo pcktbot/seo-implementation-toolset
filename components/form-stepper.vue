@@ -151,11 +151,15 @@ export default {
             mf: [
               'neighborhood_keywords',
               'landmark_keywords',
-              'amenity_keywords'
+              'amenity_keywords',
+              'api_neighborhood_keywords',
+              'api_landmark_keywords'
             ],
             other: [
               'neighborhood_keywords',
-              'landmark_keywords'
+              'landmark_keywords',
+              'api_neighborhood_keywords',
+              'api_landmark_keywords'
             ]
           },
           phrases: {

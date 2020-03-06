@@ -80,7 +80,17 @@
           variant="outline-secondary--darken3"
           class="px-4"
         >
-          Get Keywords / Phrases
+          <div class="d-flex justify-content-center">
+            Get Keywords
+            <b-spinner v-if="loading" class="mt-1 ml-1" small label="Loading..." />
+          </div>
+        </b-btn>
+        <b-btn
+          @click="getPhrases"
+          variant="outline-secondary--darken3"
+          class="px-4"
+        >
+          Get Phrases
         </b-btn>
       </b-col>
     </b-row>
@@ -92,7 +102,7 @@
       >
         <b-form-group
           :for="`textarea-${keyword}`"
-          :label="`PASTE ${keyword.replace(/_/g,' ').toUpperCase()} HERE`"
+          :label="`${keyword.replace(/_/g,' ').toUpperCase()}`"
           class="pb-0 text-left text-uppercase"
         >
           <b-form-textarea
@@ -172,6 +182,7 @@ export default {
   data () {
     return {
       hasMsg: false,
+      loading: false,
       msg: '',
       alertvariant: '',
       mfRequiredFields: [
@@ -249,7 +260,28 @@ export default {
       this.$emit('step-update', { key, val, id: this.location.id })
     },
     getKeywords() {
-      // needs to send vertical, address to back end to call Google Places API
+      this.loading = true
+      const props = {
+        vertical: this.form.selects[0].value,
+        address: this.location.properties.street_address_1,
+        class: this.location.properties.class,
+        city: this.location.properties.city,
+        state: this.location.properties.state,
+        zip: this.location.properties.postal_code
+      }
+      this.$axios.$put('/placesapi/placesRequest', { props })
+        .then((res) => {
+          // eslint-disable-next-line no-console
+          console.log(res)
+          this.loading = false
+        }).catch((err) => {
+          // eslint-disable-next-line no-console
+          console.log(err)
+          this.loading = false
+        })
+    },
+    getPhrases() {
+
     },
     onInput(key, val) {
       this.$emit('step-update', { key, val, id: this.location.id })
