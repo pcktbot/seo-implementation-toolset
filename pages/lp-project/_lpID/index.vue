@@ -35,9 +35,9 @@
             @save-step="onSave"
             @add-rows="addRows"
             @cell-update="updateCell"
-            @del-row="removeRow"
             @select-location="onRowSelected"
             @delete-redirects="onDeleteRedirects"
+            @toggle-wildcard="toggleWildcard"
           />
         </b-col>
       </b-row>
@@ -149,10 +149,6 @@ export default {
             sortable: true
           },
           {
-            key: 'wildcard',
-            label: 'Wildcard'
-          },
-          {
             key: 'select',
             label: 'Select'
           }
@@ -203,11 +199,28 @@ export default {
     })
   },
   methods: {
+    getLocationIndex() {
+      return this.locations.findIndex(loc => loc.id === this.selectedLocation.id)
+    },
     loadLocation(payload) {
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
     },
+    // toggleWildcard() {
+    //   const i = this.getLocationIndex()
+    //   const redirects = this.locations[i].properties.redirects
+    //   redirects.selected.forEach((selection) => {
+    //     if (selection.strategy === 'Same Domain') {
+    //       const url = selection.current_url
+    //       const rowIndex = redirects.items.findIndex(item => item.current_url === url)
+    //       url[url.length - 1] === '$'
+    //         ? this.locations[i].properties.redirects.items[rowIndex] = url.slice(0, -1)
+    //         : this.locations[i].properties.redirects.items[rowIndex] = `${url}$`
+    //     }
+    //   })
+    //   this.locations[i].properties.redirects.selected = []
+    // },
     onDeleteRedirects() {
-      const i = this.locations.findIndex(loc => loc.id === this.selectedLocation.id)
+      const i = this.getLocationIndex()
       const selectedRedirects = this.locations[i].properties.redirects.selected
       selectedRedirects.forEach((selection) => {
         const url = selection.current_url
@@ -267,10 +280,6 @@ export default {
     updateCell({ key, val, index, col, id }) {
       const i = this.locations.findIndex(loc => loc.id === id)
       this.locations[i].properties.redirects.items[index][col] = val
-    },
-    removeRow({ index, id }) {
-      const i = this.locations.findIndex(loc => loc.id === id)
-      this.locations[i].properties.redirects.items.splice(index, 1)
     },
     addRows(val, { id }) {
       const i = this.locations.findIndex(loc => loc.id === id)

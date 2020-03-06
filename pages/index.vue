@@ -97,10 +97,9 @@ export default {
             sortable: true
           },
           {
-            key: 'wildcard',
-            label: 'Wildcard'
-          },
-          'remove'
+            key: 'select',
+            label: 'Select'
+          }
         ],
         items: []
       }

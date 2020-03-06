@@ -101,15 +101,6 @@
               @input="onChangeCell('redirects', $event, data.index, 'formatted_url')"
             />
           </template>
-          <template v-slot:cell(wildcard)="data">
-            <b-form-select
-              id="wildcard-selection"
-              :value="validation.stepthreefields.wildcard.selected"
-              :options="validation.stepthreefields.wildcard.options"
-              @change="onChangeCell('redirects', $event, data.index, 'wildcard')"
-              class="w-50"
-            />
-          </template>
           <template v-slot:cell(select)="{ rowSelected }">
             <template v-if="rowSelected">
               <b-icon class="h4 mb-0" icon="check" variant="success" />
@@ -125,6 +116,9 @@
           </b-button>
           <b-button @click="clearSelected" size="sm">
             Clear selected
+          </b-button>
+          <b-button @click="toggleWildcard" size="sm">
+            Toggle Selected Wildcard
           </b-button>
           <b-button @click="onTblDelete" variant="danger" size="sm">
             Delete Selected
@@ -236,12 +230,12 @@ export default {
         this.showMsg('Please select strategy and paste redirects below')
       } else {
         const table = currentStrat === 'No Redirects'
-          ? [{ isActive: true, strategy: currentStrat, current_url: 'N/A', formatted_url: 'N/A', wildcard: 'No' }]
+          ? [{ isActive: true, strategy: currentStrat, current_url: 'N/A', formatted_url: 'N/A' }]
           : []
         const redirectArr = this.getRedirectsArr()
         redirectArr.forEach((redirect) => {
           const cloudFormatted = this.formatRedirect(redirect, currentStrat)
-          table.push({ isActive: true, strategy: currentStrat, current_url: redirect, formatted_url: cloudFormatted, wildcard: 'No' })
+          table.push({ isActive: true, strategy: currentStrat, current_url: redirect, formatted_url: cloudFormatted })
         })
         this.$emit('add-rows', table, { id: this.location.id })
       }
@@ -263,12 +257,6 @@ export default {
     onInput(key, val) {
       this.$emit('step-update', { key, val, id: this.location.id })
     },
-    removeRow(index) {
-      if (this.location.properties.redirects.items.length === 1) {
-        this.$emit('step-update', { key: 'stepThreeComplete', val: false, id: this.location.id })
-      }
-      this.$emit('del-row', { index, id: this.location.id })
-    },
     onRowSelected(items) {
       this.$emit('select-location', items, 'redirecttbl')
     },
@@ -282,6 +270,9 @@ export default {
       if (this.location.properties.redirects.selected.length > 0) {
         this.$emit('delete-redirects')
       }
+    },
+    toggleWildcard() {
+      this.$emit('toggle-wildcard')
     }
   }
 }

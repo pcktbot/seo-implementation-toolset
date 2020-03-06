@@ -74,9 +74,9 @@
           @step-save="onSave"
           @step-update="onUpdate"
           @cell-update="updateCell"
-          @del-row="removeRow"
           @select-location="onRowSelected"
           @delete-redirects="onDelete"
+          @toggle-wildcard="toggleWildcard"
         />
       </b-tab>
       <b-tab title="Notes">
@@ -200,14 +200,6 @@ export default {
               { value: 'Secure Naked Same Domain', text: 'Secure Naked Same Domain' },
               { value: 'No Redirects', text: 'No Redirects' }
             ]
-          },
-          wildcard: {
-            selected: 'no',
-            options: [
-              { value: null, text: 'Select' },
-              { value: 'no', text: 'No' },
-              { value: 'yes', text: 'Yes' }
-            ]
           }
         }
       },
@@ -259,14 +251,14 @@ export default {
     updateCell(key, val, index, col, id) {
       this.$emit('cell-update', key, val, index, col, id)
     },
-    removeRow(index, id) {
-      this.$emit('del-row', index, id)
-    },
     onRowSelected(items, tblname) {
       this.$emit('select-location', items, tblname)
     },
     onDelete() {
       this.$emit('delete-redirects')
+    },
+    toggleWildcard() {
+      this.$emit('toggle-wildcard')
     }
   }
 }
