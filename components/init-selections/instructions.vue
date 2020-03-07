@@ -8,7 +8,7 @@
             v-model="toggle.selected"
             :options="toggle.options"
             buttons
-            button-variant="outline-primary"
+            button-variant="outline-secondary"
             size="md"
             name="radio-btn-outline"
           />
@@ -48,5 +48,8 @@ export default {
 </script>
 
 <style>
-
+.btn-outline-secondary:hover {
+  border-color:#a1b5be;
+  background-color:#a1b5be;
+}
 </style>

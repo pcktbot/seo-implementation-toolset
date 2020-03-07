@@ -221,12 +221,12 @@ export default {
     },
     onDeleteRedirects() {
       const i = this.getLocationIndex()
-      const selectedRedirects = this.locations[i].properties.redirects.selected
-      selectedRedirects.forEach((selection) => {
+      const redirects = this.locations[i].properties.redirects
+      redirects.selected.forEach((selection) => {
         const url = selection.current_url
-        this.locations[i].properties.redirects.items = this.locations[i].properties.redirects.items.filter(item => item.current_url !== url)
+        redirects.items = redirects.items.filter(item => item.current_url !== url)
       })
-      this.locations[i].properties.redirects.selected = []
+      redirects.selected = []
     },
     onDelete() {
       const locIDs = this.locationtbl.selected
