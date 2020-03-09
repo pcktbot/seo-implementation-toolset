@@ -153,7 +153,8 @@ export default {
             label: 'Select'
           }
         ],
-        items: []
+        items: [],
+        selected: []
       }
     }
   },
@@ -205,28 +206,27 @@ export default {
     loadLocation(payload) {
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
     },
-    // toggleWildcard() {
-    //   const i = this.getLocationIndex()
-    //   const redirects = this.locations[i].properties.redirects
-    //   redirects.selected.forEach((selection) => {
-    //     if (selection.strategy === 'Same Domain') {
-    //       const url = selection.current_url
-    //       const rowIndex = redirects.items.findIndex(item => item.current_url === url)
-    //       url[url.length - 1] === '$'
-    //         ? this.locations[i].properties.redirects.items[rowIndex] = url.slice(0, -1)
-    //         : this.locations[i].properties.redirects.items[rowIndex] = `${url}$`
-    //     }
-    //   })
-    //   this.locations[i].properties.redirects.selected = []
-    // },
+    toggleWildcard() {
+      const i = this.getLocationIndex()
+      const redirects = this.locations[i].properties.redirects
+      redirects.selected.forEach((selection) => {
+        if (selection.strategy === 'Same Domain') {
+          const url = selection.formatted_url
+          const rowIndex = redirects.items.findIndex(item => item.formatted_url === url)
+          url[url.length - 1] === '$'
+            ? redirects.items[rowIndex].formatted_url = url.slice(0, -1)
+            : redirects.items[rowIndex].formatted_url = `${url}$`
+        }
+      })
+    },
     onDeleteRedirects() {
       const i = this.getLocationIndex()
-      const selectedRedirects = this.locations[i].properties.redirects.selected
-      selectedRedirects.forEach((selection) => {
+      const redirects = this.locations[i].properties.redirects
+      redirects.selected.forEach((selection) => {
         const url = selection.current_url
-        this.locations[i].properties.redirects.items = this.locations[i].properties.redirects.items.filter(item => item.current_url !== url)
+        redirects.items = redirects.items.filter(item => item.current_url !== url)
       })
-      this.locations[i].properties.redirects.selected = []
+      redirects.selected = []
     },
     onDelete() {
       const locIDs = this.locationtbl.selected

@@ -16,6 +16,15 @@ html {
   box-sizing: border-box;
   scroll-behavior: smooth;
 }
+label {
+  margin-bottom: 0.25rem;
+  margin-left: .25rem;
+}
+
+.col-3, .col-4 {
+  padding: .5rem;
+}
+
 *,
 *:before,
 *:after {

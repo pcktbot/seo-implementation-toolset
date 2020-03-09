@@ -1,18 +1,6 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col class="text-left">
-        <b-alert
-          :show="hasMsg"
-          :variant="alertvariant"
-          @dismissed="hasMsg=false, alertvariant='', msg=''"
-          dismissible
-        >
-          {{ msg }}
-        </b-alert>
-      </b-col>
-    </b-row>
-    <b-row>
       <b-col class="text-center">
         <p class="font-italic">
           Please select a strategy and paste all redirects below
@@ -110,20 +98,38 @@
             </template>
           </template>
         </b-table>
-        <p>
-          <b-button @click="selectAllRows" size="sm">
-            Select all
-          </b-button>
-          <b-button @click="clearSelected" size="sm">
-            Clear selected
-          </b-button>
-          <b-button @click="toggleWildcard" size="sm">
-            Toggle Selected Wildcard
-          </b-button>
-          <b-button @click="onTblDelete" variant="danger" size="sm">
-            Delete Selected
-          </b-button>
-        </p>
+        <b-row>
+          <b-col>
+            <p>
+              <b-button
+                @click="selectAllRows"
+                size="sm"
+              >
+                Select all
+              </b-button>
+              <b-button @click="clearSelected" size="sm">
+                Clear selected
+              </b-button>
+              <b-button @click="toggleWildcard" size="sm">
+                Toggle Selected Wildcard
+              </b-button>
+              <b-button @click="onTblDelete" variant="danger" size="sm">
+                Delete Selected
+              </b-button>
+            </p>
+          </b-col>
+          <b-col class="text-left">
+            <b-alert
+              :show="hasMsg"
+              :variant="alertvariant"
+              @dismissed="hasMsg=false, alertvariant='', msg=''"
+              dismissible
+              class="m-0 px-1 py-1"
+            >
+              {{ msg }}
+            </b-alert>
+          </b-col>
+        </b-row>
       </b-col>
     </b-row>
   </b-container>
@@ -159,6 +165,9 @@ export default {
     }
   },
   computed: {
+    isDisabled() {
+      return this.location.properties.redirects.selected
+    },
     form: {
       get() {
         return {
@@ -174,9 +183,9 @@ export default {
     validateStepThree() {
       return this.location.properties.redirects.items.length > 0
     },
-    showMsg(msg) {
+    showMsg(msg, variant) {
       this.msg = msg
-      this.alertvariant = 'danger'
+      this.alertvariant = variant
       this.hasMsg = true
     },
     getRedirectsArr() {
@@ -227,7 +236,7 @@ export default {
     formatRedirects() {
       const currentStrat = this.location.properties.redirectstrat
       if (!currentStrat) {
-        this.showMsg('Please select strategy and paste redirects below')
+        this.showMsg('Please select strategy and paste redirects below', 'danger')
       } else {
         const table = currentStrat === 'No Redirects'
           ? [{ isActive: true, strategy: currentStrat, current_url: 'N/A', formatted_url: 'N/A' }]
@@ -238,6 +247,7 @@ export default {
           table.push({ isActive: true, strategy: currentStrat, current_url: redirect, formatted_url: cloudFormatted })
         })
         this.$emit('add-rows', table, { id: this.location.id })
+        this.showMsg(`${table.length} Row/s Added`, `${table.length ? 'success' : 'danger'}`)
       }
     },
     onSave() {
@@ -247,7 +257,7 @@ export default {
       if (val) {
         this.$emit('step-save')
       } else {
-        this.showMsg('Please ensure table has itleast one row')
+        this.showMsg('Please ensure table has itleast one row', 'danger')
       }
       this.$emit('step-update', { key, val, id: this.location.id })
     },
@@ -273,11 +283,14 @@ export default {
     },
     toggleWildcard() {
       this.$emit('toggle-wildcard')
+      this.$refs.redirectsTable.clearSelected()
     }
   }
 }
 </script>
 
 <style>
-
+  .alert-dismissible .close {
+    padding: 0.25rem 1.25rem;
+  }
 </style>
