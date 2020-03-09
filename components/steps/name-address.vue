@@ -1,5 +1,9 @@
 <template>
   <b-container fluid>
+    <b-modal ref="usps-res">
+      {{ form }}
+      {{ res }}
+    </b-modal>
     <b-row class="align-items-center pb-2">
       <b-col class="text-left">
         <b-alert
@@ -173,6 +177,10 @@ export default {
     async verifyAddress() {
       const res = await this.$axios.post('/routes/uspsapi/verify-address', { form: this.form })
       this.res = res
+      this.showModal()
+    },
+    showModal() {
+      this.$refs['usps-res'].show()
     }
   }
 }
