@@ -1,5 +1,9 @@
 <template>
   <b-container fluid>
+    <b-modal ref="usps-res">
+      {{ form }}
+      {{ res }}
+    </b-modal>
     <b-row class="align-items-center pb-2">
       <b-col class="text-left">
         <b-alert
@@ -60,6 +64,7 @@
         cols="4"
         class="align-self-center pt-3"
       >
+        {{ res }}
         <b-btn
           @click="verifyAddress"
           variant="outline-secondary--darken3"
@@ -97,6 +102,7 @@ export default {
   data () {
     return {
       hasMsg: false,
+      res: null,
       msg: '',
       alertvariant: '',
       uspsLink: 'https://tools.usps.com/zip-code-lookup.htm?byaddress'
@@ -171,6 +177,10 @@ export default {
     async verifyAddress() {
       const res = await this.$axios.post('/routes/uspsapi/verify-address', { form: this.form })
       this.res = res
+      this.showModal()
+    },
+    showModal() {
+      this.$refs['usps-res'].show()
     }
   }
 }
