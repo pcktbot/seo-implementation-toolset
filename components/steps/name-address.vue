@@ -60,6 +60,7 @@
         cols="4"
         class="align-self-center pt-3"
       >
+        {{ res }}
         <b-btn
           @click="verifyAddress"
           variant="outline-secondary--darken3"
@@ -97,6 +98,7 @@ export default {
   data () {
     return {
       hasMsg: false,
+      res: null,
       msg: '',
       alertvariant: '',
       uspsLink: 'https://tools.usps.com/zip-code-lookup.htm?byaddress'
