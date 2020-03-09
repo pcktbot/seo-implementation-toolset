@@ -1,6 +1,6 @@
 const axios = require('axios')
-const diacriticsRemovalMap = require('../config/diacritics')
-const typesMap = require('../config/typesmap')
+// const diacriticsRemovalMap = require('../config/diacritics')
+// const typesMap = require('../config/typesmap')
 module.exports = {
   getLatLong
 }

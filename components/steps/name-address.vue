@@ -59,8 +59,7 @@
         class="align-self-center pt-3"
       >
         <b-btn
-          :href="uspsLink"
-          target="_blank"
+          @click="verifyAddress"
           variant="outline-secondary--darken3"
           class="px-4"
         >
@@ -148,6 +147,10 @@ export default {
         this.showMsg('Please ensure all fields are filled out')
       }
       this.$emit('step-update', { key, val, id: this.location.id })
+    },
+    async verifyAddress() {
+      const res = await this.$axios.post('/routes/uspsapi/verify-address', { form: this.form })
+      this.res = res
     }
   }
 }

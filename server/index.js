@@ -9,6 +9,7 @@ const models = require('./models')
 app.use(bodyParser.json({ limit: '10000kb' }))
 require('./routes/api')(app)
 require('./routes/placesapi')(app)
+require('./routes/uspsapi')(app)
 // Import and Set Nuxt.js options
 
 config.dev = process.env.NODE_ENV !== 'production'
