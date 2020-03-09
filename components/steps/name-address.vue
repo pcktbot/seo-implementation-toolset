@@ -1,9 +1,10 @@
 <template>
   <b-container fluid>
-    <b-modal ref="usps-res">
-      {{ form }}
-      {{ res }}
-    </b-modal>
+    <usps-modal
+      :form="form"
+      :res="res"
+      @update-address="updateAddress"
+    />
     <b-row class="align-items-center pb-2">
       <b-col class="text-left">
         <b-alert
@@ -56,6 +57,7 @@
         <b-form-select
           id="uspsvalid"
           :value="form.uspsvalid"
+          :state="form.uspsvalid !== null"
           :options="uspsvalid.options"
           @change="onInput('uspsvalid', $event)"
         />
@@ -64,8 +66,8 @@
         cols="4"
         class="align-self-center pt-3"
       >
-        {{ res }}
         <b-btn
+          v-b-modal.usps-modal
           @click="verifyAddress"
           variant="outline-secondary--darken3"
           class="px-4"
@@ -78,7 +80,11 @@
 </template>
 
 <script>
+import UspsModal from '~/components/modals/usps-modal'
 export default {
+  components: {
+    UspsModal
+  },
   props: {
     inputs: {
       type: Array,
@@ -110,14 +116,8 @@ export default {
   },
   computed: {
     validateStepOne1() {
-      let valid = false
-      for (const prop in this.form) {
-        if (this.form[prop] === '' || this.form[prop] === null) {
-          valid = true
-          break
-        }
-      }
-      return valid
+      const valid = this.validateStepOne()
+      return !valid
     },
     form: {
       get() {
@@ -177,10 +177,9 @@ export default {
     async verifyAddress() {
       const res = await this.$axios.post('/routes/uspsapi/verify-address', { form: this.form })
       this.res = res
-      this.showModal()
     },
-    showModal() {
-      this.$refs['usps-res'].show()
+    updateAddress(data) {
+      this.$emit('update-address', data)
     }
   }
 }

@@ -38,6 +38,7 @@
             @select-location="onRowSelected"
             @delete-redirects="onDeleteRedirects"
             @toggle-wildcard="toggleWildcard"
+            @update-address="updateAddress"
           />
         </b-col>
       </b-row>
@@ -200,6 +201,12 @@ export default {
     })
   },
   methods: {
+    updateAddress(data) {
+      const i = this.getLocationIndex()
+      for (const prop in data) {
+        this.locations[i].properties[prop] = data[prop]
+      }
+    },
     getLocationIndex() {
       return this.locations.findIndex(loc => loc.id === this.selectedLocation.id)
     },

@@ -28,6 +28,7 @@
           :uspsvalid="uspsvalid"
           @step-update="onUpdate"
           @step-save="onSave"
+          @update-address="updateAddress"
         />
       </b-tab>
       <b-tab>
@@ -259,6 +260,9 @@ export default {
     },
     toggleWildcard() {
       this.$emit('toggle-wildcard')
+    },
+    updateAddress(data) {
+      this.$emit('update-address', data)
     }
   }
 }
