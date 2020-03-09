@@ -1,13 +1,14 @@
 const axios = require('axios')
 const xmlparser = require('xml-js')
 const { USPS_API_KEY } = process.env
+const { USPS_USER_ID } = process.env
 module.exports = (app) => {
   // USPS API Routes
   app.post('/routes/uspsapi/verify-address', async (req, res) => {
     // console.log(req.body)
     const { street_address_1, city, state, postal_code, country } = req.body.form
     const address = `
-    <AddressValidateRequest USERID="314G5SEA1662">
+    <AddressValidateRequest USERID="${USPS_USER_ID}">
         <Revision>1</Revision>
             <Address ID="0">
                 <Address1></Address1>
