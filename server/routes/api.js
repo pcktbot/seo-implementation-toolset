@@ -1,5 +1,6 @@
 const newLocations = require('../controllers/locations')
 const newProject = require('../controllers/projects')
+const newComment = require('../controllers/comments')
 module.exports = (app) => {
   // location routes
   app.post('/api/locations', async (req, res) => {
@@ -41,5 +42,37 @@ module.exports = (app) => {
     const { lpId } = req.params
     const projectInfo = await newProject.getProject(lpId)
     res.json(projectInfo)
+  })
+  // Comment Routes
+
+  // Post route to create comment
+  app.post('/api/comments', async (req, res) => {
+    const { author, lpId, locationId, text } = req.body
+    const comment = await newComment.createComment(author, lpId, locationId, text)
+    res.json(comment)
+  })
+
+  // Get Route to Edit Comment
+  app.get('/api/comments/:id/edit', async (req, res) => {
+    const { id } = req.params
+    const comment = await newComment.getComment(id)
+    // eslint-disable-next-line no-console
+    console.log(comment)
+    res.json(comment)
+  })
+
+  // Update edited comment
+  app.put('/api/comments/:id', async (req, res) => {
+    const { id } = req.params
+    const { text } = req.body
+    const comment = await newComment.updateComment(id, text)
+    res.json(comment)
+  })
+
+  // Delete Route to destroy/remove comments
+  app.delete('/api/comments/:id', async (req, res) => {
+    const { id } = req.params
+    await newComment.destroyComment(id)
+    res.sendStatus(200)
   })
 }

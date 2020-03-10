@@ -1,6 +1,7 @@
+/* eslint-disable camelcase */
 const axios = require('axios')
 const xmlparser = require('xml-js')
-const { USPS_API_KEY, USPS_USER_ID } = process.env
+const { USPS_USER_ID } = process.env
 module.exports = (app) => {
   // USPS API Routes
   app.post('/routes/uspsapi/verify-address', async (req, res) => {
@@ -8,8 +9,8 @@ module.exports = (app) => {
       street_address_1,
       city,
       state,
-      postal_code,
-      country
+      postal_code // ,
+      // country
     } = req.body.form
 
     const address = `
@@ -27,6 +28,7 @@ module.exports = (app) => {
     `
 
     const response = await axios.get(`http://production.shippingapis.com/ShippingAPI.dll?API=Verify&XML=${address}`)
+    // eslint-disable-next-line no-console
     console.log(xmlparser.xml2json(response.data))
     res.send(xmlparser.xml2json(response.data))
   })
