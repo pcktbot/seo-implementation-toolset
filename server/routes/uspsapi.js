@@ -27,7 +27,6 @@ module.exports = (app) => {
     `
 
     const response = await axios.get(`http://production.shippingapis.com/ShippingAPI.dll?API=Verify&XML=${address}`)
-    console.log(xmlparser.xml2json(response.data))
     res.send(xmlparser.xml2json(response.data))
   })
 }

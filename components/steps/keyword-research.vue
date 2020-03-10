@@ -1,18 +1,33 @@
 <template>
   <b-container fluid>
     <b-row class="align-items-center pb-2">
-      <b-col class="text-left">
-        <b-alert
-          :show="hasMsg"
-          :variant="alertvariant"
-          @dismissed="hasMsg=false, alertvariant='', msg=''"
-          dismissible
-        >
-          {{ msg }}
-        </b-alert>
+      <b-col
+        cols="6"
+      >
+        <h3 class="text-left mb-0">
+          Keywords
+        </h3>
       </b-col>
       <b-col class="text-right">
         <b-btn
+          @click="getKeywords"
+          variant="outline-secondary--darken3"
+          class="px-4"
+        >
+          <div class="d-flex justify-content-center">
+            Get Keywords
+            <b-spinner v-if="loading" class="mt-1 ml-1" small label="Loading..." />
+          </div>
+        </b-btn>
+        <b-btn
+          @click="getPhrases"
+          variant="outline-secondary--darken3"
+          class="px-4"
+        >
+          Get Phrases
+        </b-btn>
+        <b-btn
+          :disabled="!validateStepTwo1"
           @click="onSave"
           variant="outline-secondary--darken3"
           class="px-4"
@@ -65,42 +80,9 @@
       </b-col>
     </b-row>
     <b-row>
-      <b-col cols="4" />
-      <b-col
-        cols="4"
-      >
-        <h3 class="text-center">
-          Keywords
-        </h3>
-      </b-col>
-      <b-col
-        class="text-right"
-        cols="4"
-      >
-        <b-btn
-          @click="getKeywords"
-          variant="outline-secondary--darken3"
-          class="px-4"
-        >
-          <div class="d-flex justify-content-center">
-            Get Keywords
-            <b-spinner v-if="loading" class="mt-1 ml-1" small label="Loading..." />
-          </div>
-        </b-btn>
-        <b-btn
-          @click="getPhrases"
-          variant="outline-secondary--darken3"
-          class="px-4"
-        >
-          Get Phrases
-        </b-btn>
-      </b-col>
-    </b-row>
-    <b-row>
       <b-col
         v-for="keyword in keywords"
         :key="keyword"
-        :cols="adjustColWidth"
       >
         <b-form-group
           :for="`textarea-${keyword}`"
@@ -111,14 +93,14 @@
             :id="`textarea-${keyword}`"
             :placeholder="`Paste your comma seperated ${keyword.replace(/_/g,' ')} Keywords here`"
             @input="onInput(keyword, $event)"
-            :value="compform[keyword]"
+            :value="getKeywordValues(keyword)"
             class="text-left"
             required
           />
         </b-form-group>
       </b-col>
     </b-row>
-    <h3 class="text-center mt-3">
+    <h3 class="text-left mt-2">
       Phrases
     </h3>
     <b-row>
@@ -127,15 +109,19 @@
         :key="phrase"
         :cols="adjustColWidth"
       >
-        <b-form-textarea
-          :id="`textarea-${phrase}`"
-          :placeholder="`${phrase.replace(/_/g,' ')} will auto-populate here after running generate keywords`"
-          @input="onInput(phrase, $event)"
-          class="text-left"
-          required
+        <b-form-group
+          :for="`textarea-${phrase}`"
+          :label="`${phrase.replace(/_/g,' ').toUpperCase()}`"
+          class="pb-0 text-left text-uppercase"
         >
-          <!-- NEEDS VALUE BELOW TO PULL IN -->
-        </b-form-textarea>
+          <b-form-textarea
+            :id="`textarea-${phrase}`"
+            :placeholder="`${phrase.replace(/_/g,' ')} will auto-populate here after running generate phrases`"
+            @input="onInput(phrase, $event)"
+            class="text-left"
+            required
+          />
+        </b-form-group>
       </b-col>
     </b-row>
   </b-container>
@@ -197,10 +183,18 @@ export default {
       ],
       otherRequiredFields: [
         'custom_slug'
-      ]
+      ],
+      api: {
+        api_neighborhood_keywords: [],
+        api_landmark_keywords: []
+      }
     }
   },
   computed: {
+    validateStepTwo1() {
+      const valid = this.validateStepTwo()
+      return valid
+    },
     adjustColWidth() {
       return this.form.selects[0].value === 'mf' ? 4 : 6
     },
@@ -228,6 +222,12 @@ export default {
     }
   },
   methods: {
+    getKeywordValues(keyword) {
+      // eslint-disable-next-line no-console
+      console.log(keyword)
+      const apiKeys = Object.keys(this.api)
+      return apiKeys.includes(keyword) ? this.api[keyword].toString() : this.compform[keyword]
+    },
     getFields() {
       return this.form.selects[0].value === 'mf'
         ? this.mfRequiredFields
@@ -286,8 +286,13 @@ export default {
       }
       this.$axios.$put('/placesapi/placesRequest', { props })
         .then((res) => {
-          // eslint-disable-next-line no-console
-          console.log(res)
+          const { type1, type2 } = res
+          for (const type in type1) {
+            type1[type].forEach(place => this.api.api_neighborhood_keywords.push(place))
+          }
+          for (const type in type2) {
+            type2[type].forEach(place => this.api.api_landmark_keywords.push(place))
+          }
           this.loading = false
         }).catch((err) => {
           // eslint-disable-next-line no-console
@@ -295,11 +300,26 @@ export default {
           this.loading = false
         })
     },
-    getPhrases() {
-
-    },
     onInput(key, val) {
       this.$emit('step-update', { key, val, id: this.location.id })
+    },
+    getPhrases(type) {
+      // const vertical = this.form.selects[0].value
+      // const phrases = {
+      //   mf: {
+      //     neighborhood: [],
+      //     landmark: [],
+      //     amenities: []
+      //   },
+      //   ss: {
+      //     neighborhood: [],
+      //     landmark: []
+      //   },
+      //   sl: {
+      //     neighborhood: [],
+      //     landmark: []
+      //   }
+      // }
     }
   }
 }

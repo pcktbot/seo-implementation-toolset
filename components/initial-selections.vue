@@ -89,5 +89,7 @@ export default {
 </script>
 
 <style>
-
+  .alert-dismissible .close {
+      padding: .9rem 1.15rem;
+  }
 </style>
