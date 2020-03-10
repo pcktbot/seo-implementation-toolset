@@ -45,6 +45,13 @@ module.exports = (app) => {
   })
   // Comment Routes
 
+  // Get route for all comments related to a project OR location
+  app.get('/api/comments', async (req, res) => {
+    const { locationId, lpId } = req.query
+    const comments = await newComment.getAllComments(locationId, lpId)
+    res.json(comments)
+  })
+
   // Post route to create comment
   app.post('/api/comments', async (req, res) => {
     const { author, lpId, locationId, text } = req.body

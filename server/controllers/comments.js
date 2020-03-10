@@ -3,7 +3,8 @@ module.exports = {
   createComment,
   getComment,
   updateComment,
-  destroyComment
+  destroyComment,
+  getAllComments
 }
 
 async function createComment (author, lpId, locationId, text) {
@@ -18,6 +19,15 @@ async function createComment (author, lpId, locationId, text) {
 
 function getComment (id) {
   return models.comment.findAll({ where: { id } })
+}
+
+async function getAllComments (locationId, lpId) {
+  let where = { lpId }
+  if (locationId) {
+    where = { locationId }
+  }
+  const comments = await models.comment.findAll({ where })
+  return comments
 }
 
 function updateComment (id, text) {
