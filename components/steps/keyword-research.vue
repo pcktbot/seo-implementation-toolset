@@ -36,6 +36,7 @@
           <b-form-input
             :id="`input-${input}`"
             :value="compform[input]"
+            :state="validateField(input)"
             :placeholder="`Enter ${input.replace(/_/g,' ')}`"
             @input="onInput(input, $event)"
             required
@@ -56,6 +57,7 @@
               id="property_feature_1"
               :value="pickPropertyVal"
               :options="validation.steptwofields.propertyvalue.options"
+              :state="pickPropertyVal !== null"
               @change="onInput('property_feature_1', $event)"
             />
           </b-form-group>
@@ -230,6 +232,19 @@ export default {
       return this.form.selects[0].value === 'mf'
         ? this.mfRequiredFields
         : this.otherRequiredFields
+    },
+    validateField(field) {
+      let valid = null
+      const reqFields = this.getFields()
+      if (reqFields.includes(field)) {
+        const val = this.location.properties[field]
+        if (val === '' || val === null) {
+          valid = false
+        } else {
+          valid = true
+        }
+      }
+      return valid
     },
     validateStepTwo() {
       let valid = true

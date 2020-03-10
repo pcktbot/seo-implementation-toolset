@@ -9,7 +9,7 @@
     <b-container fluid>
       <b-row class="mb-1 text-left">
         <b-col cols="6">
-          <b-card>
+          <b-card class="h-100">
             <h5>Client Address</h5>
             <hr>
             <b-row
@@ -17,7 +17,7 @@
               :key="`${i}-client`"
               class="ml-0 mr-0"
             >
-              <p>{{ toTitleCase(`${prop.replace(/_/g,' ')}: ${form[prop]}`) }}</p>
+              <p>{{ toTitleCase(`${headers[prop]}: ${form[prop]}`) }}</p>
             </b-row>
             <b-button
               @click="hide"
@@ -30,20 +30,35 @@
           </b-card>
         </b-col>
         <b-col cols="6">
-          <b-card>
+          <b-card class="h-100">
             <h5>USPS Address</h5>
             <hr>
-            <b-row
-              v-for="(property, index) in getUSPSProps"
-              :key="index"
-              class="ml-0 mr-0"
-            >
-              <p v-if="Object.keys(uspsprops).includes(property.name)">
-                {{ toTitleCase(`${allowed[index].replace(/_/g,' ')}: ${property.elements[0].text}`) }}
-              </p>
-            </b-row>
+            <div v-if="res === null || getUSPSProps[0].name === 'Error'">
+              <b-row
+                v-for="(prop,index) in Object.keys(headers)"
+                :key="index"
+                class="ml-0 mr-0"
+              >
+                <p>
+                  {{ `${toTitleCase(headers[prop])}: N/A` }}
+                </p>
+              </b-row>
+            </div>
+            <div v-else>
+              <b-row
+                v-for="(property, index) in getUSPSProps"
+                :key="index"
+                class="ml-0 mr-0"
+              >
+                <p v-if="Object.keys(uspsprops).includes(property.name)">
+                  {{ toTitleCase(`${headers[uspsprops[property.name]]}: ${property.elements[0].text}`) }}
+                </p>
+              </b-row>
+            </div>
+
             <b-button
               @click="updateData"
+              :disabled="res === null || getUSPSProps[0].name === 'Error'"
               variant="primary"
               block
               class="text-center"
@@ -81,6 +96,12 @@ export default {
         City: 'city',
         State: 'state',
         Zip5: 'postal_code'
+      },
+      headers: {
+        street_address_1: 'Address',
+        city: 'City',
+        state: 'State',
+        postal_code: 'Zip Code'
       },
       hidden: true
     }

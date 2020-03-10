@@ -16,7 +16,7 @@ html {
   box-sizing: border-box;
   scroll-behavior: smooth;
 }
-label {
+label, legend {
   margin-bottom: 0.25rem;
   margin-left: .25rem;
 }
