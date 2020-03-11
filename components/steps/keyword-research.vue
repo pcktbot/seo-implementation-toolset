@@ -223,8 +223,6 @@ export default {
   },
   methods: {
     getKeywordValues(keyword) {
-      // eslint-disable-next-line no-console
-      console.log(keyword)
       const apiKeys = Object.keys(this.api)
       return apiKeys.includes(keyword) ? this.api[keyword].toString() : this.compform[keyword]
     },

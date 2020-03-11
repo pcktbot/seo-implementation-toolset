@@ -119,7 +119,10 @@ export default {
         stepTwoComplete: false,
         stepThreeComplete: false,
         stepFourComplete: false,
-        locationComplete: false
+        locationComplete: false,
+        gmb: null,
+        ga: null,
+        strategy: null
       }
     }
   },

@@ -80,8 +80,24 @@
           @toggle-wildcard="toggleWildcard"
         />
       </b-tab>
-      <b-tab title="Notes">
-        <p>I'm the fourth tab</p>
+      <b-tab>
+        <template v-slot:title>
+          <div class="d-flex justify-content-start align-items-center mb-0">
+            <div v-if="!location.properties.stepThreeComplete">
+              <b-icon icon="x-circle" variant="warning" />
+            </div>
+            <div v-else>
+              <b-icon icon="check-circle" variant="success" />
+            </div>
+            <!-- SOME COMPLETED INDICATION HERE -->
+            Notes
+          </div>
+        </template>
+        <notes
+          :location="location"
+          :form="form"
+          @step-update="onUpdate"
+        />
       </b-tab>
     </b-tabs>
   </b-card>
@@ -91,11 +107,13 @@
 import NameAddress from '~/components/steps/name-address'
 import KeywordResearch from '~/components/steps/keyword-research'
 import Redirects from '~/components/steps/redirects'
+import Notes from '~/components/steps/notes'
 export default {
   components: {
     NameAddress,
     KeywordResearch,
-    Redirects
+    Redirects,
+    Notes
   },
   props: {
     location: {

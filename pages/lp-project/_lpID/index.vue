@@ -172,7 +172,10 @@ export default {
         stepTwoComplete: false,
         stepThreeComplete: false,
         stepFourComplete: false,
-        locationComplete: false
+        locationComplete: false,
+        gmb: null,
+        ga: null,
+        strategy: null
       }
     }
   },
@@ -280,6 +283,12 @@ export default {
       if (key === 'name') {
         this.locations[i][key] = val
       } else {
+        // eslint-disable-next-line no-console
+        console.log(i)
+        // eslint-disable-next-line no-console
+        console.log(key)
+        // eslint-disable-next-line no-console
+        console.log(val)
         this.locations[i].properties[key] = val
       }
       this.updateLocationStatus(i)
