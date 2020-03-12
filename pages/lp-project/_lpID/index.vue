@@ -161,48 +161,30 @@ export default {
     }
   },
   computed: {
-    getAddPropFields() {
-      return {
-        population: null,
-        uspsvalid: null,
-        recommended_name: null,
-        redirects: this.redirecttbl,
-        redirecttext: '',
-        redirectstrat: '',
-        stepOneComplete: false,
-        stepTwoComplete: false,
-        stepThreeComplete: false,
-        stepFourComplete: false,
-        locationComplete: false,
-        gmb: null,
-        ga: null,
-        strategy: null
-      }
-    }
+    //
   },
-  created() {
+  async created() {
     const { lpID } = this.$nuxt._route.params
-    // loads selections
-    this.$axios.$get(`api/lp-project/${lpID}`).then((res) => {
+    // loads initial selections
+    await this.$axios.$get(`api/lp-project/${lpID}`).then((res) => {
       this.form.inputs.lpId = res[0].lpId
       this.form.selects.forEach((select) => {
         select.value = res[0][select.id]
       })
     })
-    this.$axios.$get(`api/locations/${lpID}`).then((res) => {
-      // adds location data to front end and fills out location table
-      this.locations = res
-      // adds data to table
-      this.locationtbl.items = [
-        ...res.map((location) => {
-          const { name, properties } = location
-          return { select: false, location: `${name} - ${properties.street_address_1}`, status: properties.locationComplete, value: location.id }
-        })
-      ]
-      this.locationtbl.items.length > 1
-        ? this.setMsgConfig(this.form.successLoadMsg, 'success', true)
-        : this.setMsgConfig(this.form.errLoadMsg, 'danger', true)
-    })
+    const res = await this.$axios.$get(`api/locations/${lpID}`)
+    // adds location data to front end and fills out location table
+    this.locations = res
+    // adds data to locations table
+    this.locationtbl.items = [
+      ...res.map((location) => {
+        const { name, properties } = location
+        return { select: false, location: `${name} - ${properties.street_address_1}`, status: properties.locationComplete, value: location.id }
+      })
+    ]
+    this.locationtbl.items.length > 1
+      ? this.setMsgConfig(this.form.successLoadMsg, 'success', true)
+      : this.setMsgConfig(this.form.errLoadMsg, 'danger', true)
   },
   methods: {
     updateAddress(data) {
@@ -284,12 +266,6 @@ export default {
       if (key === 'name') {
         this.locations[i][key] = val
       } else {
-        // eslint-disable-next-line no-console
-        console.log(i)
-        // eslint-disable-next-line no-console
-        console.log(key)
-        // eslint-disable-next-line no-console
-        console.log(val)
         this.locations[i].properties[key] = val
       }
       this.updateLocationStatus(i)
@@ -325,48 +301,79 @@ export default {
       this.form.alertvariant = variant
       this.form.showMsg = msgOn
     },
-    loadLocations(locations) {
-      this.$axios.$post('api/locations', {
+    async loadLocations(locations) {
+      const res = await this.$axios.$post('api/locations', {
         lpId: this.form.inputs.lpId,
         locations
-      }).then((res) => {
-        // adds location data to front end and fills out location drop down
-        this.locations.push(...res)
-        this.locationtbl.items.push(...[
-          ...res.map((location) => {
-            const { name, properties } = location
-            return { select: false, location: `${name} - ${properties.street_address_1}`, status: properties.locationComplete, value: location.id }
-          })
-        ])
-        this.form.loading = false
-        this.setMsgConfig(this.form.csvSuccessMsg, 'success', true)
       })
+      this.locations.push(...res)
+      this.locationtbl.items.push(...[
+        ...res.map((location) => {
+          const { name, properties } = location
+          return { select: false, location: `${name} - ${properties.street_address_1}`, status: properties.locationComplete, value: location.id }
+        })
+      ])
+      this.form.loading = false
+      this.setMsgConfig(this.form.csvSuccessMsg, 'success', true)
     },
-    onUpload() {
-      try {
-        this.form.loading = true
-        Papa.parse(this.form.inputs.file, {
+    parseCSV(file) {
+      return new Promise((resolve) => {
+        Papa.parse(file, {
           header: true,
-          complete: (res) => {
-            const locations = res.data.map((location) => {
-              const { name } = location
-              const properties = this.reject(location, ['name'])
-              for (const prop in this.getAddPropFields) {
-                properties[prop] = this.getAddPropFields[prop]
-              }
-              return { name, properties }
-            }).filter(location => location.name)
-            if (locations[0].name) {
-              this.loadLocations(locations)
-            } else {
-              this.setMsgConfig(this.csvErrMsg, 'danger', true)
-              this.form.loading = false
-            }
+          complete: (results) => {
+            resolve(results.data)
           }
         })
+      })
+    },
+    addLocationProperties(data) {
+      return data[0].name ? data.map((location) => {
+        const { name } = location
+        const properties = this.reject(location, ['name'])
+        const addPropFields = this.getAddPropFields()
+        for (const prop in addPropFields) {
+          properties[prop] = addPropFields[prop]
+        }
+        return { name, properties }
+      }).filter(location => location.name) : []
+    },
+    async onUpload() {
+      try {
+        this.form.loading = true
+        const data = await this.parseCSV(this.form.inputs.file)
+        const locations = this.addLocationProperties(data)
+        if (locations[0].name) {
+          this.loadLocations(locations)
+        } else {
+          this.setMsgConfig(this.csvErrMsg, 'danger', true)
+          this.form.loading = false
+        }
       } catch (err) {
         this.setMsgConfig(this.form.csvErrMsg, 'danger', true)
         this.form.loading = false
+      }
+    },
+    getAddPropFields() {
+      return {
+        population: null,
+        uspsvalid: null,
+        recommended_name: null,
+        redirects: this.redirecttbl,
+        redirecttext: '',
+        redirectstrat: '',
+        stepOneComplete: false,
+        stepTwoComplete: false,
+        stepThreeComplete: false,
+        stepFourComplete: false,
+        locationComplete: false,
+        gmb: null,
+        ga: null,
+        strategy: null,
+        api_neighborhood_keywords: '',
+        api_location_keywords: '',
+        neighborhood_phrases: '',
+        landmark_phrases: '',
+        amenity_phrases: ''
       }
     }
   }
