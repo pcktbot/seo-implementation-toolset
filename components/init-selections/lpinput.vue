@@ -27,6 +27,9 @@ export default {
       }
     }
   },
+  data() {
+    //
+  },
   computed: {
     onLpPage() {
       return !!this.$nuxt._route.params.lpID
@@ -36,6 +39,9 @@ export default {
     }
   },
   methods: {
+    formatNumber(e) {
+      return String(e).substring(0, 4)
+    },
     onInput(key, val) {
       this.$emit('input-update', key, val)
     }

@@ -170,8 +170,7 @@ export default {
       try {
         const lpId = this.form.inputs.lpId
         const res = await this.$axios.$get(`api/locations/${lpId}`)
-        // finds LP project in DB
-        if (!res.length) {
+        if (!res.length) { // does not find id in DB
           this.form.loading = true
           const data = await this.parseCSV(this.form.inputs.file)
           const locations = this.addLocationProperties(data)
