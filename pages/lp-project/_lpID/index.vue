@@ -61,6 +61,7 @@ export default {
   },
   data () {
     return {
+      comments: [],
       form: {
         inputs: {
           lpId: null,
