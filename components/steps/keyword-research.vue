@@ -93,7 +93,7 @@
             :id="`textarea-${keyword}`"
             :placeholder="`Paste your comma seperated ${keyword.replace(/_/g,' ')} Keywords here`"
             @input="onInput(keyword, $event)"
-            :value="getKeywordValues(keyword)"
+            :value="compform[keyword]"
             class="text-left"
             required
           />
@@ -183,11 +183,7 @@ export default {
       ],
       otherRequiredFields: [
         'custom_slug'
-      ],
-      api: {
-        api_neighborhood_keywords: [],
-        api_landmark_keywords: []
-      }
+      ]
     }
   },
   computed: {
@@ -215,17 +211,15 @@ export default {
           amenity_keywords: this.location.properties.amenity_keywords,
           floor_plans: this.location.properties.floor_plans,
           property_feature_1: this.location.properties.property_feature_1,
-          custom_slug: this.location.properties.custom_slug
+          custom_slug: this.location.properties.custom_slug,
+          api_neighborhood_keywords: this.location.properties.api_neighborhood_keywords,
+          api_landmark_keywords: this.location.properties.api_landmark_keywords
         }
       },
       set(val) {}
     }
   },
   methods: {
-    getKeywordValues(keyword) {
-      const apiKeys = Object.keys(this.api)
-      return apiKeys.includes(keyword) ? this.api[keyword].toString() : this.compform[keyword]
-    },
     getFields() {
       return this.form.selects[0].value === 'mf'
         ? this.mfRequiredFields
@@ -282,15 +276,21 @@ export default {
         state: this.location.properties.state,
         zip: this.location.properties.postal_code
       }
+      let neighborhoodKeywords = []
+      let landmarkKeywords = []
       this.$axios.$put('/placesapi/placesRequest', { props })
         .then((res) => {
           const { type1, type2 } = res
           for (const type in type1) {
-            type1[type].forEach(place => this.api.api_neighborhood_keywords.push(place))
+            type1[type].forEach(place => neighborhoodKeywords.push(place))
           }
           for (const type in type2) {
-            type2[type].forEach(place => this.api.api_landmark_keywords.push(place))
+            type2[type].forEach(place => landmarkKeywords.push(place))
           }
+          neighborhoodKeywords = neighborhoodKeywords.toString()
+          landmarkKeywords = landmarkKeywords.toString()
+          this.$emit('step-update', { key: 'api_neighborhood_keywords', val: neighborhoodKeywords, id: this.location.id })
+          this.$emit('step-update', { key: 'api_landmark_keywords', val: landmarkKeywords, id: this.location.id })
           this.loading = false
         }).catch((err) => {
           // eslint-disable-next-line no-console
@@ -301,23 +301,77 @@ export default {
     onInput(key, val) {
       this.$emit('step-update', { key, val, id: this.location.id })
     },
-    getPhrases(type) {
-      // const vertical = this.form.selects[0].value
-      // const phrases = {
-      //   mf: {
-      //     neighborhood: [],
-      //     landmark: [],
-      //     amenities: []
-      //   },
-      //   ss: {
-      //     neighborhood: [],
-      //     landmark: []
-      //   },
-      //   sl: {
-      //     neighborhood: [],
-      //     landmark: []
-      //   }
+    getPhrases() {
+      // const keywords = {
+      //   neighborhood_phrases: this.api.api_neighborhood_keywords.concat(this.compform.neighborhood_keywords.split(',')),
+      //   landmark_phrases: this.api.api_landmark_keywords.concat(this.compform.landmark_keywords.split(',')),
+      //   amenity_phrases: this.form.selects[0].value === 'mf' ? this.compform.amenity_keywords.split(',') : []
       // }
+      // for (const [key, arr] of keywords) {
+      //   arr.forEach((keyword) => {
+      //     this.keywordphrases[key].push(this.getPhrase(key, keyword))
+      //   })
+      // }
+    },
+    getPhrase(type, value) {
+      const vertical = this.form.selects[0].value
+      const city = this.location.properties.city
+      const state = this.location.properties.state
+      const phrases = {
+        mf: {
+          neighborhood_phrases: [`${value} apartments`, `${value} ${city} apartments`, `${value} ${city} ${state} apartments`,
+            `${value} apartments in ${city}`, `${value} apartments in ${city} ${state}`, `apartments in ${value}`,
+            `apartments in ${value} ${city}`, `apartments in ${value} ${city} ${state}`, `apartments ${value}`,
+            `apartments ${value} ${city}`, `apartments ${value} ${city} ${state}`, `apartments ${city} in ${value}`,
+            `apartments ${city} ${state} in ${value}`, `${city} apartments in ${value}`, `${city} apartments near ${value}`,
+            `${city} ${state} apartments in ${value}`, `${city} ${state} apartments near ${value}`, `apartments near ${value}`,
+            `apartments near ${value} ${city}`, `apartments near ${value} ${city} ${state}`, `${value} apartments near me`,
+            `${value} ${city} apartments near me`, `${value} ${city} ${state} apartments near me`, `${value} apartments for rent near me`,
+            `${value} apartments for rent`, `${value} ${city} apartments for rent`, `${value} ${city} ${state} apartments for rent`,
+            `${value} apartments for rent in ${city}`, `${value} apartments for rent in ${city} ${state}`, `apartments for rent in ${value}`,
+            `apartments for rent in ${value} ${city}`, `apartments for rent in ${value} ${city} ${state}`, `apartments for rent ${value}`,
+            `apartments for rent ${value} ${city}`, `apartments for rent ${value} ${city} ${state}`, `apartments for rent ${city} in ${value}`,
+            `${city} apartments for rent in ${value}`, `${city} apartments for rent near ${value}`, `apartments for rent near ${value}`,
+            `apartments for rent near ${value} ${city}`, `${value} apartment building`, `${value} ${city} apartment building`,
+            `${value} ${city} ${state} apartment building`, `${value} apartment building in ${city}`, `${value} apartment building in ${city} ${state}`,
+            `apartment building in ${value}`, `apartment building in ${value} ${city}`, `apartment building in ${value} ${city} ${state}`,
+            `apartment building ${value}`, `apartment building ${value} ${city}`, `apartment building ${value} ${city} ${state}`,
+            `apartment building ${city} in ${value}`, `apartment building ${city} ${state} in ${value}`, `${city} apartment building in ${value}`,
+            `${city} apartment building near ${value}`, `${city} ${state} apartment building in ${value}`, `${city} ${state} apartment building near ${value}`,
+            `apartment building near ${value}`, `apartment building near ${value} ${city}`, `apartment building near ${value} ${city} ${state}`,
+            `${value} apartment building near me`, `${value} ${city} apartment building near me`, `${value} apartment building for rent`,
+            `${value} ${city} apartment building for rent`, `apartment building for rent in ${value}`, `apartment building for rent ${value}`,
+            `apartment building for rent ${value} ${city}`, `apartment building for rent near ${value}`, `${value} apartment complexes`,
+            `${value} ${city} apartment complexes`, `${value} ${city} ${state} apartment complexes`, `${value} apartment complexes in ${city}`,
+            `${value} apartment complexes in ${city} ${state}`, `apartment complexes in ${value}`, `apartment complexes in ${value} ${city}`,
+            `apartment complexes in ${value} ${city} ${state}`, `apartment complexes ${value}`, `apartment complexes ${value} ${city}`,
+            `apartment complexes ${value} ${city} ${state}`, `apartment complexes ${city} in ${value}`, `apartment complexes ${city} ${state} in ${value}`,
+            `${city} apartment complexes in ${value}`, `${city} apartment complexes near ${value}`, `${city} ${state} apartment complexes in ${value}`,
+            `${city} ${state} apartment complexes near ${value}`, `apartment complexes near ${value}`, `apartment complexes near ${value} ${city}`,
+            `apartment complexes near ${value} ${city} ${state}`, `${value} apartment complexes near me`, `${value} ${city} apartment complexes near me`,
+            `${value} apartment complexes for rent`, `${value} ${city} apartment complexes for rent`, `apartment complexes for rent in ${value}`,
+            `apartment complexes for rent ${value}`, `apartment complexes for rent ${value} ${city}`, `apartment complexes for rent near ${value}`,
+            `${value} apartment homes`, `${value} ${city} apartment homes`, `${value} ${city} ${state} apartment homes`, `${value} apartment homes in ${city}`,
+            `${value} apartment homes in ${city} ${state}`, `apartment homes in ${value}`, `apartment homes in ${value} ${city}`,
+            `apartment homes in ${value} ${city} ${state}`, `apartment homes ${value}`, `apartment homes ${value} ${city}`, `apartment homes ${value} ${city} ${state}`,
+            `apartment homes ${city} in ${value}`, `apartment homes ${city} ${state} in ${value}`, `${city} apartment homes in ${value}`,
+            `${city} apartment homes near ${value}`, `${city} ${state} apartment homes in ${value}`, `${city} ${state} apartment homes near ${value}`,
+            `apartment homes near ${value}`, `apartment homes near ${value} ${city}`, `apartment homes near ${value} ${city} ${state}`,
+            `${value} apartment homes near me`, `${value} ${city} apartment homes near me`, `${value} apartment homes for rent`, `${value} ${city} apartment homes for rent`,
+            `apartment homes for rent in ${value}`, `apartment homes for rent ${value}`, `apartment homes for rent ${value} ${city}`, `apartment homes for rent near ${value}`],
+          landmark_phrases: [],
+          amenities_phrases: []
+        },
+        ss: {
+          neighborhood_phrases: [],
+          landmark_phrases: []
+        },
+        sl: {
+          neighborhood_phrases: [],
+          landmark_phrases: []
+        }
+      }
+      return phrases[vertical][type].toString()
     }
   }
 }

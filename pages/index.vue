@@ -122,7 +122,12 @@ export default {
         locationComplete: false,
         gmb: null,
         ga: null,
-        strategy: null
+        strategy: null,
+        api_neighborhood_keywords: '',
+        api_landmark_keywords: '',
+        neighborhood_phrases: [],
+        landmark_phrases: [],
+        amenity_phrases: []
       }
     }
   },

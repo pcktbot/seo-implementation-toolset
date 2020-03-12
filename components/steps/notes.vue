@@ -4,7 +4,6 @@
       <b-col
         v-for="(select, index) in selects"
         :key="select.id"
-        cols="4"
       >
         <b-form>
           <b-form-group
