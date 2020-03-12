@@ -178,9 +178,9 @@ export default {
         strategy: null,
         api_neighborhood_keywords: '',
         api_location_keywords: '',
-        neighborhood_phrases: [],
-        landmark_phrases: [],
-        amenity_phrases: []
+        neighborhood_phrases: '',
+        landmark_phrases: '',
+        amenity_phrases: ''
       }
     }
   },
@@ -288,12 +288,6 @@ export default {
       if (key === 'name') {
         this.locations[i][key] = val
       } else {
-        // eslint-disable-next-line no-console
-        console.log(i)
-        // eslint-disable-next-line no-console
-        console.log(key)
-        // eslint-disable-next-line no-console
-        console.log(val)
         this.locations[i].properties[key] = val
       }
       this.updateLocationStatus(i)
