@@ -126,8 +126,8 @@ export default {
       this.$emit('step-update', { key, val, id: this.location.id })
     },
     submitComment() {
-      
-    } 
+
+    }
   }
 }
 </script>
