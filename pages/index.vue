@@ -107,29 +107,7 @@ export default {
     }
   },
   computed: {
-    getAddPropFields() {
-      return {
-        population: null,
-        uspsvalid: null,
-        recommended_name: null,
-        redirects: this.tableheaders,
-        redirecttext: '',
-        redirectstrat: '',
-        stepOneComplete: false,
-        stepTwoComplete: false,
-        stepThreeComplete: false,
-        stepFourComplete: false,
-        locationComplete: false,
-        gmb: null,
-        ga: null,
-        strategy: null,
-        api_neighborhood_keywords: '',
-        api_landmark_keywords: '',
-        neighborhood_phrases: '',
-        landmark_phrases: '',
-        amenity_phrases: ''
-      }
-    }
+    //
   },
   methods: {
     updateSelect({ key, val }) {
@@ -155,54 +133,83 @@ export default {
       this.form.alertvariant = variant
       this.form.showMsg = msgOn
     },
-    postToDB(locations) {
-      this.$axios.$post('api/locations', {
+    async postToDB(locations) {
+      await this.$axios.$post('api/locations', {
         lpId: this.form.inputs.lpId,
         locations
-      }).then((res) => {
-        this.$axios
-          .$post('api/lp-project', {
-            lpId: this.form.inputs.lpId,
-            selects: this.form.selects
-          }).then((res) => {
-            window.open(`/lp-project/${this.form.inputs.lpId}`, '_self')
-            this.form.loading = false
-          })
       })
+      await this.$axios.$post('api/lp-project', {
+        lpId: this.form.inputs.lpId,
+        selects: this.form.selects
+      })
+      window.open(`/lp-project/${this.form.inputs.lpId}`, '')
+      this.form.loading = false
     },
-    onUpload() {
-      try {
-        const lpId = this.form.inputs.lpId
-        this.$axios.$get(`api/locations/${lpId}`).then((res) => {
-          // finds LP project in DB
-          if (!res.length) {
-            this.form.loading = true
-            Papa.parse(this.form.inputs.file, {
-              header: true,
-              complete: (res) => {
-                const locations = res.data[0].name ? res.data.map((location) => {
-                  const { name } = location
-                  const properties = this.reject(location, ['name'])
-                  for (const prop in this.getAddPropFields) {
-                    properties[prop] = this.getAddPropFields[prop]
-                  }
-                  return { name, properties }
-                }).filter(location => location.name) : []
-                if (locations.length) {
-                  this.postToDB(locations)
-                } else {
-                  this.setMsgConfig(this.form.csvErrMsg, 'danger', true)
-                  this.form.loading = false
-                }
-              }
-            })
-          } else {
-            this.setMsgConfig(this.form.existingLPMsg, 'danger', true)
+    parseCSV(file) {
+      return new Promise((resolve) => {
+        Papa.parse(file, {
+          header: true,
+          complete: (results) => {
+            resolve(results.data)
           }
         })
+      })
+    },
+    addLocationProperties(data) {
+      return data[0].name ? data.map((location) => {
+        const { name } = location
+        const properties = this.reject(location, ['name'])
+        const addPropFields = this.getAddPropFields()
+        for (const prop in addPropFields) {
+          properties[prop] = addPropFields[prop]
+        }
+        return { name, properties }
+      }).filter(location => location.name) : []
+    },
+    async onUpload() {
+      try {
+        const lpId = this.form.inputs.lpId
+        const res = await this.$axios.$get(`api/locations/${lpId}`)
+        // finds LP project in DB
+        if (!res.length) {
+          this.form.loading = true
+          const data = await this.parseCSV(this.form.inputs.file)
+          const locations = this.addLocationProperties(data)
+          if (locations.length) {
+            this.postToDB(locations)
+          } else {
+            this.setMsgConfig(this.form.csvErrMsg, 'danger', true)
+            this.form.loading = false
+          }
+        } else {
+          this.setMsgConfig(this.form.existingLPMsg, 'danger', true)
+        }
       } catch (err) {
         this.setMsgConfig(this.form.csvErrMsg, 'danger', true)
         this.form.loading = false
+      }
+    },
+    getAddPropFields() {
+      return {
+        population: null,
+        uspsvalid: null,
+        recommended_name: null,
+        redirects: this.tableheaders,
+        redirecttext: '',
+        redirectstrat: '',
+        stepOneComplete: false,
+        stepTwoComplete: false,
+        stepThreeComplete: false,
+        stepFourComplete: false,
+        locationComplete: false,
+        gmb: null,
+        ga: null,
+        strategy: null,
+        api_neighborhood_keywords: '',
+        api_landmark_keywords: '',
+        neighborhood_phrases: '',
+        landmark_phrases: '',
+        amenity_phrases: ''
       }
     }
   }
