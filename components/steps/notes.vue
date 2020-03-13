@@ -32,14 +32,27 @@
       </b-col>
     </b-row>
     <div>
-      <b-form-textarea
-        id="textarea"
-        v-model="text"
-        placeholder="Enter a Note..."
-        rows="3"
-        max-rows="6"
-      />
-      <pre class="mt-3 mb-0">{{ newComment }}</pre>
+      <b-form @submit="onSubmit">
+        <b-form-textarea
+          id="textarea"
+          v-model="newComment.text"
+          placeholder="Enter a Note..."
+          rows="3"
+          max-rows="6"
+        />
+        <pre class="mt-3 mb-0">{{ newComment }}</pre>
+        <b-button type="submit" variant="primary">
+          Submit
+        </b-button>
+      </b-form>
+    </div>
+    <div>
+      <b-row
+        :v-for="comment in comments"
+        :key="comment"
+      >
+        {{ comment }}
+      </b-row>
     </div>
   </b-container>
 </template>
@@ -64,6 +77,13 @@ export default {
   },
   data () {
     return {
+      comments: [],
+      newComment: {
+        author: 'testUser',
+        lpId: this.location.lpId,
+        locationId: this.location.id,
+        text: this.textarea
+      },
       options: [
         { value: null, text: 'Select Status' },
         { value: 'req', text: 'Requested' },
@@ -111,17 +131,17 @@ export default {
             ]
           }
         }
-      ],
-      comments: null,
-      newComment: ''
+      ]
     }
   },
   computed: {
     //
   },
-  async created() {
+  created() {
     const { id: locationId, lpId } = this.location
-    this.comments = await this.getAll(locationId, lpId)
+    this.comments = this.getAll(locationId, lpId)
+    // eslint-disable-next-line no-console
+    console.log(this.comments.length)
   },
   methods: {
     pickOptions(index) {
@@ -130,6 +150,11 @@ export default {
     },
     onInput(key, val) {
       this.$emit('step-update', { key, val, id: this.location.id })
+    },
+    async onSubmit() {
+      await this.postComment(this.newComment)
+      // eslint-disable-next-line no-console
+      console.log('submitted comment')
     }
   }
 }
