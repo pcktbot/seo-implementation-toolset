@@ -1,6 +1,16 @@
 <template>
   <b-container fluid>
     <b-row>
+      <div class="pb-0 text-left text-uppercase">
+        {{ `Current Website: ${location.properties.current_website}` }}
+      </div>
+    </b-row>
+    <b-row>
+      <div v-if="location.properties.primary_type" class="pb-0 text-left">
+        Property Type: <span class="font-weight-bold">{{ location.properties.primary_type }}</span>
+      </div>
+    </b-row>
+    <b-row>
       <b-col
         v-for="(select, index) in selects"
         :key="select.id"
@@ -21,11 +31,23 @@
         </b-form>
       </b-col>
     </b-row>
+    <div>
+      <b-form-textarea
+        id="textarea"
+        v-model="text"
+        placeholder="Enter a Note..."
+        rows="3"
+        max-rows="6"
+      />
+      <pre class="mt-3 mb-0">{{ newComment }}</pre>
+    </div>
   </b-container>
 </template>
 
 <script>
+import CommentsMixin from '~/mixins/comments'
 export default {
+  mixins: [CommentsMixin],
   props: {
     location: {
       type: Object,
@@ -89,11 +111,17 @@ export default {
             ]
           }
         }
-      ]
+      ],
+      comments: null,
+      newComment: ''
     }
   },
   computed: {
     //
+  },
+  async created() {
+    const { id: locationId, lpId } = this.location
+    this.comments = await this.getAll(locationId, lpId)
   },
   methods: {
     pickOptions(index) {
