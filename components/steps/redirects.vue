@@ -149,6 +149,12 @@ export default {
       default() {
         return {}
       }
+    },
+    redirecttbl: {
+      type: Object,
+      default() {
+        return {}
+      }
     }
   },
   data () {

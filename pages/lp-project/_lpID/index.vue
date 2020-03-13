@@ -30,6 +30,7 @@
             v-if="selectedLocation"
             :location="selectedLocation"
             :form="form"
+            :redirecttbl="redirecttbl"
             @stepper-updated="onUpdate"
             @save-step="onSave"
             @add-rows="addRows"
