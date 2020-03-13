@@ -70,7 +70,6 @@
         <redirects
           :location="location"
           :validation="validation"
-          :redirecttbl="redirecttbl"
           @add-rows="addRows"
           @step-save="onSave"
           @step-update="onUpdate"
@@ -123,12 +122,6 @@ export default {
       }
     },
     form: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    redirecttbl: {
       type: Object,
       default() {
         return {}
