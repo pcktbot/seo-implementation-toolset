@@ -177,6 +177,16 @@ export default {
       window.open(`/lp-project/${this.form.inputs.lpId}`, '')
       this.form.loading = false
     },
+    getLocationData(data) {
+      return data[0].name ? data.map((location) => {
+        const { name } = location
+        const properties = this.reject(location, ['name'])
+        for (const prop in this.getAddPropFields) {
+          properties[prop] = this.getAddPropFields[prop]
+        }
+        return { name, properties }
+      }).filter(location => location.name) : []
+    },
     async onUpload() {
       try {
         const lpId = this.form.inputs.lpId
@@ -185,14 +195,7 @@ export default {
         if (!dbResult.length) {
           this.form.loading = true
           const data = await this.parseCSV(this.form.inputs.file)
-          const locations = data[0].name ? data.map((location) => {
-            const { name } = location
-            const properties = this.reject(location, ['name'])
-            for (const prop in this.getAddPropFields) {
-              properties[prop] = this.getAddPropFields[prop]
-            }
-            return { name, properties }
-          }).filter(location => location.name) : []
+          const locations = await this.getLocationData(data)
           if (locations.length) {
             this.postToDB(locations)
           } else {

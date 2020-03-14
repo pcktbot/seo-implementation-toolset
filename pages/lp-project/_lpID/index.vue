@@ -352,18 +352,21 @@ export default {
         })
       })
     },
+    getLocationData(data) {
+      return data[0].name ? data.map((location) => {
+        const { name } = location
+        const properties = this.reject(location, ['name'])
+        for (const prop in this.getAddPropFields) {
+          properties[prop] = this.getAddPropFields[prop]
+        }
+        return { name, properties }
+      }).filter(location => location.name) : []
+    },
     async onUpload() {
       try {
         this.form.loading = true
         const data = await this.parseCSV(this.form.inputs.file)
-        const locations = data[0].name ? data.map((location) => {
-          const { name } = location
-          const properties = this.reject(location, ['name'])
-          for (const prop in this.getAddPropFields) {
-            properties[prop] = this.getAddPropFields[prop]
-          }
-          return { name, properties }
-        }).filter(location => location.name) : []
+        const locations = await this.getLocationData(data)
         if (locations[0].name) {
           this.loadLocations(locations)
         } else {
