@@ -161,7 +161,29 @@ export default {
     }
   },
   computed: {
-    //
+    getAddPropFields() {
+      return {
+        population: null,
+        uspsvalid: null,
+        recommended_name: null,
+        redirects: this.redirecttbl,
+        redirecttext: '',
+        redirectstrat: '',
+        stepOneComplete: false,
+        stepTwoComplete: false,
+        stepThreeComplete: false,
+        stepFourComplete: false,
+        locationComplete: false,
+        gmb: null,
+        ga: null,
+        strategy: null,
+        api_neighborhood_keywords: '',
+        api_landmark_keywords: '',
+        neighborhood_phrases: '',
+        landmark_phrases: '',
+        amenity_phrases: ''
+      }
+    }
   },
   async created() {
     const { lpID } = this.$nuxt._route.params
@@ -263,6 +285,10 @@ export default {
     },
     onUpdate({ key, val, id }) {
       const i = this.locations.findIndex(loc => loc.id === id)
+      // eslint-disable-next-line no-console
+      console.log(key)
+      // eslint-disable-next-line no-console
+      console.log(val)
       if (key === 'name') {
         this.locations[i][key] = val
       } else {
@@ -326,22 +352,18 @@ export default {
         })
       })
     },
-    addLocationProperties(data) {
-      return data[0].name ? data.map((location) => {
-        const { name } = location
-        const properties = this.reject(location, ['name'])
-        const addPropFields = this.getAddPropFields()
-        for (const prop in addPropFields) {
-          properties[prop] = addPropFields[prop]
-        }
-        return { name, properties }
-      }).filter(location => location.name) : []
-    },
     async onUpload() {
       try {
         this.form.loading = true
         const data = await this.parseCSV(this.form.inputs.file)
-        const locations = this.addLocationProperties(data)
+        const locations = data[0].name ? data.map((location) => {
+          const { name } = location
+          const properties = this.reject(location, ['name'])
+          for (const prop in this.getAddPropFields) {
+            properties[prop] = this.getAddPropFields[prop]
+          }
+          return { name, properties }
+        }).filter(location => location.name) : []
         if (locations[0].name) {
           this.loadLocations(locations)
         } else {
@@ -351,29 +373,6 @@ export default {
       } catch (err) {
         this.setMsgConfig(this.form.csvErrMsg, 'danger', true)
         this.form.loading = false
-      }
-    },
-    getAddPropFields() {
-      return {
-        population: null,
-        uspsvalid: null,
-        recommended_name: null,
-        redirects: this.redirecttbl,
-        redirecttext: '',
-        redirectstrat: '',
-        stepOneComplete: false,
-        stepTwoComplete: false,
-        stepThreeComplete: false,
-        stepFourComplete: false,
-        locationComplete: false,
-        gmb: null,
-        ga: null,
-        strategy: null,
-        api_neighborhood_keywords: '',
-        api_location_keywords: '',
-        neighborhood_phrases: '',
-        landmark_phrases: '',
-        amenity_phrases: ''
       }
     }
   }

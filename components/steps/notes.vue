@@ -46,14 +46,14 @@
         </b-button>
       </b-form>
     </div>
-    <div>
+    <!-- <div>
       <b-row
         :v-for="comment in comments"
         :key="comment"
       >
         {{ comment }}
       </b-row>
-    </div>
+    </div> -->
   </b-container>
 </template>
 
@@ -141,7 +141,7 @@ export default {
     const { id: locationId, lpId } = this.location
     this.comments = this.getAll(locationId, lpId)
     // eslint-disable-next-line no-console
-    console.log(this.comments.length)
+    // console.log(this.comments.length)
   },
   methods: {
     pickOptions(index) {
@@ -154,7 +154,7 @@ export default {
     async onSubmit() {
       await this.postComment(this.newComment)
       // eslint-disable-next-line no-console
-      console.log('submitted comment')
+      // console.log('submitted comment')
     }
   }
 }
