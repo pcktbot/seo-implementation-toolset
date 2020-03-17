@@ -124,7 +124,7 @@
               :variant="alertvariant"
               @dismissed="hasMsg=false, alertvariant='', msg=''"
               dismissible
-              class="m-0 px-1 py-1"
+              class="redirect-alert m-0 px-1 py-1"
             >
               {{ msg }}
             </b-alert>
@@ -145,12 +145,6 @@ export default {
       }
     },
     validation: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    redirecttbl: {
       type: Object,
       default() {
         return {}
@@ -290,7 +284,7 @@ export default {
 </script>
 
 <style>
-  .alert-dismissible .close {
-    padding: 0.25rem 1.25rem;
+  .redirect-alert.alert-dismissible .close {
+    padding: 0.25rem 1.25rem!important;
   }
 </style>

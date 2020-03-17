@@ -1,5 +1,5 @@
 const axios = require('axios')
-const diacriticMap = require('../config/diacritics')
+// const diacriticMap = require('../config/diacritics')
 const maps = require('./maps')
 class LocationTerms {
   constructor (params) {
@@ -71,16 +71,16 @@ class LocationTerms {
     return axios.get(url)
   }
 
-  formatName(name) {
-    this.removeDiacritics(name).replace(/[^a-zA-Z0-9\s+\-']|Helipad 1|Helipad 2|Helipad|Heliport/g, '').replace(/\-/g, ' ').replace(/\s+/g, ' ')
-  }
+  // formatName(name) {
+  //   this.removeDiacritics(name).replace(/[^a-zA-Z0-9\s+\-']|Helipad 1|Helipad 2|Helipad|Heliport/g, '').replace(/\-/g, ' ').replace(/\s+/g, ' ')
+  // }
 
-  removeDiacritics(name) {
-    for (let i = 0; i < diacriticMap.length; i++) {
-      name = name.replace(diacriticMap[i].letters, diacriticMap[i].base)
-    }
-    return name
-  }
+  // removeDiacritics(name) {
+  //   for (let i = 0; i < diacriticMap.length; i++) {
+  //     name = name.replace(diacriticMap[i].letters, diacriticMap[i].base)
+  //   }
+  //   return name
+  // }
 
   getMapName() {
     const classNoSpace = this.class.replace(' ', '')

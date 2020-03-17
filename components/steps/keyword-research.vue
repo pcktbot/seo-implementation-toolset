@@ -130,8 +130,9 @@
 
 <script>
 import PhraseGenerator from '~/mixins/phrases'
+import Diacritics from '~/mixins/diacritics'
 export default {
-  mixins: [PhraseGenerator],
+  mixins: [PhraseGenerator, Diacritics],
   props: {
     inputs: {
       type: Array,
@@ -286,10 +287,10 @@ export default {
         .then((res) => {
           const { type1, type2 } = res
           for (const type in type1) {
-            type1[type].forEach(place => neighborhoodKeywords.push(place))
+            type1[type].forEach(place => neighborhoodKeywords.push(this.formatName(place)))
           }
           for (const type in type2) {
-            type2[type].forEach(place => landmarkKeywords.push(place))
+            type2[type].forEach(place => landmarkKeywords.push(this.formatName(place)))
           }
           this.$emit('step-update', { key: 'api_neighborhood_keywords', val: neighborhoodKeywords.toString(), id: this.location.id })
           this.$emit('step-update', { key: 'api_landmark_keywords', val: landmarkKeywords.toString(), id: this.location.id })
@@ -332,6 +333,9 @@ export default {
       for (const [prop, phrase] of phraseKeyVal) {
         this.$emit('step-update', { key: prop, val: phrase.toString().replace(/\s\s+/g, ' ').trim(), id: this.location.id })
       }
+    },
+    formatName(name) {
+      return this.removeDiacritics(name).replace(/[^a-zA-Z0-9\s+\-']|Helipad 1|Helipad 2|Helipad|Heliport/g, '').replace(/-/g, ' ').replace(/\s+/g, ' ')
     }
   }
 }

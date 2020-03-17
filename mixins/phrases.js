@@ -46,7 +46,7 @@ export default {
             apartment homes near ${value}, apartment homes near ${value} ${city}, apartment homes near ${value} ${city} ${state},
             ${value} apartment homes near me, ${value} ${city} apartment homes near me, ${value} apartment homes for rent, ${value} ${city} apartment homes for rent,
             apartment homes for rent in ${value}, apartment homes for rent ${value}, apartment homes for rent ${value} ${city}, apartment homes for rent near ${value}`,
-          landmark_phrases: `apartments near ${value}, apartments near ${value}, ${city} apartments near ${value}, apartments in ${city} near ${value}, 
+          landmark_phrases: `apartments near ${value}, ${city} apartments near ${value}, apartments in ${city} near ${value}, 
             ${city} ${state} apartments near ${value}, apartments in ${city} ${state} near ${value}, apartments near ${value} in ${city}, 
             apartments near ${value} in ${city} ${state}, apartments for rent near ${value}`,
           amenity_phrases: `apartments with ${value}, ${city} apartments with ${value}, ${city} ${state} apartments with ${value}, apartments in ${city} with ${value}, 
