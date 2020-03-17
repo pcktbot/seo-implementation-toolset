@@ -8,7 +8,7 @@
       drop-placeholder="Drop file here..."
     />
     <b-form-invalid-feedback :state="validation">
-      A file must be attached
+      Attach File
     </b-form-invalid-feedback>
     <b-form-valid-feedback :state="validation" />
   </b-form>
