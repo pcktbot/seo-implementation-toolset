@@ -202,17 +202,14 @@ export default {
           }
         },
         stepthreefields: {
-          strategies: {
-            selected: null,
-            options: [
-              { value: null, text: 'Select Strategy' },
-              { value: 'Same Domain', text: 'Same Domain' },
-              { value: 'Cross Domain', text: 'Cross Domain' },
-              { value: 'Secure Cross Domain', text: 'Secure Cross Domain' },
-              { value: 'Secure Naked Same Domain', text: 'Secure Naked Same Domain' },
-              { value: 'No Redirects', text: 'No Redirects' }
-            ]
-          }
+          options: [
+            { value: null, text: 'Select Strategy' },
+            { value: 'Same Domain', text: 'Same Domain' },
+            { value: 'Cross Domain', text: 'Cross Domain' },
+            { value: 'Secure Cross Domain', text: 'Secure Cross Domain' },
+            { value: 'Secure Naked Same Domain', text: 'Secure Naked Same Domain' },
+            { value: 'No Redirects', text: 'No Redirects' }
+          ]
         }
       },
       uspsvalid: {

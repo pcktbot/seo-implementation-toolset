@@ -11,14 +11,16 @@
       <b-col class="align-self-center px-0 pb-3">
         <b-form-select
           id="strategy-selection"
-          :value="validation.stepthreefields.strategies.selected"
-          :options="validation.stepthreefields.strategies.options"
+          :state="validDropDown"
+          :value="location.properties.redirectstrat"
+          :options="validation.stepthreefields.options"
           @change="onInput('redirectstrat', $event)"
           class="w-50"
         />
       </b-col>
       <b-col class="text-center px-0 pb-3">
         <b-btn
+          :disabled="btnDisabled"
           @click="formatRedirects"
           variant="outline-secondary--darken3"
           class="px-4"
@@ -28,6 +30,7 @@
       </b-col>
       <b-col class="text-right px-0 pb-3">
         <b-btn
+          :disabled="!validateStep"
           @click="onSave"
           variant="outline-secondary--darken3"
           class="px-4"
@@ -72,7 +75,7 @@
               <b-form-select
                 id="strat-selection"
                 :value="data.value"
-                :options="validation.stepthreefields.strategies.options"
+                :options="validation.stepthreefields.options"
                 @change="onChangeCell('redirects', $event, data.index, 'strategy')"
               />
             </b-col>
@@ -98,7 +101,7 @@
             </template>
           </template>
         </b-table>
-        <b-row>
+        <b-row class="ml-0 mr-0">
           <b-col>
             <p>
               <b-button
@@ -159,6 +162,17 @@ export default {
     }
   },
   computed: {
+    validateStep() {
+      return this.location.properties.redirects.items.length > 0
+    },
+    validDropDown() {
+      return !!this.location.properties.redirectstrat
+    },
+    btnDisabled() {
+      return this.location.properties.redirectstrat === null ||
+        (this.location.properties.redirecttext === '' &&
+        this.location.properties.redirectstrat !== 'No Redirects')
+    },
     isDisabled() {
       return this.location.properties.redirects.selected
     },

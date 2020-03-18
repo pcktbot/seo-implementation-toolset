@@ -31,7 +31,7 @@ export default {
           selected: []
         },
         redirecttext: '',
-        redirectstrat: '',
+        redirectstrat: null,
         stepOneComplete: false,
         stepTwoComplete: false,
         stepThreeComplete: false,
