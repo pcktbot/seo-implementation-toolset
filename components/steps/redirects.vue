@@ -19,24 +19,34 @@
         />
       </b-col>
       <b-col class="text-center px-0 pb-3">
-        <b-btn
-          :disabled="btnDisabled"
-          @click="formatRedirects"
-          variant="outline-secondary--darken3"
-          class="px-4"
-        >
-          Format Redirects
-        </b-btn>
+        <span :id="formatTip" class="d-inline-block" tabindex="0">
+          <b-btn
+            :disabled="btnDisabled"
+            @click="formatRedirects"
+            variant="outline-secondary--darken3"
+            class="px-4"
+          >
+            Format Redirects
+          </b-btn>
+        </span>
+        <b-tooltip target="format-tip" variant="danger">
+          strategy and paste redirects
+        </b-tooltip>
       </b-col>
       <b-col class="text-right px-0 pb-3">
-        <b-btn
-          :disabled="!validateStep"
-          @click="onSave"
-          variant="outline-secondary--darken3"
-          class="px-4"
-        >
-          Save
-        </b-btn>
+        <span :id="displaySaveTip" class="d-inline-block" tabindex="0">
+          <b-btn
+            :disabled="!validateStep"
+            @click="onSave"
+            variant="outline-secondary--darken3"
+            class="px-4"
+          >
+            Save
+          </b-btn>
+        </span>
+        <b-tooltip target="disabled-wrapper" placement="topleft" variant="danger">
+          complete step to save
+        </b-tooltip>
       </b-col>
     </b-row>
     <b-row>
@@ -162,6 +172,15 @@ export default {
     }
   },
   computed: {
+    formatTip() {
+      return this.location.properties.redirectstrat === null ||
+        (this.location.properties.redirecttext === '' &&
+        this.location.properties.redirectstrat !== 'No Redirects')
+        ? 'format-tip' : 'not-disabled'
+    },
+    displaySaveTip() {
+      return !this.validateStepThree() ? 'disabled-wrapper' : 'not-disabled'
+    },
     validateStep() {
       return this.location.properties.redirects.items.length > 0
     },

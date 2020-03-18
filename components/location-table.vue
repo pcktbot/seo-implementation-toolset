@@ -29,6 +29,7 @@
         </template>
         <template v-slot:cell(edit)="data">
           <b-btn
+            :disabled="disabled"
             @click="loadLocation(data.index)"
             href="#loctable"
             variant="outline-secondary--lighten1"
@@ -75,6 +76,12 @@
 <script>
 export default {
   props: {
+    form: {
+      type: Object,
+      default() {
+        return {}
+      }
+    },
     locationtbl: {
       type: Object,
       default() {
@@ -89,6 +96,10 @@ export default {
     }
   },
   computed: {
+    disabled() {
+      const selects = this.form.selects
+      return !(selects[0].value && selects[1].value && selects[2].value)
+    },
     msg() {
       return this.locationtbl.selected.length > 0
         ? 'Are you sure you want to delete these locations? This is permanent..' : 'Please select location/s to delete'

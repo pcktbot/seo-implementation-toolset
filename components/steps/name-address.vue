@@ -5,7 +5,7 @@
       :res="res"
       @update-address="updateAddress"
     />
-    <b-row class="align-items-center pb-2">
+    <b-row class="align-items-center">
       <b-col class="text-left">
         <b-alert
           :show="hasMsg"
@@ -17,14 +17,19 @@
         </b-alert>
       </b-col>
       <b-col class="text-right">
-        <b-btn
-          :disabled="validateStepOne1"
-          @click="onSave"
-          variant="outline-secondary--darken3"
-          class="px-4"
-        >
-          Save
-        </b-btn>
+        <span :id="displaySaveTip" class="d-inline-block" tabindex="0">
+          <b-btn
+            :disabled="validateStepOne1"
+            @click="onSave"
+            variant="outline-secondary--darken3"
+            class="px-4"
+          >
+            Save
+          </b-btn>
+        </span>
+        <b-tooltip target="step-one-tip" placement="left" variant="danger">
+          complete step to save
+        </b-tooltip>
       </b-col>
     </b-row>
     <b-row>
@@ -115,6 +120,9 @@ export default {
     }
   },
   computed: {
+    displaySaveTip() {
+      return !this.validateStepOne() ? 'step-one-tip' : 'not-disabled'
+    },
     validateStepOne1() {
       const valid = this.validateStepOne()
       return !valid

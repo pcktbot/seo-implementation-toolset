@@ -277,5 +277,7 @@ export default {
 </script>
 
 <style scoped>
-
+  .tab-pane.card-body {
+    padding-top: 1rem;
+  }
 </style>

@@ -26,14 +26,19 @@
         >
           Get Phrases
         </b-btn>
-        <b-btn
-          :disabled="!validateStepTwo1"
-          @click="onSave"
-          variant="outline-secondary--darken3"
-          class="px-4"
-        >
-          Save
-        </b-btn>
+        <span :id="displaySaveTip" class="d-inline-block" tabindex="0">
+          <b-btn
+            :disabled="!validateStepTwo1"
+            @click="onSave"
+            variant="outline-secondary--darken3"
+            class="px-4"
+          >
+            Save
+          </b-btn>
+        </span>
+        <b-tooltip target="step-two-tip" placement="topleft" variant="danger">
+          complete step to save
+        </b-tooltip>
       </b-col>
     </b-row>
     <b-row>
@@ -199,6 +204,9 @@ export default {
     }
   },
   computed: {
+    displaySaveTip() {
+      return !this.validateStepTwo() ? 'step-two-tip' : 'not-disabled'
+    },
     validateStepTwo1() {
       const valid = this.validateStepTwo()
       return valid

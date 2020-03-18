@@ -14,6 +14,7 @@
                 @input-update="updateInput"
               />
               <location-table
+                :form="form"
                 :locationtbl="locationtbl"
                 :selectedLocation="selectedLocation"
                 @delete-location="onDelete"
