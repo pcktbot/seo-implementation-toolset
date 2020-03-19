@@ -225,18 +225,25 @@ export default {
       }
     },
     exportLocations() {
-      // eslint-disable-next-line no-console
-      console.log('made it')
       const locIDs = this.getSelectedLocationIds()
       if (locIDs) {
         const selectedLocations = []
         this.locations.forEach((location) => {
-          if (locIDs.includes(location.id)) selectedLocations.push(location)
-          // need to add name property and delete properties not in csv headers
-          // need to export csv with Papa parse
+          const formattedLoc = {}
+          if (locIDs.includes(location.id)) {
+            const entries = Object.entries(location.properties)
+            const filterVal = this.excludedExportProp()
+            formattedLoc.name = location.name
+            for (const [key, val] of entries) {
+              if (!filterVal.includes(key)) {
+                formattedLoc[key] = val
+              }
+            }
+            selectedLocations.push(formattedLoc)
+          }
         })
-        // eslint-disable-next-line no-console
-        console.log(selectedLocations)
+        const csvurl = this.generateCSV(selectedLocations)
+        this.downloadCSV(csvurl)
       }
     },
     onRowSelected(items, tblname) {
