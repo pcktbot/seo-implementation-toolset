@@ -1,12 +1,32 @@
 <template>
   <b-card id="loctable" no-body class="my-2">
-    <b-card-header class="d-flex justify-content-between text-left">
-      <h4 class="my-auto">
-        Fill in Client Data
-      </h4>
-      <div class="my-auto">
-        {{ `Name: ${location.name} || Address: ${location.properties.street_address_1} ${location.properties.city} ${location.properties.state} ${location.properties.postal_code}` }}
-      </div>
+    <b-card-header class="justify-content-between">
+      <b-row class="my-auto text-center card-head">
+        <b-col class="text-center">
+          <h5 class="mb-0">
+            <strong>Name: </strong>{{ location.name }}
+          </h5>
+        </b-col>
+        <b-col class="text-center">
+          <h5 class="mb-0">
+            <strong>Address: </strong>{{ `${location.properties.street_address_1} ${location.properties.city} ${location.properties.state} ${location.properties.postal_code}` }}
+          </h5>
+        </b-col>
+        <b-col class="text-center">
+          <b-form-checkbox
+            id="checkbox-1"
+            :state="location.properties.prComplete"
+            v-model="location.properties.prComplete"
+            @change="updatePR('prComplete', $event)"
+            name="check-button"
+            size="lg"
+          >
+            <h5 class="mb-0">
+              <strong>Peer Review Complete: </strong>
+            </h5>
+          </b-form-checkbox>
+        </b-col>
+      </b-row>
     </b-card-header>
     <b-tabs card content-class="my-2">
       <b-tab>
@@ -243,12 +263,17 @@ export default {
     }
   },
   methods: {
+    updatePR(prop, value) {
+      this.onUpdate({ key: prop, val: value, id: this.location.id })
+    },
     selectedPropertyValue() {
       return this.form.selects[0].value === 'mf' && this.location.properties.property_feature_1
         ? this.location.properties.property_feature_1
         : null
     },
     onUpdate(data) {
+      // eslint-disable-next-line no-console
+      console.log(data)
       this.$emit('stepper-updated', data)
     },
     onSave(prop, value) {

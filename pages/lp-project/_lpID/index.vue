@@ -165,7 +165,13 @@ export default {
     this.locationtbl.items = [
       ...res.map((location) => {
         const { name, properties } = location
-        return { select: false, location: `${name} - ${properties.street_address_1}`, status: properties.locationComplete, value: location.id }
+        return {
+          select: false,
+          location: `${name} - ${properties.street_address_1}`,
+          status: properties.locationComplete,
+          value: location.id,
+          prstatus: properties.prComplete
+        }
       })
     ]
     this.locationtbl.items.length > 1
@@ -266,14 +272,16 @@ export default {
       const locProp = this.selectedLocation.properties
       if (locProp.stepOneComplete && locProp.stepTwoComplete && locProp.stepThreeComplete) {
         this.locations[i].properties.locationComplete = true
-        this.locationtbl.items[i].status = true
+        this.locationtbl.items[i].prstatus = true
       } else {
         this.locations[i].properties.locationComplete = false
         this.locationtbl.items[i].status = false
       }
     },
-    updatePRLocationStatus() {
-      // need tom complete this
+    updatePRLocationStatus(i) {
+      const locProp = this.selectedLocation.properties
+      this.locationtbl.items[i].prstatus = locProp.prComplete
+      this.onSave()
     },
     onUpdate({ key, val, id }) {
       const i = this.locations.findIndex(loc => loc.id === id)
@@ -283,6 +291,7 @@ export default {
         this.locations[i].properties[key] = val
       }
       this.updateLocationStatus(i)
+      this.updatePRLocationStatus(i)
     },
     updateCell({ key, val, index, col, id }) {
       const i = this.locations.findIndex(loc => loc.id === id)
