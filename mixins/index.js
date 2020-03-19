@@ -37,6 +37,7 @@ export default {
         stepThreeComplete: false,
         stepFourComplete: false,
         locationComplete: false,
+        prComplete: false,
         gmb: null,
         ga: null,
         strategy: null,

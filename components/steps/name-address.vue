@@ -27,7 +27,7 @@
             Save
           </b-btn>
         </span>
-        <b-tooltip target="step-one-tip" placement="left" variant="danger">
+        <b-tooltip target="step-one-tip" placement="left" variant="secondary">
           complete step to save
         </b-tooltip>
       </b-col>

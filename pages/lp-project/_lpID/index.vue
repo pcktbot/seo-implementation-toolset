@@ -20,6 +20,7 @@
                 @delete-location="onDelete"
                 @select-location="onRowSelected"
                 @load-location="loadLocation"
+                @export-locations="exportLocations"
               />
             </b-card-body>
           </b-card>
@@ -131,6 +132,12 @@ export default {
             label: 'Complete',
             sortable: true,
             class: 'text-center'
+          },
+          {
+            key: 'prstatus',
+            label: 'PR Complete',
+            sortable: true,
+            class: 'text-center'
           }
         ],
         items: [],
@@ -200,10 +207,13 @@ export default {
       })
       redirects.selected = []
     },
-    onDelete() {
-      const locIDs = this.locationtbl.selected
+    getSelectedLocationIds() {
+      return this.locationtbl.selected
         ? this.locationtbl.selected.map(selected => selected.value)
         : null
+    },
+    onDelete() {
+      const locIDs = this.getSelectedLocationIds()
       if (locIDs) {
         locIDs.forEach((locID) => {
           this.locations = this.locations.filter(location => location.id !== locID || null)
@@ -212,6 +222,21 @@ export default {
           this.locationtbl.items = this.locationtbl.items.filter(location => location.value !== locID || null)
           this.locationtbl.selected = []
         })
+      }
+    },
+    exportLocations() {
+      // eslint-disable-next-line no-console
+      console.log('made it')
+      const locIDs = this.getSelectedLocationIds()
+      if (locIDs) {
+        const selectedLocations = []
+        this.locations.forEach((location) => {
+          if (locIDs.includes(location.id)) selectedLocations.push(location)
+          // need to add name property and delete properties not in csv headers
+          // need to export csv with Papa parse
+        })
+        // eslint-disable-next-line no-console
+        console.log(selectedLocations)
       }
     },
     onRowSelected(items, tblname) {
@@ -239,6 +264,9 @@ export default {
         this.locations[i].properties.locationComplete = false
         this.locationtbl.items[i].status = false
       }
+    },
+    updatePRLocationStatus() {
+      // need tom complete this
     },
     onUpdate({ key, val, id }) {
       const i = this.locations.findIndex(loc => loc.id === id)

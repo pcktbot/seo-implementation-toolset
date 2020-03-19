@@ -29,7 +29,7 @@
             Format Redirects
           </b-btn>
         </span>
-        <b-tooltip target="format-tip" variant="danger">
+        <b-tooltip target="format-tip" variant="secondary">
           strategy and paste redirects
         </b-tooltip>
       </b-col>
@@ -44,7 +44,7 @@
             Save
           </b-btn>
         </span>
-        <b-tooltip target="disabled-wrapper" placement="topleft" variant="danger">
+        <b-tooltip target="disabled-wrapper" placement="topleft" variant="secondary">
           complete step to save
         </b-tooltip>
       </b-col>
