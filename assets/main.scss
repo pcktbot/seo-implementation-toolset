@@ -154,4 +154,9 @@ textarea {
 
 @import 'bootstrap/scss/bootstrap.scss';
 @import 'bootstrap-vue/src/index.scss';
-@import 'bootstrap-vue/dist/bootstrap-vue.min.css'
+@import 'bootstrap-vue/dist/bootstrap-vue.min.css';
+
+.custom-checkbox.b-custom-control-lg .custom-control-label::before,
+.custom-checkbox.b-custom-control-lg .custom-control-label::after {
+  top: 0.1125rem !important;
+}
