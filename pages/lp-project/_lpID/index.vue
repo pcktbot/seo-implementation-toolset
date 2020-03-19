@@ -21,6 +21,7 @@
                 @select-location="onRowSelected"
                 @load-location="loadLocation"
                 @export-locations="exportLocations"
+                @save-step="onSave"
               />
             </b-card-body>
           </b-card>

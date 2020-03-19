@@ -22,7 +22,7 @@
             size="lg"
           >
             <h5 class="mb-0">
-              <strong>Peer Review Complete: </strong>
+              <strong> {{ getPRText }}</strong>
             </h5>
           </b-form-checkbox>
         </b-col>
@@ -243,6 +243,9 @@ export default {
     }
   },
   computed: {
+    getPRText() {
+      return this.location.properties.prComplete ? 'Peer Review Complete' : 'Peer Review Incomplete'
+    },
     stepTwoInputs() {
       const inputs = this.form.selects[0].value === 'mf'
         ? this.validation.steptwofields.inputs.mf
@@ -272,8 +275,6 @@ export default {
         : null
     },
     onUpdate(data) {
-      // eslint-disable-next-line no-console
-      console.log(data)
       this.$emit('stepper-updated', data)
     },
     onSave(prop, value) {

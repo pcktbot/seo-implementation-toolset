@@ -68,6 +68,9 @@
           <b-button @click="exportSelected" size="sm">
             Export Selected
           </b-button>
+          <b-button @click="onSave" size="sm" variant="success">
+            Save All
+          </b-button>
           <b-button v-b-modal.modal-1 variant="danger" size="sm">
             Delete Selected
           </b-button>
@@ -137,6 +140,9 @@ export default {
     }
   },
   methods: {
+    onSave() {
+      this.$emit('save-step')
+    },
     showMsg(msg, variant) {
       this.alertMsg = msg
       this.alertvariant = variant
