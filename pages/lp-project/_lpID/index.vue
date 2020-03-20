@@ -30,7 +30,7 @@
       <b-row no-gutters>
         <b-col cols="12">
           <form-stepper
-            v-if="selectedLocation"
+            v-if="selectedLocation && !disabledUpload"
             :location="selectedLocation"
             :form="form"
             @stepper-updated="onUpdate"
@@ -148,7 +148,18 @@ export default {
     }
   },
   computed: {
-    //
+    disabledUpload() {
+      const values = [this.form.inputs.lpId]
+      this.form.selects.forEach(select => values.push(select.value))
+      let valid = true
+      for (let i = 0; i < values.length; i++) {
+        if (!values[i]) {
+          valid = false
+          break
+        }
+      }
+      return !(valid && this.form.inputs.file && this.form.inputs.lpId.toString().length === 6)
+    }
   },
   async created() {
     const { lpID } = this.$nuxt._route.params

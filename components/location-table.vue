@@ -162,12 +162,12 @@ export default {
       return val
     },
     exportSelected() {
-      if (this.locationtbl.selected.length > 0 && this.selectedLocationsComplete()) {
-        // eslint-disable-next-line no-console
-        console.log('made it')
-        this.$emit('export-locations')
-      } else {
-        this.showMsg('Please unselect locations that are incomplete', 'danger')
+      if (this.locationtbl.selected.length > 0) {
+        if (this.selectedLocationsComplete()) {
+          this.$emit('export-locations')
+        } else {
+          this.showMsg('Please unselect locations that are incomplete', 'danger')
+        }
       }
     },
     onRowSelected(items) {

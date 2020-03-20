@@ -13,13 +13,13 @@
       <b-col v-if="toggle.selected === 'upload'" cols="4">
         <loadfile :form="form" />
       </b-col>
-      <b-col cols="4">
+      <b-col>
         <lpinput
           :form="form"
           @input-update="onInput"
         />
       </b-col>
-      <b-col cols="4">
+      <b-col>
         <loadbtn
           :form="form"
           :selected="toggle.selected"

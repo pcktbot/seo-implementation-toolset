@@ -1,5 +1,5 @@
 <template>
-  <b-card id="loctable" no-body class="my-2">
+  <b-card id="loctable" no-body class="loctable my-2">
     <b-card-header class="justify-content-between">
       <b-row class="my-auto text-center card-head">
         <b-col class="text-center">

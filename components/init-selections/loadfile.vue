@@ -4,7 +4,7 @@
       v-model="form.inputs.file"
       :state="validation"
       accept=".csv"
-      placeholder="Choose file"
+      placeholder="Choose CSV file"
       drop-placeholder="Drop file here..."
     />
     <b-form-invalid-feedback :state="validation">
