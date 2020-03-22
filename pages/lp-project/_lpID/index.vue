@@ -27,8 +27,8 @@
           </b-card>
         </b-col>
       </b-row>
-      <b-row no-gutters>
-        <b-col cols="12">
+      <b-row>
+        <b-col>
           <form-stepper
             v-if="selectedLocation && !disabledUpload"
             :location="selectedLocation"

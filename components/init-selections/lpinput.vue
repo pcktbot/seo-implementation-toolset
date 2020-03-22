@@ -13,7 +13,7 @@
     <b-form-invalid-feedback :state="validation">
       Your LP ID must be 6 digits long.
     </b-form-invalid-feedback>
-    <b-form-valid-feedback :state="validation" />
+    <b-form-valid-feedback :state="validation" class="ml-2" />
   </b-form>
 </template>
 

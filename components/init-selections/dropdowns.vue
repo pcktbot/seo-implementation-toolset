@@ -14,6 +14,10 @@
           :options="select.options"
           @change="onChange(select.id, $event)"
         />
+        <b-form-invalid-feedback :state="validation(select.id, index)">
+          Select option
+        </b-form-invalid-feedback>
+        <b-form-valid-feedback :state="validation(select.id, index)" />
       </b-form>
     </b-col>
   </b-row>

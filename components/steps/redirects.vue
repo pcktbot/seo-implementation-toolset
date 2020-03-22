@@ -104,7 +104,7 @@
           </template>
           <template v-slot:cell(select)="{ rowSelected }">
             <template v-if="rowSelected">
-              <b-icon class="h4 mb-0" icon="check" variant="success" />
+              <b-icon class="h3 mb-0" icon="check" variant="success" />
             </template>
             <template v-else>
               <b-icon class="h4 mb-0" icon="square" />
@@ -112,24 +112,19 @@
           </template>
         </b-table>
         <b-row class="ml-0 mr-0">
-          <b-col>
-            <p>
-              <b-button
-                @click="selectAllRows"
-                size="sm"
-              >
-                Select all
-              </b-button>
-              <b-button @click="clearSelected" size="sm">
-                Clear selected
-              </b-button>
-              <b-button @click="toggleWildcard" size="sm">
-                Toggle Selected Wildcard
-              </b-button>
-              <b-button @click="onTblDelete" variant="danger" size="sm">
-                Delete Selected
-              </b-button>
-            </p>
+          <b-col class="pl-0">
+            <b-button @click="selectAllRows" size="sm" class="mt-1 mb-1">
+              Select all
+            </b-button>
+            <b-button @click="clearSelected" size="sm" class="mt-1 mb-1">
+              Clear selected
+            </b-button>
+            <b-button @click="toggleWildcard" size="sm" class="mt-1 mb-1">
+              Toggle Selected Wildcard
+            </b-button>
+            <b-button @click="onTblDelete" variant="danger" size="sm" class="mt-1 mb-1">
+              Delete Selected
+            </b-button>
           </b-col>
           <b-col class="text-left">
             <b-alert

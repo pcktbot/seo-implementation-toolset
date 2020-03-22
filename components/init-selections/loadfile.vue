@@ -6,8 +6,9 @@
       accept=".csv"
       placeholder="Choose CSV file"
       drop-placeholder="Drop file here..."
+      block
     />
-    <b-form-invalid-feedback :state="validation">
+    <b-form-invalid-feedback :state="validation" class="pl-1">
       Attach File
     </b-form-invalid-feedback>
     <b-form-valid-feedback :state="validation" />

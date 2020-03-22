@@ -160,3 +160,18 @@ textarea {
 .custom-checkbox.b-custom-control-lg .custom-control-label::after {
   top: 0.1125rem !important;
 }
+
+.custom-file-label {
+  overflow: hidden;
+}
+.table td {
+  padding: .3em;
+  vertical-align: middle;
+}
+.table-responsive, .table-responsive-true {
+  border: 1px solid rgba(0, 0, 0, 0.125)!important;
+}
+.table.b-table>tbody>.table-active, .table.b-table>tbody>.table-active>td,
+.table.b-table>tbody>.table-active>th {
+  background-color: rgba(0,0,0,.075);
+}

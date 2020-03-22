@@ -7,6 +7,7 @@
       variant="outline-primary--darken3"
       block
       class="px-4"
+      aria-label
     >
       <div class="d-flex justify-content-center">
         {{ btnText }}

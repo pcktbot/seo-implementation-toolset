@@ -10,7 +10,7 @@
       @field-update="onChange"
     />
     <b-row>
-      <b-col v-if="toggle.selected === 'upload'" cols="4">
+      <b-col v-if="toggle.selected === 'upload'">
         <loadfile :form="form" />
       </b-col>
       <b-col>

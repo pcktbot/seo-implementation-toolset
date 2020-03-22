@@ -18,7 +18,7 @@
       >
         <template v-slot:cell(select)="{ rowSelected }">
           <template v-if="rowSelected">
-            <b-icon class="h4 mb-0" icon="check" variant="success" />
+            <b-icon class="h3 mb-0" icon="check" variant="success" />
           </template>
           <template v-else>
             <b-icon class="h4 mb-0" icon="square" />
@@ -32,7 +32,7 @@
             :disabled="disabled"
             @click="loadLocation(data.index)"
             href="#loctable"
-            variant="outline-secondary--lighten1"
+            variant="outline-secondary"
             class="px-4"
             size="sm"
             block
@@ -42,23 +42,23 @@
         </template>
         <template v-slot:cell(status)="data">
           <template v-if="data.value === true">
-            <b-icon class="h4 mb-0" icon="check-circle" variant="success" />
+            <b-icon class="h3 mb-0" icon="check-circle" variant="success" />
           </template>
           <template v-else>
-            <b-icon class="h4 mb-0" icon="x-circle" variant="warning" />
+            <b-icon class="h3 mb-0" icon="x-circle" variant="warning" />
           </template>
         </template>
         <template v-slot:cell(prstatus)="data">
           <template v-if="data.value === true">
-            <b-icon class="h4 mb-0" icon="check-circle" variant="success" />
+            <b-icon class="h3 mb-0" icon="check-circle" variant="success" />
           </template>
           <template v-else>
-            <b-icon class="h4 mb-0" icon="x-circle" variant="warning" />
+            <b-icon class="h3 mb-0" icon="x-circle" variant="warning" />
           </template>
         </template>
       </b-table>
       <b-row class="ml-0 mr-0">
-        <b-col>
+        <b-col cols="8" class="bottom-btns pl-0 pr-0 pt-1 pb-1">
           <b-button @click="selectAllRows" size="sm">
             Select all
           </b-button>
@@ -206,5 +206,8 @@ export default {
   }
   .redirect-alert {
     font-size: 0.875rem;
+  }
+  .bottom-btns .btn-sm {
+    margin-top: .25rem;
   }
 </style>
