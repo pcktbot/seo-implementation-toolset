@@ -284,7 +284,7 @@ export default {
       const locProp = this.selectedLocation.properties
       if (locProp.stepOneComplete && locProp.stepTwoComplete && locProp.stepThreeComplete) {
         this.locations[i].properties.locationComplete = true
-        this.locationtbl.items[i].prstatus = true
+        this.locationtbl.items[i].status = true
       } else {
         this.locations[i].properties.locationComplete = false
         this.locationtbl.items[i].status = false
