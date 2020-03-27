@@ -4,7 +4,7 @@
       v-for="(select, index) in form.selects"
       :key="select.id"
       cols="4"
-      class="mb-3"
+      class="mb-2"
     >
       <b-form>
         <b-form-select

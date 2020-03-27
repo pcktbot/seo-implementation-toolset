@@ -16,7 +16,7 @@
           {{ msg }}
         </b-alert>
       </b-col>
-      <b-col class="text-right">
+      <b-col class="text-right pt-0">
         <span :id="displaySaveTip" class="d-inline-block" tabindex="0">
           <b-btn
             :disabled="validateStepOne1"
@@ -42,7 +42,7 @@
           :id="`input-group-${input}`"
           :label="input.replace(/_/g,' ')"
           :label-for="`input-${input}`"
-          class="text-left text-uppercase"
+          class="text-left text-uppercase mb-0"
         >
           <b-form-input
             :id="`input-${input}`"
@@ -56,7 +56,7 @@
       </b-col>
       <b-col
         cols="4"
-        class="align-self-center mb-4"
+        class="align-self-center mb-2"
       >
         <label for="uspsvalid">USPS Verified</label>
         <b-form-select
@@ -69,7 +69,7 @@
       </b-col>
       <b-col
         cols="4"
-        class="align-self-center pt-3"
+        class="align-self-center"
       >
         <b-btn
           v-b-modal.usps-modal

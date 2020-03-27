@@ -75,6 +75,8 @@ export default {
         showMsg: false,
         loading: false,
         msg: '',
+        dismissSecs: 3,
+        dismissCountDown: 0,
         alertvariant: '',
         successLoadMsg: 'Successfully loaded locations',
         errLoadMsg: 'Error loading location/s, check to ensure the url is using the correct LP ID',

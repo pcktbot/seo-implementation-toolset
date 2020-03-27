@@ -31,16 +31,10 @@
     <b-tabs card content-class="my-2">
       <b-tab>
         <template v-slot:title>
-          <div class="d-flex justify-content-start align-items-center mb-0">
-            <div v-if="!location.properties.stepOneComplete">
-              <b-icon icon="x-circle" variant="warning" />
-            </div>
-            <div v-else>
-              <b-icon icon="check-circle" variant="success" />
-            </div>
-            <!-- SOME COMPLETED INDICATION HERE -->
-            Name / Adress Validation
-          </div>
+          <tabs
+            :text="stepOneText"
+            :complete="stepOneComplete"
+          />
         </template>
         <name-address
           :inputs="validation.steponefields"
@@ -53,15 +47,10 @@
       </b-tab>
       <b-tab>
         <template v-slot:title>
-          <div class="d-flex justify-content-start align-items-center mb-0">
-            <div v-if="!location.properties.stepTwoComplete">
-              <b-icon icon="x-circle" variant="warning" />
-            </div>
-            <div v-else>
-              <b-icon icon="check-circle" variant="success" />
-            </div>
-            Keyword Research
-          </div>
+          <tabs
+            :text="stepTwoText"
+            :complete="stepTwoComplete"
+          />
         </template>
         <keyword-research
           :inputs="stepTwoInputs"
@@ -76,16 +65,10 @@
       </b-tab>
       <b-tab>
         <template v-slot:title>
-          <div class="d-flex justify-content-start align-items-center mb-0">
-            <div v-if="!location.properties.stepThreeComplete">
-              <b-icon icon="x-circle" variant="warning" />
-            </div>
-            <div v-else>
-              <b-icon icon="check-circle" variant="success" />
-            </div>
-            <!-- SOME COMPLETED INDICATION HERE -->
-            Redirects
-          </div>
+          <tabs
+            :text="stepThreeText"
+            :complete="stepThreeComplete"
+          />
         </template>
         <redirects
           :location="location"
@@ -101,16 +84,10 @@
       </b-tab>
       <b-tab>
         <template v-slot:title>
-          <div class="d-flex justify-content-start align-items-center mb-0">
-            <div v-if="!location.properties.stepThreeComplete">
-              <b-icon icon="x-circle" variant="warning" />
-            </div>
-            <div v-else>
-              <b-icon icon="check-circle" variant="success" />
-            </div>
-            <!-- SOME COMPLETED INDICATION HERE -->
-            Notes
-          </div>
+          <tabs
+            :text="stepFourText"
+            :complete="stepFourComplete"
+          />
         </template>
         <notes
           :location="location"
@@ -127,12 +104,14 @@ import NameAddress from '~/components/steps/name-address'
 import KeywordResearch from '~/components/steps/keyword-research'
 import Redirects from '~/components/steps/redirects'
 import Notes from '~/components/steps/notes'
+import Tabs from '~/components/tabs'
 export default {
   components: {
     NameAddress,
     KeywordResearch,
     Redirects,
-    Notes
+    Notes,
+    Tabs
   },
   props: {
     location: {
@@ -150,6 +129,10 @@ export default {
   },
   data () {
     return {
+      stepOneText: 'Name / Adress Validation',
+      stepTwoText: 'Keyword Research',
+      stepThreeText: 'Redirects',
+      stepFourText: 'Notes',
       validation: {
         steponefields: [
           'name',
@@ -243,6 +226,18 @@ export default {
     }
   },
   computed: {
+    stepOneComplete() {
+      return this.location.properties.stepOneComplete
+    },
+    stepTwoComplete() {
+      return this.location.properties.stepTwoComplete
+    },
+    stepThreeComplete() {
+      return this.location.properties.stepThreeComplete
+    },
+    stepFourComplete() {
+      return this.location.properties.stepFourComplete
+    },
     getPRText() {
       return this.location.properties.prComplete ? 'Peer Review Complete' : 'Peer Review Incomplete'
     },

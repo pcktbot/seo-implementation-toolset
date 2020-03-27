@@ -14,7 +14,7 @@
         hover
         head-variant="light"
         bordered
-        class="self-align-center table mt-4"
+        class="self-align-center table mt-3"
       >
         <template v-slot:cell(select)="{ rowSelected }">
           <template v-if="rowSelected">
@@ -57,8 +57,8 @@
           </template>
         </template>
       </b-table>
-      <b-row class="ml-0 mr-0">
-        <b-col cols="8" class="bottom-btns pl-0 pr-0 pt-1 pb-1">
+      <b-row class="ml-0 mr-0 mb-1">
+        <b-col class="bottom-btns pl-0 pr-0 pt-1 pb-1">
           <b-button @click="selectAllRows" size="sm">
             Select all
           </b-button>
@@ -75,12 +75,14 @@
             Delete Selected
           </b-button>
         </b-col>
-        <b-col>
+        <b-col class="pb-1">
           <b-alert
-            :show="hasMsg"
+            :show="dismissCountDown"
             :variant="alertvariant"
-            @dismissed="hasMsg=false, alertvariant='', alertMsg=''"
+            @dismiss-count-down="countDownChanged"
+            @dismissed="alertvariant='', alertMsg=''"
             dismissible
+            fade
             class="redirect-alert m-0 px-1 py-1"
           >
             {{ alertMsg }}
@@ -124,9 +126,10 @@ export default {
   },
   data () {
     return {
-      hasMsg: false,
       alertMsg: '',
-      alertvariant: ''
+      alertvariant: '',
+      dismissSecs: 3,
+      dismissCountDown: 0
     }
   },
   computed: {
@@ -140,8 +143,17 @@ export default {
     }
   },
   methods: {
+    countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown
+    },
+    showAlert(msg, variant) {
+      this.dismissCountDown = this.dismissSecs
+      this.alertMsg = msg
+      this.alertvariant = variant
+    },
     onSave() {
       this.$emit('save-step')
+      this.showAlert('Saved', 'success')
     },
     showMsg(msg, variant) {
       this.alertMsg = msg
@@ -166,7 +178,7 @@ export default {
         if (this.selectedLocationsComplete()) {
           this.$emit('export-locations')
         } else {
-          this.showMsg('Please unselect locations that are incomplete', 'danger')
+          this.showAlert('Please unselect locations that are incomplete', 'danger')
         }
       }
     },

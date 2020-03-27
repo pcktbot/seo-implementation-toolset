@@ -49,7 +49,7 @@ export default {
           landmark_phrases: `apartments near ${value}, ${city} apartments near ${value}, apartments in ${city} near ${value}, 
             ${city} ${state} apartments near ${value}, apartments in ${city} ${state} near ${value}, apartments near ${value} in ${city}, 
             apartments near ${value} in ${city} ${state}, apartments for rent near ${value}`,
-          amenity_phrases: `apartments with ${value}, ${city} apartments with ${value}, ${city} ${state} apartments with ${value}, apartments in ${city} with ${value}, 
+          amenity_phrases: `apartments with ${value}, ${city} apartments with a ${value}, ${city} ${state} apartments with ${value}, apartments in ${city} with ${value}, 
             apartments in ${city} ${state} with ${value}, apartments with ${value} in ${city}, apartments with ${value} in ${city} ${state}, 
             apartments for rent with ${value}, ${city} apartments for rent with ${value}`
         },

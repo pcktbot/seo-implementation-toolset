@@ -1,18 +1,22 @@
 <template>
   <b-container fluid>
     <b-row class="align-items-center pb-2">
-      <b-col
-        cols="6"
-      >
+      <b-col>
         <h3 class="text-left mb-0">
           Keywords
         </h3>
       </b-col>
-      <b-col class="text-right">
+      <b-col>
+        <h5 class="text-left mb-0">
+          <strong>Negative Keywords:</strong>
+          <span style="color: #dc3545">{{ compform.negative_keywords ? compform.negative_keywords : 'N/A' }}</span>
+        </h5>
+      </b-col>
+      <b-col class="text-right pt-0">
         <b-btn
           @click="getKeywords"
           variant="outline-secondary--darken3"
-          class="px-4"
+          class="px-4 mb-1"
         >
           <div class="d-flex justify-content-center">
             Get Keywords
@@ -22,7 +26,7 @@
         <b-btn
           @click="getPhrases"
           variant="outline-secondary--darken3"
-          class="px-4"
+          class="px-4 mb-1"
         >
           Get Phrases
         </b-btn>
@@ -31,7 +35,7 @@
             :disabled="!validateStepTwo1"
             @click="onSave"
             variant="outline-secondary--darken3"
-            class="px-4"
+            class="px-4 mb-1"
           >
             Save
           </b-btn>
@@ -105,9 +109,13 @@
         </b-form-group>
       </b-col>
     </b-row>
-    <h3 class="text-left mt-2">
-      Phrases
-    </h3>
+    <b-row>
+      <b-col>
+        <h3 class="text-left mb-0 p-0">
+          Phrases
+        </h3>
+      </b-col>
+    </b-row>
     <b-row>
       <b-col
         v-for="phrase in phrases"
@@ -124,6 +132,7 @@
             :placeholder="`${phrase.replace(/_/g,' ')} will auto-populate here after running generate phrases`"
             :value="location.properties[phrase]"
             @input="onInput(phrase, $event)"
+            rows="4"
             class="text-left"
             required
           />
@@ -233,7 +242,8 @@ export default {
           property_feature_1: this.location.properties.property_feature_1,
           custom_slug: this.location.properties.custom_slug,
           api_neighborhood_keywords: this.location.properties.api_neighborhood_keywords,
-          api_landmark_keywords: this.location.properties.api_landmark_keywords
+          api_landmark_keywords: this.location.properties.api_landmark_keywords,
+          negative_keywords: this.location.properties.negative_keywords
         }
       },
       set(val) {}
