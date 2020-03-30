@@ -10,16 +10,20 @@
       @field-update="onChange"
     />
     <b-row>
-      <b-col v-if="toggle.selected === 'upload'">
+      <b-col
+        v-if="toggle.selected === 'upload'"
+        cols="12"
+        md="4"
+      >
         <loadfile :form="form" />
       </b-col>
-      <b-col>
+      <b-col cols="12" md="4">
         <lpinput
           :form="form"
           @input-update="onInput"
         />
       </b-col>
-      <b-col>
+      <b-col cols="12" md="4">
         <loadbtn
           :form="form"
           :selected="toggle.selected"

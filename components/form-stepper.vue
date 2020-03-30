@@ -2,17 +2,17 @@
   <b-card id="loctable" no-body class="loctable my-2">
     <b-card-header class="justify-content-between">
       <b-row class="my-auto text-center card-head">
-        <b-col class="text-center">
+        <b-col class="text-center" cols="12" md="4">
           <h5 class="mb-0">
             <strong>Name: </strong>{{ location.name }}
           </h5>
         </b-col>
-        <b-col class="text-center">
+        <b-col class="text-center" cols="12" md="4">
           <h5 class="mb-0">
             <strong>Address: </strong>{{ `${location.properties.street_address_1} ${location.properties.city} ${location.properties.state} ${location.properties.postal_code}` }}
           </h5>
         </b-col>
-        <b-col class="text-center">
+        <b-col class="text-center" cols="12" md="4">
           <b-form-checkbox
             id="checkbox-1"
             :state="location.properties.prComplete"

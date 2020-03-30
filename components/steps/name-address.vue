@@ -36,7 +36,8 @@
       <b-col
         v-for="input in inputs"
         :key="input"
-        cols="4"
+        cols="12"
+        md="4"
       >
         <b-form-group
           :id="`input-group-${input}`"
@@ -55,7 +56,8 @@
         </b-form-group>
       </b-col>
       <b-col
-        cols="4"
+        cols="12"
+        md="4"
         class="align-self-center mb-2"
       >
         <label for="uspsvalid">USPS Verified</label>
@@ -68,14 +70,16 @@
         />
       </b-col>
       <b-col
-        cols="4"
-        class="align-self-center"
+        cols="12"
+        md="4"
+        class="align-self-center address-col"
       >
         <b-btn
           v-b-modal.usps-modal
           @click="verifyAddress"
           variant="outline-secondary--darken3"
           class="px-4"
+          block
         >
           Verify Address
         </b-btn>
@@ -194,5 +198,7 @@ export default {
 </script>
 
 <style>
-
+  .address-col {
+    padding-top: 1.75rem!important;
+  }
 </style>
