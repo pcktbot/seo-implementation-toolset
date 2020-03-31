@@ -91,6 +91,7 @@
         </template>
         <notes
           :location="location"
+          :locationNotes="locationNotes"
           :form="form"
           @step-update="onUpdate"
         />
@@ -124,6 +125,12 @@ export default {
       type: Object,
       default() {
         return {}
+      }
+    },
+    locationNotes: {
+      type: Array,
+      default() {
+        return []
       }
     }
   },

@@ -6,12 +6,12 @@
       :value="form.inputs.lpId"
       :disabled="onLpPage"
       @input="onInput('lpId', $event)"
-      placeholder="Enter 6 digit LP Id"
+      placeholder="Enter 8 digit LP Id"
       required
       type="number"
     />
     <b-form-invalid-feedback :state="validation">
-      Your LP ID must be 6 digits long.
+      Your LP ID must be 8 digits long.
     </b-form-invalid-feedback>
     <b-form-valid-feedback :state="validation" class="ml-2" />
   </b-form>
@@ -32,7 +32,7 @@ export default {
       return !!this.$nuxt._route.params.lpID
     },
     validation() {
-      return !!(this.form.inputs.lpId && this.form.inputs.lpId.toString().length === 6)
+      return !!(this.form.inputs.lpId && this.form.inputs.lpId.toString().length === 8)
     }
   },
   methods: {

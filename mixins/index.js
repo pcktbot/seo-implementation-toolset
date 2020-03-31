@@ -65,7 +65,7 @@ export default {
       return URL.createObjectURL(file)
     },
     excludedExportProp() {
-      const addProp = ['neighborhood_keywords', 'landmark_keywords', 'amenity_keywords', 'class', 'primary_type', 'current_website']
+      const addProp = ['neighborhood_keywords', 'landmark_keywords', 'amenity_keywords', 'class', 'primary_type', 'current_website', 'negative_keywords']
       return Object.keys(this.getAddPropFields()).concat(addProp)
     },
     updateSelect({ key, val }) {

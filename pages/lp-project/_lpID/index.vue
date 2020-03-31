@@ -33,6 +33,7 @@
             v-if="selectedLocation && !disabledUpload"
             :location="selectedLocation"
             :form="form"
+            :locationNotes="locationNotes"
             @stepper-updated="onUpdate"
             @save-step="onSave"
             @add-rows="addRows"
@@ -55,6 +56,7 @@ import FormStepper from '~/components/form-stepper'
 import g5Nav from '~/components/nav'
 import initialSelections from '~/components/initial-selections'
 import Index from '~/mixins/index'
+import CommentsMixin from '~/mixins/comments'
 
 export default {
   components: {
@@ -63,7 +65,7 @@ export default {
     g5Nav,
     initialSelections
   },
-  mixins: [Index],
+  mixins: [Index, CommentsMixin],
   data () {
     return {
       comments: [],
@@ -114,6 +116,8 @@ export default {
         ]
       },
       selectedLocation: null,
+      locationNotes: [],
+      projectNotes: [],
       locations: [],
       locationtbl: {
         fields: [
@@ -160,7 +164,7 @@ export default {
           break
         }
       }
-      return !(valid && this.form.inputs.file && this.form.inputs.lpId.toString().length === 6)
+      return !(valid && this.form.inputs.file && this.form.inputs.lpId.toString().length === 8)
     }
   },
   async created() {
@@ -172,6 +176,7 @@ export default {
         select.value = res[0][select.id]
       })
     })
+    this.projectNotes = await this.getAll(lpID)
     const res = await this.$axios.$get(`api/locations/${lpID}`)
     // adds location data to front end and fills out location table
     this.locations = res
@@ -188,7 +193,7 @@ export default {
         }
       })
     ]
-    this.locationtbl.items.length > 1
+    this.locationtbl.items.length > 0
       ? this.setMsgConfig(this.form.successLoadMsg, 'success', true)
       : this.setMsgConfig(this.form.errLoadMsg, 'danger', true)
   },
@@ -202,8 +207,10 @@ export default {
     getLocationIndex() {
       return this.locations.findIndex(loc => loc.id === this.selectedLocation.id)
     },
+    // payload[0]location ID
     loadLocation(payload) {
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
+      this.locationNotes = this.projectNotes.filter(note => note.locationId === payload)
     },
     toggleWildcard() {
       const i = this.getLocationIndex()
@@ -237,6 +244,7 @@ export default {
       if (locIDs) {
         locIDs.forEach((locID) => {
           this.locations = this.locations.filter(location => location.id !== locID || null)
+          // need to delete comments
           this.selectedLocation = null
           this.$axios.delete(`/api/lp-project/${this.form.inputs.lpId}/${locID}`)
           this.locationtbl.items = this.locationtbl.items.filter(location => location.value !== locID || null)

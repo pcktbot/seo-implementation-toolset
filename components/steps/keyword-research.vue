@@ -6,13 +6,13 @@
           Keywords
         </h3>
       </b-col>
-      <b-col cols="12" md="6" lg="3">
+      <b-col cols="12" md="6" lg="4">
         <h5 class="text-left mb-0">
           <strong>Negative Keywords:</strong>
           <span style="color: #dc3545">{{ compform.negative_keywords ? compform.negative_keywords : 'N/A' }}</span>
         </h5>
       </b-col>
-      <b-col class="text-right px-1 pt-0 button-pack" cols="12" lg="2">
+      <b-col class="text-right pt-0 button-pack" cols="12" md="4" lg="2">
         <b-btn
           @click="getKeywords"
           variant="outline-secondary--darken3"
@@ -25,7 +25,7 @@
           </div>
         </b-btn>
       </b-col>
-      <b-col class="px-1 text-right pt-0 button-pack" cols="12" lg="2">
+      <b-col class="text-right pt-0 button-pack" cols="12" md="4" lg="2">
         <b-btn
           @click="getPhrases"
           variant="outline-secondary--darken3"
@@ -35,13 +35,13 @@
           Get Phrases
         </b-btn>
       </b-col>
-      <b-col class="px-1 text-right pt-0" cols="12" lg="2">
+      <b-col class="text-right pt-0" cols="12" md="4" lg="1">
         <span :id="displaySaveTip" class="w-100 d-inline-block" tabindex="0">
           <b-btn
             :disabled="!validateStepTwo1"
             @click="onSave"
             variant="outline-secondary--darken3"
-            class="mb-1"
+            class="px-4 mb-1"
             block
           >
             Save

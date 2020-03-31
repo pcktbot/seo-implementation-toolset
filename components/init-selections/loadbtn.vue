@@ -51,7 +51,7 @@ export default {
       return this.form.inputs.lpId ? `/lp-project/${this.form.inputs.lpId}` : ''
     },
     disabled() {
-      return !(this.form.inputs.lpId && this.form.inputs.lpId.toString().length === 6)
+      return !(this.form.inputs.lpId && this.form.inputs.lpId.toString().length === 8)
     },
     disabledUpload() {
       const values = [this.form.inputs.lpId]
@@ -63,7 +63,7 @@ export default {
           break
         }
       }
-      return !(valid && this.form.inputs.file && this.form.inputs.lpId.toString().length === 6)
+      return !(valid && this.form.inputs.file && this.form.inputs.lpId.toString().length === 8)
     }
   },
   methods: {

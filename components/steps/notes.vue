@@ -1,14 +1,20 @@
 <template>
   <b-container fluid>
     <b-row>
-      <div class="pb-0 text-left text-uppercase">
-        {{ `Current Website: ${location.properties.current_website}` }}
-      </div>
-    </b-row>
-    <b-row>
-      <div v-if="location.properties.primary_type" class="pb-0 text-left">
-        Property Type: <span class="font-weight-bold">{{ location.properties.primary_type }}</span>
-      </div>
+      <b-col class="text-left">
+        <span class="font-weight-bold">Current Website: </span>{{ location.properties.current_website }}
+      </b-col>
+      <b-col v-if="location.properties.primary_type" class="text-left">
+        <span class="font-weight-bold">Property Type:</span> {{ location.properties.primary_type }}
+      </b-col>
+      <b-col class="text-right pt-0">
+        <b-btn
+          variant="outline-secondary--darken3"
+          class="px-4"
+        >
+          Save
+        </b-btn>
+      </b-col>
     </b-row>
     <b-row>
       <b-col
@@ -31,29 +37,33 @@
         </b-form>
       </b-col>
     </b-row>
-    <div>
-      <b-form @submit="onSubmit">
-        <b-form-textarea
-          id="textarea"
-          v-model="newComment.text"
-          placeholder="Enter a Note..."
-          rows="3"
-          max-rows="6"
+    <b-row>
+      <b-col cols="10">
+        <b-form-input
+          id="note-input"
+          placeholder="Enter a Note"
         />
-        <pre class="mt-3 mb-0">{{ newComment }}</pre>
-        <b-button type="submit" variant="primary">
+      </b-col>
+      <b-col>
+        <b-button type="submit" variant="primary" block>
           Submit
         </b-button>
-      </b-form>
-    </div>
-    <!-- <div>
-      <b-row
-        :v-for="comment in comments"
-        :key="comment"
-      >
-        {{ comment }}
-      </b-row>
-    </div> -->
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col class="mt-3">
+        <b-card class="h-100">
+          <b-row
+            v-for="note in locationNotes"
+            :key="note.id"
+          >
+            <b-col>
+              <p>{{ note.author }}</p>
+            </b-col>
+          </b-row>
+        </b-card>
+      </b-col>
+    </b-row>
   </b-container>
 </template>
 
@@ -72,6 +82,12 @@ export default {
       type: Object,
       default() {
         return {}
+      }
+    },
+    locationNotes: {
+      type: Array,
+      default() {
+        return []
       }
     }
   },
@@ -137,12 +153,6 @@ export default {
   computed: {
     //
   },
-  created() {
-    const { id: locationId, lpId } = this.location
-    this.comments = this.getAll(locationId, lpId)
-    // eslint-disable-next-line no-console
-    // console.log(this.comments.length)
-  },
   methods: {
     pickOptions(index) {
       const vertical = this.form.selects[0].value
@@ -155,6 +165,10 @@ export default {
       await this.postComment(this.newComment)
       // eslint-disable-next-line no-console
       // console.log('submitted comment')
+    },
+    test(note) {
+      // eslint-disable-next-line no-console
+      console.log(note)
     }
   }
 }

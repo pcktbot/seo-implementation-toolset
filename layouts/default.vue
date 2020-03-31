@@ -21,7 +21,7 @@ label, legend {
   margin-left: .25rem;
 }
 
-.col-3, .col-4, .col, .col-6 .col-md-4 {
+.col-3, .col-4, .col, .col-6, .col-10, .col-md-4 {
   padding: .5rem;
 }
 

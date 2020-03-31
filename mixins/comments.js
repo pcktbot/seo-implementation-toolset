@@ -1,6 +1,6 @@
 export default {
   methods: {
-    getAll(locationId, lpId) {
+    getAll(lpId, locationId) {
       const query = (locationId)
         ? `locationId=${locationId}`
         : `lpId=${lpId}`
