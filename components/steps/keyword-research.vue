@@ -39,12 +39,12 @@
         <span :id="displaySaveTip" class="w-100 d-inline-block" tabindex="0">
           <b-btn
             :disabled="!validateStepTwo1"
-            @click="onSave"
+            @click="onSave('stepTwoComplete')"
             variant="outline-secondary--darken3"
             class="px-4 mb-1"
             block
           >
-            Save
+            {{ saveTxt }}
           </b-btn>
         </span>
         <b-tooltip target="step-two-tip" placement="topleft" variant="secondary">
@@ -152,8 +152,9 @@
 <script>
 import PhraseGenerator from '~/mixins/phrases'
 import Diacritics from '~/mixins/diacritics'
+import SaveStep from '~/mixins/savestep'
 export default {
-  mixins: [PhraseGenerator, Diacritics],
+  mixins: [PhraseGenerator, Diacritics, SaveStep],
   props: {
     inputs: {
       type: Array,
@@ -194,10 +195,8 @@ export default {
   },
   data () {
     return {
-      hasMsg: false,
       loading: false,
-      msg: '',
-      alertvariant: '',
+      saveTxt: 'Save',
       mfRequiredFields: [
         'landmark_1_name',
         'apartment_amenity_1',
@@ -291,17 +290,6 @@ export default {
       this.msg = msg
       this.alertvariant = 'danger'
       this.hasMsg = true
-    },
-    onSave() {
-      this.hasMsg = false
-      const val = this.validateStepTwo()
-      const key = 'stepTwoComplete'
-      if (val) {
-        this.$emit('step-save')
-      } else {
-        this.showMsg('Please ensure all fields are filled out')
-      }
-      this.$emit('step-update', { key, val, id: this.location.id })
     },
     getKeywords() {
       this.loading = true

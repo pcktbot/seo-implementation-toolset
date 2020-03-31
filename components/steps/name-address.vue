@@ -6,25 +6,15 @@
       @update-address="updateAddress"
     />
     <b-row class="align-items-center">
-      <b-col class="text-left">
-        <b-alert
-          :show="hasMsg"
-          :variant="alertvariant"
-          @dismissed="hasMsg=false, alertvariant='', msg=''"
-          dismissible
-        >
-          {{ msg }}
-        </b-alert>
-      </b-col>
       <b-col class="text-right pt-0">
         <span :id="displaySaveTip" class="d-inline-block" tabindex="0">
           <b-btn
             :disabled="validateStepOne1"
-            @click="onSave"
+            @click="onSave('stepOneComplete')"
             variant="outline-secondary--darken3"
             class="px-4"
           >
-            Save
+            {{ saveTxt }}
           </b-btn>
         </span>
         <b-tooltip target="step-one-tip" placement="left" variant="secondary">
@@ -90,10 +80,12 @@
 
 <script>
 import UspsModal from '~/components/modals/usps-modal'
+import SaveStep from '~/mixins/savestep'
 export default {
   components: {
     UspsModal
   },
+  mixins: [SaveStep],
   props: {
     inputs: {
       type: Array,
@@ -116,10 +108,8 @@ export default {
   },
   data () {
     return {
-      hasMsg: false,
+      saveTxt: 'Save',
       res: null,
-      msg: '',
-      alertvariant: '',
       uspsLink: 'https://tools.usps.com/zip-code-lookup.htm?byaddress'
     }
   },
@@ -167,23 +157,7 @@ export default {
       }
       return valid
     },
-    showMsg(msg) {
-      this.msg = msg
-      this.alertvariant = 'danger'
-      this.hasMsg = true
-    },
     onInput(key, val) {
-      this.$emit('step-update', { key, val, id: this.location.id })
-    },
-    onSave() {
-      this.hasMsg = false
-      const key = 'stepOneComplete'
-      const val = this.validateStepOne()
-      if (val) {
-        this.$emit('step-save')
-      } else {
-        this.showMsg('Please ensure all fields are filled out')
-      }
       this.$emit('step-update', { key, val, id: this.location.id })
     },
     async verifyAddress() {

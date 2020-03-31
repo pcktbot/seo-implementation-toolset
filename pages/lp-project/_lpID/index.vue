@@ -42,6 +42,7 @@
             @delete-redirects="onDeleteRedirects"
             @toggle-wildcard="toggleWildcard"
             @update-address="updateAddress"
+            @submit-note="updateLocationNotes"
           />
         </b-col>
       </b-row>
@@ -176,7 +177,7 @@ export default {
         select.value = res[0][select.id]
       })
     })
-    this.projectNotes = await this.getAll(lpID)
+    this.projectNotes = await this.getAllNotes(lpID)
     const res = await this.$axios.$get(`api/locations/${lpID}`)
     // adds location data to front end and fills out location table
     this.locations = res
@@ -198,6 +199,21 @@ export default {
       : this.setMsgConfig(this.form.errLoadMsg, 'danger', true)
   },
   methods: {
+    async updateLocationNotes() {
+      await this.postComment(
+        {
+          author: 'Colin McCullough', // need to add the author
+          lpId: this.selectedLocation.lpId,
+          locationId: this.selectedLocation.id,
+          text: this.selectedLocation.properties.locationNote
+        }
+      )
+      this.projectNotes = await this.getAllNotes(this.selectedLocation.lpId)
+      this.locationNotes = this.getLocationNotes()
+    },
+    getLocationNotes() {
+      return this.projectNotes.filter(note => note.locationId === this.selectedLocation.id)
+    },
     updateAddress(data) {
       const i = this.getLocationIndex()
       for (const prop in data) {
@@ -207,7 +223,6 @@ export default {
     getLocationIndex() {
       return this.locations.findIndex(loc => loc.id === this.selectedLocation.id)
     },
-    // payload[0]location ID
     loadLocation(payload) {
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
       this.locationNotes = this.projectNotes.filter(note => note.locationId === payload)

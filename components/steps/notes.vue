@@ -8,12 +8,19 @@
         <span class="font-weight-bold">Property Type:</span> {{ location.properties.primary_type }}
       </b-col>
       <b-col class="text-right pt-0">
-        <b-btn
-          variant="outline-secondary--darken3"
-          class="px-4"
-        >
-          Save
-        </b-btn>
+        <span :id="displaySaveTip" class="d-inline-block" tabindex="0">
+          <b-btn
+            :disabled="disabledSave"
+            @click="onSave('stepFourComplete')"
+            variant="outline-secondary--darken3"
+            class="px-4"
+          >
+            {{ saveTxt }}
+          </b-btn>
+        </span>
+        <b-tooltip target="step-four-tip" placement="topleft" variant="secondary">
+          complete all dropdowns
+        </b-tooltip>
       </b-col>
     </b-row>
     <b-row>
@@ -41,24 +48,52 @@
       <b-col cols="10">
         <b-form-input
           id="note-input"
+          v-model="location.properties.locationNote"
+          @input="onInput('locationNote', $event)"
           placeholder="Enter a Note"
         />
       </b-col>
       <b-col>
-        <b-button type="submit" variant="primary" block>
-          Submit
-        </b-button>
+        <span :id="submitTip" class="d-inline-block w-100" tabindex="0">
+          <b-button
+            :disabled="disabledSubmit"
+            @click="$emit('submit-note')"
+            type="submit"
+            variant="primary"
+            block
+          >
+            Submit
+          </b-button>
+        </span>
+        <b-tooltip target="submit-tip" placement="topleft" variant="secondary">
+          enter a note to submit
+        </b-tooltip>
       </b-col>
     </b-row>
     <b-row>
       <b-col class="mt-3">
         <b-card class="h-100">
+          <h5 class="text-center text-underline">
+            <span style="border-bottom: .1rem solid #000">Comment History</span>
+          </h5>
           <b-row
             v-for="note in locationNotes"
             :key="note.id"
           >
+            <b-col cols="2">
+              <p class="m-0">
+                {{ note.author }}
+              </p>
+            </b-col>
+            <b-col cols="3">
+              <p class="m-0">
+                {{ formattedDate(note.createdAt) }}
+              </p>
+            </b-col>
             <b-col>
-              <p>{{ note.author }}</p>
+              <p class="m-0">
+                {{ note.text }}
+              </p>
             </b-col>
           </b-row>
         </b-card>
@@ -68,9 +103,11 @@
 </template>
 
 <script>
+import moment from 'moment'
 import CommentsMixin from '~/mixins/comments'
+import SaveStep from '~/mixins/savestep'
 export default {
-  mixins: [CommentsMixin],
+  mixins: [CommentsMixin, SaveStep],
   props: {
     location: {
       type: Object,
@@ -94,6 +131,7 @@ export default {
   data () {
     return {
       comments: [],
+      saveTxt: 'Save',
       newComment: {
         author: 'testUser',
         lpId: this.location.lpId,
@@ -151,9 +189,27 @@ export default {
     }
   },
   computed: {
-    //
+    disabledSubmit() {
+      return !this.validNoteInput()
+    },
+    disabledSave() {
+      return !this.validateStepFour()
+    },
+    displaySaveTip() {
+      return !this.validateStepFour() ? 'step-four-tip' : 'not-disabled'
+    },
+    submitTip() {
+      return !this.validNoteInput() ? 'submit-tip' : 'not-disabled'
+    }
   },
   methods: {
+    validNoteInput() {
+      return this.location.properties.locationNote
+    },
+    validateStepFour() {
+      const properties = this.location.properties
+      return properties.gmb && properties.ga && properties.strategy
+    },
     pickOptions(index) {
       const vertical = this.form.selects[0].value
       return index === 2 ? this.selects[2][`${vertical}options`].options : this.options
@@ -161,14 +217,8 @@ export default {
     onInput(key, val) {
       this.$emit('step-update', { key, val, id: this.location.id })
     },
-    async onSubmit() {
-      await this.postComment(this.newComment)
-      // eslint-disable-next-line no-console
-      // console.log('submitted comment')
-    },
-    test(note) {
-      // eslint-disable-next-line no-console
-      console.log(note)
+    formattedDate(date) {
+      return moment(new Date(date)).format('MMM Do YYYY, h:mm a')
     }
   }
 }

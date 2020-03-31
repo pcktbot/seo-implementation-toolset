@@ -37,11 +37,11 @@
         <span :id="displaySaveTip" class="d-inline-block" tabindex="0">
           <b-btn
             :disabled="!validateStep"
-            @click="onSave"
+            @click="onSave('stepThreeComplete')"
             variant="outline-secondary--darken3"
             class="px-4"
           >
-            Save
+            {{ saveTxt }}
           </b-btn>
         </span>
         <b-tooltip target="disabled-wrapper" placement="topleft" variant="secondary">
@@ -144,7 +144,9 @@
 </template>
 
 <script>
+import SaveStep from '~/mixins/savestep'
 export default {
+  mixins: [SaveStep],
   props: {
     location: {
       type: Object,
@@ -163,7 +165,8 @@ export default {
     return {
       hasMsg: false,
       msg: '',
-      alertvariant: ''
+      alertvariant: '',
+      saveTxt: 'Save'
     }
   },
   computed: {
@@ -257,31 +260,16 @@ export default {
     },
     formatRedirects() {
       const currentStrat = this.location.properties.redirectstrat
-      if (!currentStrat) {
-        this.showMsg('Please select strategy and paste redirects below', 'danger')
-      } else {
-        const table = currentStrat === 'No Redirects'
-          ? [{ isActive: true, strategy: currentStrat, current_url: 'N/A', formatted_url: 'N/A' }]
-          : []
-        const redirectArr = this.getRedirectsArr()
-        redirectArr.forEach((redirect) => {
-          const cloudFormatted = this.formatRedirect(redirect, currentStrat)
-          table.push({ isActive: true, strategy: currentStrat, current_url: redirect, formatted_url: cloudFormatted })
-        })
-        this.$emit('add-rows', table, { id: this.location.id })
-        this.showMsg(`${table.length} Row/s Added`, `${table.length ? 'success' : 'danger'}`)
-      }
-    },
-    onSave() {
-      this.hasMsg = false
-      const key = 'stepThreeComplete'
-      const val = this.validateStepThree()
-      if (val) {
-        this.$emit('step-save')
-      } else {
-        this.showMsg('Please ensure table has itleast one row', 'danger')
-      }
-      this.$emit('step-update', { key, val, id: this.location.id })
+      const table = currentStrat === 'No Redirects'
+        ? [{ isActive: true, strategy: currentStrat, current_url: 'N/A', formatted_url: 'N/A' }]
+        : []
+      const redirectArr = this.getRedirectsArr()
+      redirectArr.forEach((redirect) => {
+        const cloudFormatted = this.formatRedirect(redirect, currentStrat)
+        table.push({ isActive: true, strategy: currentStrat, current_url: redirect, formatted_url: cloudFormatted })
+      })
+      this.$emit('add-rows', table, { id: this.location.id })
+      this.showMsg(`${table.length} Row/s Added`, `${table.length ? 'success' : 'danger'}`)
     },
     onChangeCell(key, val, index, col) {
       this.$emit('cell-update', { key, val, index, col, id: this.location.id })

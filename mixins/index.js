@@ -45,7 +45,8 @@ export default {
         api_landmark_keywords: '',
         neighborhood_phrases: '',
         landmark_phrases: '',
-        amenity_phrases: ''
+        amenity_phrases: '',
+        locationNote: ''
       }
     },
     /**

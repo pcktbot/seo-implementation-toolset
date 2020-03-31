@@ -94,6 +94,7 @@
           :locationNotes="locationNotes"
           :form="form"
           @step-update="onUpdate"
+          @submit-note="submitNote"
         />
       </b-tab>
     </b-tabs>
@@ -268,6 +269,9 @@ export default {
     }
   },
   methods: {
+    submitNote() {
+      this.$emit('submit-note')
+    },
     updatePR(prop, value) {
       this.onUpdate({ key: prop, val: value, id: this.location.id })
     },

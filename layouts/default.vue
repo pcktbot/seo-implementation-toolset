@@ -16,18 +16,6 @@ html {
   box-sizing: border-box;
   scroll-behavior: smooth;
 }
-label, legend {
-  margin-bottom: 0.25rem;
-  margin-left: .25rem;
-}
-
-.col-3, .col-4, .col, .col-6, .col-10, .col-md-4 {
-  padding: .5rem;
-}
-
-.col-md-4 {
-  padding: .5rem!important;
-}
 
 *,
 *:before,

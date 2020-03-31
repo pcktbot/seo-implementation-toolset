@@ -1,6 +1,6 @@
 export default {
   methods: {
-    getAll(lpId, locationId) {
+    getAllNotes(lpId, locationId) {
       const query = (locationId)
         ? `locationId=${locationId}`
         : `lpId=${lpId}`
@@ -9,8 +9,6 @@ export default {
     },
     postComment(comment) {
       const { author, lpId, locationId, text } = comment
-      // eslint-disable-next-line no-console
-      console.log(locationId)
       return this.$axios
         .$post('api/comments', {
           author,
