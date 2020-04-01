@@ -4,7 +4,8 @@ module.exports = {
   getComment,
   updateComment,
   destroyComment,
-  getAllComments
+  getAllComments,
+  destroyAllComments
 }
 
 async function createComment (author, lpId, locationId, text) {
@@ -41,4 +42,12 @@ function destroyComment (id) {
   return models.comment.destroy({
     where: { id }
   })
+}
+
+function destroyAllComments (locationId, lpId) {
+  let where = { lpId }
+  if (locationId) {
+    where = { locationId }
+  }
+  return models.comment.destroy({ where })
 }

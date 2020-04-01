@@ -82,4 +82,11 @@ module.exports = (app) => {
     await newComment.destroyComment(id)
     res.sendStatus(200)
   })
+
+  // Delete All Route
+  app.delete('/api/comments', async (req, res) => {
+    const { locationId, lpId } = req.query
+    await newComment.destroyAllComments(locationId, lpId)
+    res.sendStatus(200)
+  })
 }
