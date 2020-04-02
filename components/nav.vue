@@ -3,12 +3,12 @@
     <b-navbar-brand to="/" class="d-flex align-items-center">
       <b-img
         class="mr-2 logo"
-        src="/g5-logo.png"
+        src="/g5-logo-2.png"
         alt="G5 Corporate Logo"
       />
-      <h4 class="mb-0 font-weight-bold">
+      <h2 class="mb-0 font-weight-bold" style="color: white">
         SEO Implementation Toolset
-      </h4>
+      </h2>
     </b-navbar-brand>
   </b-navbar>
 </template>
@@ -22,5 +22,8 @@ export default {
 .logo {
   width: 3em;
   height: 3em;
+}
+nav {
+  background-color: var(--primary)
 }
 </style>

@@ -1,34 +1,43 @@
 <template>
   <div>
     <g5-nav />
-    <b-container fluid class="px-5">
-      <b-row>
+    <b-container fluid>
+      <b-row class="pt-5 px-5" style="background-color: #F8F8F8">
         <b-col>
-          <b-card no-body class="my-3">
-            <b-card-body class="pt-3 pb-2">
-              <initial-selections
-                :form="form"
-                @upload-data="onUpload"
-                @err-upld="setMsgConfig"
-                @field-update="updateSelect"
-                @input-update="updateInput"
-              />
-              <location-table
-                :form="form"
-                :locationtbl="locationtbl"
-                :selectedLocation="selectedLocation"
-                @delete-location="onDelete"
-                @select-location="onRowSelected"
-                @load-location="loadLocation"
-                @export-locations="exportLocations"
-                @save-step="onSave"
-              />
-            </b-card-body>
-          </b-card>
+          <initial-selections
+            :form="form"
+            @upload-data="onUpload"
+            @field-update="updateSelect"
+            @input-update="updateInput"
+          />
+          <b-alert
+            :show="form.dismissCountDown"
+            :variant="form.alertvariant"
+            @dismiss-count-down="countDownChanged"
+            @dismissed="form.alertvariant='', form.alertMsg=''"
+            dismissible
+            fade
+          >
+            {{ form.alertMsg }}
+          </b-alert>
         </b-col>
       </b-row>
-      <b-row>
+      <b-row class="px-5" style="background-color: WhiteSmoke">
         <b-col>
+          <location-table
+            :form="form"
+            :locationtbl="locationtbl"
+            :selectedLocation="selectedLocation"
+            @delete-location="onDelete"
+            @select-location="onRowSelected"
+            @load-location="loadLocation"
+            @export-locations="exportLocations"
+            @save-step="onSave"
+          />
+        </b-col>
+      </b-row>
+      <b-row class="px-5 py-3" style="background-color: #F0F0F0">
+        <b-col class="px-0">
           <form-stepper
             v-if="selectedLocation && !disabledUpload"
             :location="selectedLocation"
@@ -47,6 +56,9 @@
         </b-col>
       </b-row>
     </b-container>
+    <div class="footer">
+      <p />
+    </div>
   </div>
 </template>
 
@@ -73,14 +85,13 @@ export default {
       form: {
         inputs: {
           lpId: null,
-          file: []
+          file: null
         },
-        showMsg: false,
         loading: false,
-        msg: '',
-        dismissSecs: 3,
-        dismissCountDown: 0,
+        alertMsg: '',
         alertvariant: '',
+        dismissSecs: 5,
+        dismissCountDown: 0,
         successLoadMsg: 'Successfully loaded locations',
         errLoadMsg: 'Error loading location/s, check to ensure the url is using the correct LP ID',
         csvSuccessMsg: 'Your new location/s have beeen successfully added, please select a location below',
@@ -165,7 +176,7 @@ export default {
           break
         }
       }
-      return !(valid && this.form.inputs.file && this.form.inputs.lpId.toString().length === 8)
+      return !(valid)
     }
   },
   async created() {
@@ -195,8 +206,8 @@ export default {
       })
     ]
     this.locationtbl.items.length > 0
-      ? this.setMsgConfig(this.form.successLoadMsg, 'success', true)
-      : this.setMsgConfig(this.form.errLoadMsg, 'danger', true)
+      ? this.showAlert(this.form.successLoadMsg, 'success')
+      : this.showAlert(this.form.errLoadMsg, 'danger')
   },
   methods: {
     async updateLocationNotes() {
@@ -262,6 +273,7 @@ export default {
           // need to delete comments
           this.selectedLocation = null
           this.$axios.delete(`/api/lp-project/${this.form.inputs.lpId}/${locID}`)
+          this.$axios.delete(`/api/comments/?locationId=${locID}`)
           this.locationtbl.items = this.locationtbl.items.filter(location => location.value !== locID || null)
           this.locationtbl.selected = []
         })
@@ -351,7 +363,7 @@ export default {
         })
       ])
       this.form.loading = false
-      this.setMsgConfig(this.form.csvSuccessMsg, 'success', true)
+      this.showAlert(this.form.csvSuccessMsg, 'success')
     },
     async onUpload() {
       try {
@@ -361,11 +373,11 @@ export default {
         if (locations[0].name) {
           this.loadLocations(locations)
         } else {
-          this.setMsgConfig(this.csvErrMsg, 'danger', true)
+          this.showAlert(this.csvErrMsg, 'danger')
           this.form.loading = false
         }
       } catch (err) {
-        this.setMsgConfig(this.form.csvErrMsg, 'danger', true)
+        this.showAlert(this.form.csvErrMsg, 'danger')
         this.form.loading = false
       }
     }
@@ -374,5 +386,13 @@ export default {
 </script>
 
 <style scoped>
-
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: var(--primary);
+  color: white;
+  text-align: center;
+}
 </style>

@@ -8,16 +8,11 @@
             v-model="toggle.selected"
             :options="toggle.options"
             buttons
-            button-variant="outline-secondary"
+            button-variant="outline-primary"
             size="md"
             name="radio-btn-outline"
           />
         </b-form-group>
-      </b-col>
-    </b-row>
-    <b-row v-else>
-      <b-col class="text-center">
-        <h4>Add Locations</h4>
       </b-col>
     </b-row>
   </b-container>
@@ -48,8 +43,8 @@ export default {
 </script>
 
 <style>
-.btn-outline-secondary:hover {
-  border-color:#a1b5be;
-  background-color:#a1b5be;
+.btn-outline-primary:hover {
+  border-color:#9ea7b3;
+  background-color:#9ea7b3;
 }
 </style>

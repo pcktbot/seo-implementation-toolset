@@ -4,20 +4,29 @@
     <b-container fluid class="px-5">
       <b-row>
         <b-col>
-          <b-card no-body class="my-5">
-            <b-card-header>
-              <h3 class="mb-1">
+          <b-card no-body class="my-5" style="background-color: WhiteSmoke">
+            <b-card-header style="background-color: var(--secondary--lighten2)">
+              <h4 class="mb-1 ml-2 font-weight-bold">
                 Complete Options Below
-              </h3>
+              </h4>
             </b-card-header>
             <b-card-body class="py-5">
               <initial-selections
                 :form="form"
                 @upload-data="onUpload"
-                @err-upld="setMsgConfig"
                 @field-update="updateSelect"
                 @input-update="updateInput"
               />
+              <b-alert
+                :show="form.dismissCountDown"
+                :variant="form.alertvariant"
+                @dismiss-count-down="countDownChanged"
+                @dismissed="form.alertvariant='', form.alertMsg=''"
+                dismissible
+                fade
+              >
+                {{ form.alertMsg }}
+              </b-alert>
             </b-card-body>
           </b-card>
         </b-col>
@@ -44,11 +53,11 @@ export default {
           lpId: null,
           file: null
         },
-        showMsg: false,
         loading: false,
-        msg: '',
+        alertMsg: '',
         alertvariant: '',
-        csvSuccessMsg: 'Your CSV has been successfully imported, please select a location below',
+        dismissSecs: 5,
+        dismissCountDown: 0,
         csvErrMsg: 'There was an error uploading the csv',
         existingLPMsg: 'There is already a LP project under this ID. To add additional locations, load the LP project',
         selects: [
@@ -112,14 +121,14 @@ export default {
           if (locations.length) {
             this.postToDB(locations)
           } else {
-            this.setMsgConfig(this.form.csvErrMsg, 'danger', true)
+            this.showAlert(this.form.csvErrMsg, 'danger')
             this.form.loading = false
           }
         } else {
-          this.setMsgConfig(this.form.existingLPMsg, 'danger', true)
+          this.showAlert(this.form.existingLPMsg, 'danger')
         }
       } catch (err) {
-        this.setMsgConfig(this.form.csvErrMsg, 'danger', true)
+        this.showAlert(this.form.csvErrMsg, 'danger')
         this.form.loading = false
       }
     }

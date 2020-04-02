@@ -72,13 +72,22 @@
     </b-row>
     <b-row>
       <b-col class="mt-3">
-        <b-card class="h-100">
-          <h5 class="text-center text-underline">
-            <span style="border-bottom: .1rem solid #000">Comment History</span>
-          </h5>
+        <b-card title="Comment History" class="comment">
+          <b-row class="font-weight-bold">
+            <b-col cols="2">
+              Author
+            </b-col>
+            <b-col cols="3">
+              Date
+            </b-col>
+            <b-col>
+              Comment
+            </b-col>
+          </b-row>
           <b-row
             v-for="note in locationNotes"
             :key="note.id"
+            class="commentRow"
           >
             <b-col cols="2">
               <p class="m-0">
@@ -225,5 +234,7 @@ export default {
 </script>
 
 <style>
-
+ .comment.card-title {
+   text-align: center;
+ }
 </style>

@@ -1,36 +1,37 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,400i,700&display=swap');
 
 $theme-colors: (
-  "primary": #94acb7,
+  "primary": #0d2240,
   "primary--lighten5": #969ea5,
   "primary--lighten4": #8a949c,
-  "primary--lighten3": #737f8b,
-  "primary--lighten2": #516071,
-  "primary--lighten1": #455668,
+  "primary--lighten3": #9ea7b3,
+  "primary--lighten2": #6e7a8c,
+  "primary--lighten1": #3d4e66,
   "primary--darken1": #2e4157,
   "primary--darken2": #22374e,
   "primary--darken3": #172c46,
   "primary--darken4": #0b223d,
-  "secondary": #7A98A9,
+  "secondary": #7c98ab,
   "secondary--lighten5": #c8d3d3,
   "secondary--lighten4": #c1ced0,
-  "secondary--lighten3": #bbc9cc,
-  "secondary--lighten2": #aebfc5,
-  "secondary--lighten1": #a1b5be,
+  "secondary--lighten3": #cbd6dd,
+  "secondary--lighten2": #b0c1cd,
+  "secondary--lighten1": #96adbc,
   "secondary--darken1": #8ea7b4,
   "secondary--darken2": #87a2b0,
   "secondary--darken3": #819dad,
   "secondary--darken4": #7a98a9,
-  "tertiary": #e67069,
+  "tertiary": #e94f3d,
   "tertiary--lighten5": #f3b5ac,
   "tertiary--lighten4": #f1aca4,
   "tertiary--lighten3": #ee9b93,
   "tertiary--lighten2": #ed928b,
-  "tertiary--lighten1": #ea817a,
+  "tertiary--lighten1": #ed7264,
   "tertiary--darken1": #e56761,
   "tertiary--darken2": #e35e59,
   "tertiary--darken3": #e25650,
-  "tertiary--darken4": #e04d48
+  "tertiary--darken4": #e04d48,
+  "danger": #e94f3d
 );
 
 $font-family-base: 'Roboto', sans-serif;
@@ -185,6 +186,6 @@ label, legend {
   padding: .5rem;
 }
 
-.col-md-4 {
-  padding: .5rem!important;
+.was-validated .custom-control-input:invalid ~ .custom-control-label, .custom-control-input.is-invalid ~ .custom-control-label {
+  color: var(--danger);
 }

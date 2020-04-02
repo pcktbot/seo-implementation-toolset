@@ -87,10 +87,13 @@ export default {
       return keys.map(k => k in obj ? { [k]: obj[k] } : {})
         .reduce((res, o) => Object.assign(res, o), {})
     },
-    setMsgConfig(msg, variant, msgOn) {
-      this.form.msg = msg
+    countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown
+    },
+    showAlert(msg, variant) {
+      this.form.dismissCountDown = this.form.dismissSecs
+      this.form.alertMsg = msg
       this.form.alertvariant = variant
-      this.form.showMsg = msgOn
     },
     parseCSV(file) {
       return new Promise((resolve) => {

@@ -4,7 +4,7 @@
       v-if="selected === 'upload'"
       :disabled="disabledUpload"
       @click="onUpload"
-      variant="outline-primary--darken3"
+      variant="secondary"
       block
       class="px-4"
       aria-label
@@ -18,7 +18,7 @@
       v-else
       :disabled="disabled"
       :href="loadLPLink"
-      variant="outline-primary--darken3"
+      variant="outline-secondary"
       block
       class="px-4"
     >

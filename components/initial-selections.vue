@@ -17,13 +17,13 @@
       >
         <loadfile :form="form" />
       </b-col>
-      <b-col cols="12" md="4">
+      <b-col :md="getColWidth()" cols="12">
         <lpinput
           :form="form"
           @input-update="onInput"
         />
       </b-col>
-      <b-col cols="12" md="4">
+      <b-col :md="getColWidth()" cols="12">
         <loadbtn
           :form="form"
           :selected="toggle.selected"
@@ -31,15 +31,6 @@
         />
       </b-col>
     </b-row>
-    <b-alert
-      :show="form.showMsg"
-      :variant="form.alertvariant"
-      @dismissed="form.showMsg = false, form.msg='', form.alertvarianbt"
-      class="mt-3 mb-0"
-      dismissible
-    >
-      {{ form.msg }}
-    </b-alert>
   </b-container>
 </template>
 
@@ -79,6 +70,9 @@ export default {
     }
   },
   methods: {
+    getColWidth() {
+      return this.toggle.selected === 'upload' ? 4 : 6
+    },
     onChange(key, val) {
       this.$emit('field-update', { key, val })
     },

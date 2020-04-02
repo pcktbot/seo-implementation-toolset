@@ -45,7 +45,7 @@
             <b-icon class="h3 mb-0" icon="check-circle" variant="success" />
           </template>
           <template v-else>
-            <b-icon class="h3 mb-0" icon="x-circle" variant="warning" />
+            <b-icon class="h3 mb-0" icon="x-circle" variant="danger" />
           </template>
         </template>
         <template v-slot:cell(prstatus)="data">
@@ -53,7 +53,7 @@
             <b-icon class="h3 mb-0" icon="check-circle" variant="success" />
           </template>
           <template v-else>
-            <b-icon class="h3 mb-0" icon="x-circle" variant="warning" />
+            <b-icon class="h3 mb-0" icon="x-circle" variant="danger" />
           </template>
         </template>
       </b-table>
@@ -68,7 +68,7 @@
           <b-button @click="exportSelected" size="sm">
             Export Selected
           </b-button>
-          <b-button @click="onSave" size="sm" variant="success">
+          <b-button @click="onSave" size="sm" variant="secondary">
             Save All
           </b-button>
           <b-button v-b-modal.modal-1 variant="danger" size="sm">

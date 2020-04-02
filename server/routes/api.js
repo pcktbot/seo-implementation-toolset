@@ -84,6 +84,7 @@ module.exports = (app) => {
   })
 
   // Delete All Route
+  // ?locationId={locationId} or ?lpId={lpId}
   app.delete('/api/comments', async (req, res) => {
     const { locationId, lpId } = req.query
     await newComment.destroyAllComments(locationId, lpId)
