@@ -194,3 +194,13 @@ label, legend {
 .b-table-sticky-header > .table.b-table > thead > tr > th {
   padding: .4rem;
 }
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: var(--primary);
+  color: white;
+  text-align: center;
+}

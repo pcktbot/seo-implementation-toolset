@@ -32,6 +32,11 @@
         </b-col>
       </b-row>
     </b-container>
+    <div class="footer">
+      <p class="m-1">
+        SEO
+      </p>
+    </div>
   </div>
 </template>
 

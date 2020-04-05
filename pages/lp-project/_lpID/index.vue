@@ -73,7 +73,9 @@
       </b-container>
     </div>
     <div class="footer">
-      <p>SEO</p>
+      <p class="m-1">
+        SEO
+      </p>
     </div>
   </div>
 </template>
@@ -387,15 +389,7 @@ export default {
 </script>
 
 <style scoped>
-.footer {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  background-color: var(--primary);
-  color: white;
-  text-align: center;
-}
+
 .main-with-nav {
     position: fixed;
     top:5rem;
