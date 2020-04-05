@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,400i,700&display=swap');
-
+$body-bg: white;
 $theme-colors: (
   "primary": #0d2240,
   "primary--lighten5": #969ea5,
@@ -31,6 +31,7 @@ $theme-colors: (
   "tertiary--darken2": #e35e59,
   "tertiary--darken3": #e25650,
   "tertiary--darken4": #e04d48,
+  "quaternary": #eee23e,
   "danger": #e94f3d
 );
 
@@ -188,4 +189,8 @@ label, legend {
 
 .was-validated .custom-control-input:invalid ~ .custom-control-label, .custom-control-input.is-invalid ~ .custom-control-label {
   color: var(--danger);
+}
+
+.b-table-sticky-header > .table.b-table > thead > tr > th {
+  padding: .4rem;
 }

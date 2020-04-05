@@ -39,7 +39,6 @@
         <name-address
           :inputs="validation.steponefields"
           :location="location"
-          :uspsvalid="uspsvalid"
           @step-update="onUpdate"
           @step-save="onSave"
           @update-address="updateAddress"
@@ -89,12 +88,10 @@
             :complete="stepFourComplete"
           />
         </template>
-        <notes
+        <gmb
           :location="location"
-          :locationNotes="locationNotes"
           :form="form"
           @step-update="onUpdate"
-          @submit-note="submitNote"
         />
       </b-tab>
     </b-tabs>
@@ -105,14 +102,14 @@
 import NameAddress from '~/components/steps/name-address'
 import KeywordResearch from '~/components/steps/keyword-research'
 import Redirects from '~/components/steps/redirects'
-import Notes from '~/components/steps/notes'
+import Gmb from '~/components/steps/gmb'
 import Tabs from '~/components/tabs'
 export default {
   components: {
     NameAddress,
     KeywordResearch,
     Redirects,
-    Notes,
+    Gmb,
     Tabs
   },
   props: {
@@ -127,12 +124,6 @@ export default {
       default() {
         return {}
       }
-    },
-    locationNotes: {
-      type: Array,
-      default() {
-        return []
-      }
     }
   },
   data () {
@@ -140,17 +131,13 @@ export default {
       stepOneText: 'Name / Adress Validation',
       stepTwoText: 'Keyword Research',
       stepThreeText: 'Redirects',
-      stepFourText: 'Notes',
+      stepFourText: 'GMB / GA / Strategy',
       validation: {
         steponefields: [
           'name',
           'recommended_name',
           'street_address_1',
-          'city',
-          'state',
-          'postal_code',
-          'country',
-          'population'
+          'city'
         ],
         steptwofields: {
           inputs: {
@@ -222,14 +209,6 @@ export default {
             { value: 'No Redirects', text: 'No Redirects' }
           ]
         }
-      },
-      uspsvalid: {
-        selected: null,
-        options: [
-          { value: null, text: 'Is Location Adress USPS Verified?' },
-          { value: true, text: 'Yes - USPS Verified' },
-          { value: false, text: 'No - Not USPS Verified' }
-        ]
       }
     }
   },
@@ -269,9 +248,6 @@ export default {
     }
   },
   methods: {
-    submitNote() {
-      this.$emit('submit-note')
-    },
     updatePR(prop, value) {
       this.onUpdate({ key: prop, val: value, id: this.location.id })
     },

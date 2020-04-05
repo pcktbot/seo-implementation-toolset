@@ -36,7 +36,6 @@
 </template>
 
 <script>
-// import Papa from 'papaparse'
 import g5Nav from '~/components/nav'
 import initialSelections from '~/components/initial-selections'
 import Index from '~/mixins/index'
@@ -48,49 +47,7 @@ export default {
   mixins: [Index],
   data () {
     return {
-      form: {
-        inputs: {
-          lpId: null,
-          file: null
-        },
-        loading: false,
-        alertMsg: '',
-        alertvariant: '',
-        dismissSecs: 5,
-        dismissCountDown: 0,
-        csvErrMsg: 'There was an error uploading the csv',
-        existingLPMsg: 'There is already a LP project under this ID. To add additional locations, load the LP project',
-        selects: [
-          {
-            id: 'vertical',
-            value: null,
-            options: [
-              { value: null, text: 'Select Vertical' },
-              { value: 'mf', text: 'Multi-Family' },
-              { value: 'ss', text: 'Self Storage' },
-              { value: 'sl', text: 'Senior Living' }
-            ]
-          },
-          {
-            id: 'domain',
-            value: null,
-            options: [
-              { value: null, text: 'Select Domain Strategy' },
-              { value: 'multi', text: 'Multi Domain' },
-              { value: 'single', text: 'Single Domain' }
-            ]
-          },
-          {
-            id: 'branding',
-            value: null,
-            options: [
-              { value: null, text: 'Select Chain Branding' },
-              { value: 'yes', text: 'Yes' },
-              { value: 'no', text: 'No' }
-            ]
-          }
-        ]
-      }
+      // data shared between index files in index mixins
     }
   },
   computed: {
@@ -106,7 +63,7 @@ export default {
         lpId: this.form.inputs.lpId,
         selects: this.form.selects
       })
-      window.open(`/lp-project/${this.form.inputs.lpId}`, '')
+      window.open(`/lp-project/${this.form.inputs.lpId}`, '_self')
       this.form.loading = false
     },
     async onUpload() {

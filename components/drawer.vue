@@ -4,11 +4,11 @@
   >
     <b-btn
       id="toggle-drawer"
-      :variant="theme"
       :class="btnStyles"
       :disabled="options.isDisabled"
       @click="isVisible = !isVisible"
       class="drawer-btn p-0"
+      variant="secondary"
     >
       <slot name="button-text">
         <!-- DEFAULT BUTTON INNER -->
@@ -32,7 +32,7 @@ export default {
       default() {
         return {
           position: 'left',
-          slot: 'center',
+          slot: 'top',
           fullHeight: true,
           tab: true,
           isDisabled: false

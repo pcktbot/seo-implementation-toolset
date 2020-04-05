@@ -1,63 +1,79 @@
 <template>
   <div>
     <g5-nav />
-    <b-container fluid>
-      <b-row class="pt-5 px-5" style="background-color: #F8F8F8">
-        <b-col>
-          <initial-selections
-            :form="form"
-            @upload-data="onUpload"
-            @field-update="updateSelect"
-            @input-update="updateInput"
-          />
-          <b-alert
-            :show="form.dismissCountDown"
-            :variant="form.alertvariant"
-            @dismiss-count-down="countDownChanged"
-            @dismissed="form.alertvariant='', form.alertMsg=''"
-            dismissible
-            fade
-          >
-            {{ form.alertMsg }}
-          </b-alert>
-        </b-col>
-      </b-row>
-      <b-row class="px-5" style="background-color: WhiteSmoke">
-        <b-col>
-          <location-table
-            :form="form"
-            :locationtbl="locationtbl"
-            :selectedLocation="selectedLocation"
-            @delete-location="onDelete"
-            @select-location="onRowSelected"
-            @load-location="loadLocation"
-            @export-locations="exportLocations"
-            @save-step="onSave"
-          />
-        </b-col>
-      </b-row>
-      <b-row class="px-5 py-3" style="background-color: #F0F0F0">
-        <b-col class="px-0">
-          <form-stepper
-            v-if="selectedLocation && !disabledUpload"
+    <div class="main-with-nav">
+      <drawer>
+        <template v-slot:button-text>
+          <b-icon icon="chat-fill" variant="primary" />
+        </template>
+        <template v-slot:content>
+          <notes
             :location="selectedLocation"
-            :form="form"
             :locationNotes="locationNotes"
+            :projectNotes="projectNotes"
+            :projectNoteField="projectNoteField"
+            @submit-note="updateNotes"
             @stepper-updated="onUpdate"
-            @save-step="onSave"
-            @add-rows="addRows"
-            @cell-update="updateCell"
-            @select-location="onRowSelected"
-            @delete-redirects="onDeleteRedirects"
-            @toggle-wildcard="toggleWildcard"
-            @update-address="updateAddress"
-            @submit-note="updateLocationNotes"
+            @project-data-input="updateProjectData"
           />
-        </b-col>
-      </b-row>
-    </b-container>
+        </template>
+      </drawer>
+      <b-container fluid class="scroll-container">
+        <b-row class="pt-5 px-5" style="background-color: Gainsboro">
+          <b-col>
+            <initial-selections
+              :form="form"
+              @upload-data="onUpload"
+              @field-update="updateSelect"
+              @input-update="updateInput"
+            />
+            <b-alert
+              :show="form.dismissCountDown"
+              :variant="form.alertvariant"
+              @dismiss-count-down="countDownChanged"
+              @dismissed="form.alertvariant='', form.alertMsg=''"
+              dismissible
+              fade
+            >
+              {{ form.alertMsg }}
+            </b-alert>
+          </b-col>
+        </b-row>
+        <b-row class="px-5" style="background-color: white">
+          <b-col>
+            <location-table
+              :form="form"
+              :locationtbl="locationtbl"
+              :selectedLocation="selectedLocation"
+              @delete-location="onDelete"
+              @select-location="onRowSelected"
+              @load-location="loadLocation"
+              @export-locations="exportLocations"
+              @save-step="onSave"
+            />
+          </b-col>
+        </b-row>
+        <b-row v-if="selectedLocation && !disabledUpload" class="px-5 pt-3 pb-4" style="background-color: var(--secondary--lighten3)">
+          <b-col class="px-0">
+            <form-stepper
+              v-if="selectedLocation && !disabledUpload"
+              :location="selectedLocation"
+              :form="form"
+              @stepper-updated="onUpdate"
+              @save-step="onSave"
+              @add-rows="addRows"
+              @cell-update="updateCell"
+              @select-location="onRowSelected"
+              @delete-redirects="onDeleteRedirects"
+              @toggle-wildcard="toggleWildcard"
+              @update-address="updateAddress"
+            />
+          </b-col>
+        </b-row>
+      </b-container>
+    </div>
     <div class="footer">
-      <p />
+      <p>SEO</p>
     </div>
   </div>
 </template>
@@ -67,69 +83,30 @@
 import LocationTable from '~/components/location-table'
 import FormStepper from '~/components/form-stepper'
 import g5Nav from '~/components/nav'
+import Notes from '~/components/notes'
 import initialSelections from '~/components/initial-selections'
 import Index from '~/mixins/index'
 import CommentsMixin from '~/mixins/comments'
+import Drawer from '~/components/drawer'
 
 export default {
   components: {
     LocationTable,
     FormStepper,
     g5Nav,
-    initialSelections
+    initialSelections,
+    Drawer,
+    Notes
   },
   mixins: [Index, CommentsMixin],
+  // addional data shared between index files in index mixins
   data () {
     return {
-      comments: [],
-      form: {
-        inputs: {
-          lpId: null,
-          file: null
-        },
-        loading: false,
-        alertMsg: '',
-        alertvariant: '',
-        dismissSecs: 5,
-        dismissCountDown: 0,
-        successLoadMsg: 'Successfully loaded locations',
-        errLoadMsg: 'Error loading location/s, check to ensure the url is using the correct LP ID',
-        csvSuccessMsg: 'Your new location/s have beeen successfully added, please select a location below',
-        csvErrMsg: 'There was an error uploading the csv',
-        selects: [
-          {
-            id: 'vertical',
-            value: null,
-            options: [
-              { value: null, text: 'Select Vertical' },
-              { value: 'mf', text: 'Multi-Family' },
-              { value: 'ss', text: 'Self Storage' },
-              { value: 'sl', text: 'Senior Living' }
-            ]
-          },
-          {
-            id: 'domain',
-            value: null,
-            options: [
-              { value: null, text: 'Select Domain Strategy' },
-              { value: 'multi', text: 'Multi Domain' },
-              { value: 'single', text: 'Single Domain' }
-            ]
-          },
-          {
-            id: 'branding',
-            value: null,
-            options: [
-              { value: null, text: 'Select Chain Branding' },
-              { value: 'yes', text: 'Yes' },
-              { value: 'no', text: 'No' }
-            ]
-          }
-        ]
-      },
       selectedLocation: null,
       locationNotes: [],
       projectNotes: [],
+      allNotes: [],
+      projectNoteField: '',
       locations: [],
       locationtbl: {
         fields: [
@@ -188,7 +165,8 @@ export default {
         select.value = res[0][select.id]
       })
     })
-    this.projectNotes = await this.getAllNotes(lpID)
+    this.allNotes = await this.getAllNotes(lpID)
+    this.projectNotes = this.getProjectNotes()
     const res = await this.$axios.$get(`api/locations/${lpID}`)
     // adds location data to front end and fills out location table
     this.locations = res
@@ -210,20 +188,35 @@ export default {
       : this.showAlert(this.form.errLoadMsg, 'danger')
   },
   methods: {
-    async updateLocationNotes() {
+    async updateNotes(tabName) {
+      const onLocationTab = tabName === 'location'
+      const locID = onLocationTab ? this.selectedLocation.id : null
+      const txt = onLocationTab ? this.selectedLocation.properties.locationNote : this.projectNoteField
       await this.postComment(
         {
           author: 'Colin McCullough', // need to add the author
-          lpId: this.selectedLocation.lpId,
-          locationId: this.selectedLocation.id,
-          text: this.selectedLocation.properties.locationNote
+          lpId: this.form.inputs.lpId,
+          locationId: locID,
+          text: txt
         }
       )
-      this.projectNotes = await this.getAllNotes(this.selectedLocation.lpId)
-      this.locationNotes = this.getLocationNotes()
+      await this.setNotes(onLocationTab)
     },
-    getLocationNotes() {
-      return this.projectNotes.filter(note => note.locationId === this.selectedLocation.id)
+    async setNotes(onLocationTab) {
+      this.allNotes = await this.getAllNotes(this.form.inputs.lpId)
+      if (onLocationTab) {
+        this.locationNotes = this.getLocationNotes(this.selectedLocation.id)
+        this.selectedLocation.properties.locationNote = ''
+      } else {
+        this.projectNotes = this.getProjectNotes()
+        this.projectNoteField = ''
+      }
+    },
+    getLocationNotes(id) {
+      return this.allNotes.filter(note => note.locationId === id)
+    },
+    getProjectNotes() {
+      return this.allNotes.filter(note => note.locationId === null)
     },
     updateAddress(data) {
       const i = this.getLocationIndex()
@@ -236,7 +229,7 @@ export default {
     },
     loadLocation(payload) {
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
-      this.locationNotes = this.projectNotes.filter(note => note.locationId === payload)
+      this.locationNotes = this.getLocationNotes(this.selectedLocation.id)
     },
     toggleWildcard() {
       const i = this.getLocationIndex()
@@ -270,7 +263,6 @@ export default {
       if (locIDs) {
         locIDs.forEach((locID) => {
           this.locations = this.locations.filter(location => location.id !== locID || null)
-          // need to delete comments
           this.selectedLocation = null
           this.$axios.delete(`/api/lp-project/${this.form.inputs.lpId}/${locID}`)
           this.$axios.delete(`/api/comments/?locationId=${locID}`)
@@ -310,16 +302,22 @@ export default {
       }
     },
     onSave() {
-      // TODO validate save payload
       this.$axios
         .$put('api/locations', {
           lpId: this.form.inputs.lpId,
           locations: this.locations
         })
     },
+    allStepsComple(locProp) {
+      return locProp.stepOneComplete &&
+        locProp.stepTwoComplete &&
+        locProp.stepThreeComplete &&
+        locProp.stepFourComplete
+    },
     updateLocationStatus(i) {
       const locProp = this.selectedLocation.properties
-      if (locProp.stepOneComplete && locProp.stepTwoComplete && locProp.stepThreeComplete) {
+      const stepsComplete = this.allStepsComple(locProp)
+      if (stepsComplete) {
         this.locations[i].properties.locationComplete = true
         this.locationtbl.items[i].status = true
       } else {
@@ -341,6 +339,9 @@ export default {
       }
       this.updateLocationStatus(i)
       this.updatePRLocationStatus(i)
+    },
+    updateProjectData({ key, val }) {
+      this[key] = val
     },
     updateCell({ key, val, index, col, id }) {
       const i = this.locations.findIndex(loc => loc.id === id)
@@ -394,5 +395,17 @@ export default {
   background-color: var(--primary);
   color: white;
   text-align: center;
+}
+.main-with-nav {
+    position: fixed;
+    top:5rem;
+    left: 0;
+    right: 0;
+    bottom: 30px;
+}
+.scroll-container {
+    overflow-y: scroll;
+    height: 100%;
+    scroll-behavior: smooth
 }
 </style>

@@ -50,6 +50,63 @@
         md="4"
         class="align-self-center mb-2"
       >
+        <label for="state">STATE</label>
+        <b-form-select
+          id="state"
+          :value="form.state"
+          :state="form.state !== null"
+          :options="states.options"
+          @change="onInput('state', $event)"
+        />
+      </b-col>
+      <b-col
+        cols="12"
+        md="4"
+        class="align-self-center mb-2"
+      >
+        <label for="postal_code">POSTAL CODE</label>
+        <b-form-input
+          id="postal_code"
+          :value="form.postal_code"
+          :state="validation('postal_code')"
+          @input="onInput('postal_code', $event)"
+          placeholder="Enter postal code"
+        />
+      </b-col>
+      <b-col
+        cols="12"
+        md="4"
+        class="align-self-center mb-2"
+      >
+        <label for="country">COUNTRY</label>
+        <b-form-select
+          id="country"
+          :value="form.country"
+          :state="form.country !== null"
+          :options="country.options"
+          @change="onInput('country', $event)"
+        />
+      </b-col>
+      <b-col
+        cols="12"
+        md="4"
+        class="align-self-center mb-2"
+      >
+        <label for="population">POPULATION</label>
+        <b-form-input
+          id="population"
+          :value="form.population"
+          :state="validation('population')"
+          @input="onInput('population', $event)"
+          placeholder="Enter population"
+          type="number"
+        />
+      </b-col>
+      <b-col
+        cols="12"
+        md="4"
+        class="align-self-center mb-2"
+      >
         <label for="uspsvalid">USPS Verified</label>
         <b-form-select
           id="uspsvalid"
@@ -81,11 +138,12 @@
 <script>
 import UspsModal from '~/components/modals/usps-modal'
 import SaveStep from '~/mixins/savestep'
+import States from '~/mixins/states'
 export default {
   components: {
     UspsModal
   },
-  mixins: [SaveStep],
+  mixins: [SaveStep, States],
   props: {
     inputs: {
       type: Array,
@@ -98,19 +156,30 @@ export default {
       default() {
         return {}
       }
-    },
-    uspsvalid: {
-      type: Object,
-      default() {
-        return {}
-      }
     }
   },
   data () {
     return {
       saveTxt: 'Save',
       res: null,
-      uspsLink: 'https://tools.usps.com/zip-code-lookup.htm?byaddress'
+      uspsLink: 'https://tools.usps.com/zip-code-lookup.htm?byaddress',
+      states: this.getStates(),
+      country: {
+        selected: null,
+        options: [
+          { value: null, text: 'Select Country' },
+          { value: 'US', text: 'United States' },
+          { value: 'CA', text: 'Canada' }
+        ]
+      },
+      uspsvalid: {
+        selected: null,
+        options: [
+          { value: null, text: 'Is Location Adress USPS Verified?' },
+          { value: true, text: 'Yes - USPS Verified' },
+          { value: false, text: 'No - Not USPS Verified' }
+        ]
+      }
     }
   },
   computed: {
