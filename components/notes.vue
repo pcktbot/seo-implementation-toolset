@@ -169,8 +169,6 @@ export default {
       this.inputTxt = val
     },
     formattedDate(date) {
-      // eslint-disable-next-line no-console
-      console.log(date)
       return moment(new Date(date)).format('MM-DD-YY')
     },
     onLocationTab() {

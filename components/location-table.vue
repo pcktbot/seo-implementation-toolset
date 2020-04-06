@@ -30,7 +30,7 @@
         <template v-slot:cell(edit)="data">
           <b-btn
             :disabled="disabled"
-            @click="loadLocation(data.index)"
+            @click="loadLocation(data.item.value)"
             href="#loctable"
             variant="outline-secondary"
             class="px-4"
@@ -176,8 +176,6 @@ export default {
           break
         }
       }
-      // eslint-disable-next-line no-console
-      console.log(val)
       return val
     },
     exportSelected() {
@@ -198,9 +196,8 @@ export default {
     clearSelected() {
       this.$refs.selectableTable.clearSelected()
     },
-    loadLocation(index) {
-      const payload = this.locationtbl.items[index].value
-      this.$emit('load-location', payload)
+    loadLocation(id) {
+      this.$emit('load-location', id)
     },
     onDelete() {
       if (this.locationtbl.selected.length > 0) this.$emit('delete-location')
