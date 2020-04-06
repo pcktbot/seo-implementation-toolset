@@ -8,7 +8,7 @@
       </b-col>
     </b-row>
     <b-row class="mx-auto px-0">
-      <b-col class="align-self-center px-0 pb-3">
+      <b-col class="top-3 align-self-center px-0 pb-3 col-12 col-md">
         <b-form-select
           id="strategy-selection"
           :state="validDropDown"
@@ -18,8 +18,8 @@
           class="w-50"
         />
       </b-col>
-      <b-col class="text-center px-0 pb-3">
-        <span :id="formatTip" class="d-inline-block" tabindex="0">
+      <b-col class="top-3 text-center px-0 pb-3 col-12 col-md">
+        <span :id="formatTip" tabindex="0">
           <b-btn
             :disabled="btnDisabled"
             @click="formatRedirects"
@@ -33,8 +33,8 @@
           strategy and paste redirects
         </b-tooltip>
       </b-col>
-      <b-col class="text-right px-0 pb-3">
-        <span :id="displaySaveTip" class="d-inline-block" tabindex="0">
+      <b-col class="top-3 text-right px-0 pb-3 col-12 col-md">
+        <span :id="displaySaveTip" tabindex="0">
           <b-btn
             :disabled="!validateStep"
             @click="onSave('stepThreeComplete')"
@@ -311,4 +311,14 @@ export default {
   .redirect-alert.alert-dismissible .close {
     padding: 0.25rem 1.25rem!important;
   }
+
+@media only screen and (max-width: 768px) {
+  .col-12 .btn {
+    width: 100%;
+    max-width: 100%;
+  }
+  #strategy-selection {
+    width: 100%!important;
+  }
+}
 </style>

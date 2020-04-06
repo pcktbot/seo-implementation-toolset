@@ -223,7 +223,7 @@ export default {
   .bottom-btns .btn-sm {
     margin-top: .25rem;
   }
-  .table-btns .col, .col-md-4, .col-md-6 {
+  .table-btns .col, .table-btns .col-md-4, .table-btns .col-md-6, .table-btns .col-lg {
     padding-left: .25rem;
     padding-right: .25rem;
   }

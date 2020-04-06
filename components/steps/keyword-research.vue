@@ -1,18 +1,18 @@
 <template>
   <b-container fluid>
     <b-row class="align-items-center pb-2">
-      <b-col cols="12" md="6" lg="3">
+      <b-col cols="12" lg="4" xl="2">
         <h3 class="text-left mb-0">
           Keywords
         </h3>
       </b-col>
-      <b-col cols="12" md="6" lg="4">
+      <b-col cols="12" lg="8" xl="4">
         <h5 class="text-left mb-0">
           <strong>Negative Keywords:</strong>
           <span style="color: #dc3545">{{ compform.negative_keywords ? compform.negative_keywords : 'N/A' }}</span>
         </h5>
       </b-col>
-      <b-col class="text-right pt-0 button-pack" cols="12" md="4" lg="2">
+      <b-col class="text-right pr-1 pl-1" cols="12" lg="4" xl="2">
         <b-btn
           @click="getKeywords(apiProps)"
           variant="outline-secondary--darken3"
@@ -25,7 +25,7 @@
           </div>
         </b-btn>
       </b-col>
-      <b-col class="text-right pt-0 button-pack" cols="12" md="4" lg="2">
+      <b-col class="text-right pr-1 pl-1" cols="12" lg="4" xl="2">
         <b-btn
           @click="getPhrases"
           variant="outline-secondary--darken3"
@@ -35,7 +35,7 @@
           Get Phrases
         </b-btn>
       </b-col>
-      <b-col class="text-right pt-0" cols="12" md="4" lg="1">
+      <b-col class="text-right pr-1 pl-1" cols="12" lg="4" xl="2">
         <span :id="displaySaveTip" class="w-100 d-inline-block" tabindex="0">
           <b-btn
             :disabled="!validateStepTwo1"
@@ -56,7 +56,7 @@
       <b-col
         v-for="input in inputs"
         :key="input"
-        cols="3"
+        class="col-12 col-md-6 col-lg-3"
       >
         <b-form-group
           :id="`input-group-${input}`"
@@ -75,14 +75,13 @@
         </b-form-group>
       </b-col>
       <b-col
-        cols="3"
-        class="align-self-center mb-4"
+        class="align-self-center col-12 col-md-6 col-lg-3"
       >
         <div v-if="form.selects[0].value === 'mf'">
           <b-form-group
             label="PROPERTY FEATURE"
             for="property_feature_1"
-            class="text-left text-uppercase"
+            class="pb-0 text-left text-uppercase"
           >
             <b-form-select
               id="property_feature_1"
@@ -90,6 +89,7 @@
               :options="validation.steptwofields.propertyvalue.options"
               :state="pickPropertyVal !== null"
               @change="onInput('property_feature_1', $event)"
+              class="pb-1"
             />
           </b-form-group>
         </div>
@@ -99,6 +99,7 @@
       <b-col
         v-for="keyword in keywords"
         :key="keyword"
+        class="col-12 col-md-6 col-xl"
       >
         <b-form-group
           :for="`textarea-${keyword}`"
@@ -127,7 +128,7 @@
       <b-col
         v-for="phrase in phrases"
         :key="phrase"
-        :cols="adjustColWidth"
+        class="col-12 col-md"
       >
         <b-form-group
           :for="`textarea-${phrase}`"
@@ -227,9 +228,6 @@ export default {
     validateStepTwo1() {
       const valid = this.validateStepTwo()
       return valid
-    },
-    adjustColWidth() {
-      return this.form.selects[0].value === 'mf' ? 4 : 6
     },
     pickPropertyVal() {
       const propertyFeatureVal = this.location.properties.property_feature_1

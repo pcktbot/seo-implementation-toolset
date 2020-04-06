@@ -69,8 +69,8 @@ export default {
   position: absolute;
   padding-bottom: 10px;
   top: 50%;
-  width: 700px;
-  max-width: 700px;
+  width: 40%;
+  max-width: 40%;
   min-height: 300px;
   z-index: 23;
   transition: 200ms ease-in-out;
@@ -155,4 +155,36 @@ export default {
     display: none;
   }
 }
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 768px) {
+  .drawer-container {
+    width: 75%;
+    max-width: 75%;
+  }
+}
+
+// /* Extra small devices (phones, 600px and down) */
+// @media only screen and (min-width: 600px) {
+//   .drawer-container {
+//     width: 75%;
+//     max-width: 75%;
+//   }
+// }
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) and (max-width: 992px) {
+  .drawer-container {
+    width: 75%;
+    max-width: 75%;
+  }
+
+}
+// /* Large devices (laptops/desktops, 992px and up) */
+// @media only screen and (min-width: 992px) {
+//   .drawer-container {
+//     width: 40%;
+//     max-width: 40%;
+//   }
+// }
 </style>

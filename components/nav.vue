@@ -6,11 +6,25 @@
         src="/g5-logo-2.png"
         alt="G5 Corporate Logo"
       />
-      <h2 class="mb-0 font-weight-bold" style="color: white">
-        SEO Implementation Toolset
+      <h2 class="nav-text mb-0 font-weight-bold" style="color: white">
+        SEO Implementation
       </h2>
     </b-navbar-brand>
   </b-navbar>
+  <!-- <div>
+    <b-navbar type="dark">
+      <b-navbar-brand href="/" class="d-flex align-items-center">
+        <b-img
+          class="mr-2 logo"
+          src="/g5-logo-2.png"
+          alt="G5 Corporate Logo"
+        />
+        <h2 class="nav-text">
+          SEO Implementation
+        </span>
+      </b-navbar-brand>
+    </b-navbar>
+  </div> -->
 </template>
 
 <script>
@@ -25,5 +39,34 @@ export default {
 }
 nav {
   background-color: var(--primary)
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+  .nav-text {
+    font-size: 1.25rem
+  }
+  .logo {
+  width: 2.75em;
+  height: 2.75em;
+}
+}
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+  .nav-text {
+    font-size: 2rem
+  }
+}
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+
+}
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+
+}
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+
 }
 </style>

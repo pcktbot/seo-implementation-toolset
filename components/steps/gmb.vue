@@ -1,14 +1,14 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col class="text-left">
+      <b-col class="text-left" cols="12" md="4">
         <span class="font-weight-bold">Current Website: </span>{{ location.properties.current_website }}
       </b-col>
-      <b-col v-if="location.properties.primary_type" class="text-left">
+      <b-col v-if="location.properties.primary_type" class="text-left" cols="12" md="4">
         <span class="font-weight-bold">Property Type:</span> {{ location.properties.primary_type }}
       </b-col>
-      <b-col class="text-right pt-0">
-        <span :id="displaySaveTip" class="d-inline-block" tabindex="0">
+      <b-col class="text-right pt-0" cols="12" md="4">
+        <span :id="displaySaveTip" tabindex="0">
           <b-btn
             :disabled="disabledSave"
             @click="onSave('stepFourComplete')"
@@ -27,6 +27,8 @@
       <b-col
         v-for="(select, index) in selects"
         :key="select.id"
+        cols="12"
+        md="4"
       >
         <b-form>
           <b-form-group
@@ -147,4 +149,11 @@ export default {
  .comment.card-title {
    text-align: center;
  }
+
+@media only screen and (max-width: 768px) {
+  .col-12 .btn {
+    width: 100%;
+    max-width: 100%;
+  }
+}
 </style>
