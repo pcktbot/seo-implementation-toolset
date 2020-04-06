@@ -1,4 +1,27 @@
 module.exports = {
+  mfMap: {
+    'airport': '10',
+    'amusement_park': '5',
+    'bank': '5',
+    'cafe': '5',
+    'casino': '5',
+    'convenience_store': '10',
+    'department_store': '10',
+    'gym': '10',
+    'hardware_store': '5',
+    'hospital': '10',
+    'laundry': '10',
+    'library': '10',
+    'museum': '5',
+    'park': '20',
+    'restaurant': '10',
+    'school': '15',
+    'shopping_mall': '10',
+    'stadium': '10',
+    'storage': '10',
+    'transit_station': '5',
+    'zoo': '5'
+  },
   mfClassAMap: {
     'airport': '10',
     'amusement_park': '5',

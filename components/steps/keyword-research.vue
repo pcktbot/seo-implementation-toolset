@@ -14,7 +14,7 @@
       </b-col>
       <b-col class="text-right pt-0 button-pack" cols="12" md="4" lg="2">
         <b-btn
-          @click="getKeywords"
+          @click="getKeywords(apiProps)"
           variant="outline-secondary--darken3"
           class="mb-1"
           block
@@ -207,8 +207,12 @@ export default {
       ],
       otherRequiredFields: [
         'custom_slug'
-      ],
-      apiProps: {
+      ]
+    }
+  },
+  computed: {
+    apiProps() {
+      return {
         vertical: this.form.selects[0].value,
         address: this.location.properties.street_address_1,
         class: this.location.properties.class,
@@ -216,9 +220,7 @@ export default {
         state: this.location.properties.state,
         zip: this.location.properties.postal_code
       }
-    }
-  },
-  computed: {
+    },
     displaySaveTip() {
       return !this.validateStepTwo() ? 'step-two-tip' : 'not-disabled'
     },
@@ -291,9 +293,10 @@ export default {
       this.alertvariant = 'danger'
       this.hasMsg = true
     },
-    getKeywords() {
+    getKeywords(props) {
+      // eslint-disable-next-line no-console
+      console.log(props)
       this.loading = true
-      const props = this.apiProps
       const neighborhoodKeywords = []
       const landmarkKeywords = []
       this.$axios.$put('/placesapi/placesRequest', { props })

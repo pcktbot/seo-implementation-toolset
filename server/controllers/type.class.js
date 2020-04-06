@@ -83,7 +83,8 @@ class LocationTerms {
   // }
 
   getMapName() {
-    const classNoSpace = this.class.replace(' ', '')
+    const classNoSpace = this.class && this.vertical === 'mf'
+      ? this.class.replace(' ', '') : ''
     const key = `${this.vertical}${classNoSpace}Map`
     this.terms = maps[key]
   }
