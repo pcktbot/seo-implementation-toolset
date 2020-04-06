@@ -69,8 +69,8 @@ export default {
   position: absolute;
   padding-bottom: 10px;
   top: 50%;
-  width: 500px;
-  max-width: 500px;
+  width: 700px;
+  max-width: 700px;
   min-height: 300px;
   z-index: 23;
   transition: 200ms ease-in-out;

@@ -269,7 +269,15 @@ export default {
         table.push({ isActive: true, strategy: currentStrat, current_url: redirect, formatted_url: cloudFormatted })
       })
       this.$emit('add-rows', table, { id: this.location.id })
+      this.updateTxtField(table)
       this.showMsg(`${table.length} Row/s Added`, `${table.length ? 'success' : 'danger'}`)
+    },
+    updateTxtField(table) {
+      const newTxt = this.form.redirecttext.split(/\n|,/g).filter((item) => {
+        const arr = table.map(obj => obj.current_url)
+        return !arr.includes(item)
+      }).toString().replace(/,+/g, '\n')
+      this.onInput('redirecttext', newTxt)
     },
     onChangeCell(key, val, index, col) {
       this.$emit('cell-update', { key, val, index, col, id: this.location.id })

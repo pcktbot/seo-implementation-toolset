@@ -51,6 +51,7 @@
         <b-table
           :fields="notestbl.fields"
           :items="getItems"
+          responsive="sm"
           sticky-header="30rem"
           head-variant="light"
           class="comments text-left table"

@@ -14,7 +14,7 @@
         hover
         head-variant="light"
         bordered
-        class="self-align-center table mt-3"
+        class="self-align-center table mt-3 mb-1"
       >
         <template v-slot:cell(select)="{ rowSelected }">
           <template v-if="rowSelected">
@@ -57,27 +57,37 @@
           </template>
         </template>
       </b-table>
-      <b-row class="ml-0 mr-0 mb-1">
-        <b-col class="bottom-btns pl-0 pr-0 pt-1 pb-1">
-          <b-button @click="selectAllRows" size="sm">
+      <b-row class="table-btns ml-0 mr-0">
+        <b-col class="col-12 col-md-4 col-lg">
+          <b-button @click="selectAllRows" block>
             Select all
           </b-button>
-          <b-button @click="clearSelected" size="sm">
+        </b-col>
+        <b-col class="col-12 col-md-4 col-lg">
+          <b-button @click="clearSelected" block>
             Clear Selected
           </b-button>
-          <b-button @click="exportSelected" size="sm">
+        </b-col>
+        <b-col class="col-12 col-md-4 col-lg">
+          <b-button @click="exportSelected" block>
             Export Selected
             <b-icon icon="download" />
           </b-button>
-          <b-button @click="onSave" size="sm" variant="secondary">
+        </b-col>
+        <b-col class="col-12 col-md-6 col-lg">
+          <b-button @click="onSave" block>
             Save All
           </b-button>
-          <b-button v-b-modal.modal-1 variant="danger" size="sm">
+        </b-col>
+        <b-col class="col-12 col-md-6 col-lg">
+          <b-button v-b-modal.modal-1 variant="danger" block>
             Delete Selected
             <b-icon icon="trash" />
           </b-button>
         </b-col>
-        <b-col class="pb-1">
+      </b-row>
+      <b-row class="alert-row m-0">
+        <b-col class="p-0 m-0">
           <b-alert
             :show="dismissCountDown"
             :variant="alertvariant"
@@ -85,7 +95,7 @@
             @dismissed="alertvariant='', alertMsg=''"
             dismissible
             fade
-            class="redirect-alert m-0 px-1 py-1"
+            class="mb-0 py-1"
           >
             {{ alertMsg }}
           </b-alert>
@@ -130,7 +140,7 @@ export default {
     return {
       alertMsg: '',
       alertvariant: '',
-      dismissSecs: 3,
+      dismissSecs: 4,
       dismissCountDown: 0
     }
   },
@@ -157,11 +167,6 @@ export default {
       this.$emit('save-step')
       this.showAlert('Saved', 'success')
     },
-    showMsg(msg, variant) {
-      this.alertMsg = msg
-      this.alertvariant = variant
-      this.hasMsg = true
-    },
     selectedLocationsComplete() {
       let val = true
       const selected = this.locationtbl.selected
@@ -180,7 +185,7 @@ export default {
         if (this.selectedLocationsComplete()) {
           this.$emit('export-locations')
         } else {
-          this.showAlert('Please unselect locations that are incomplete', 'danger')
+          this.showAlert('Unselect incomplete locations', 'danger')
         }
       }
     },
@@ -218,10 +223,14 @@ export default {
   .table th, .table td {
     vertical-align: middle;
   }
-  .redirect-alert {
-    font-size: 0.875rem;
-  }
   .bottom-btns .btn-sm {
     margin-top: .25rem;
   }
+  .table-btns .col, .col-md-4, .col-md-6 {
+    padding-left: .25rem;
+    padding-right: .25rem;
+  }
+  .alert-row .alert-dismissible .close {
+    padding: .2rem 1.25rem;
+}
 </style>
