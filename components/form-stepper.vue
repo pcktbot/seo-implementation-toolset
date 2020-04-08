@@ -128,7 +128,7 @@ export default {
   },
   data () {
     return {
-      stepOneText: 'Name / Adress Validation',
+      stepOneText: 'Name / Address Validation',
       stepTwoText: 'Keyword Research',
       stepThreeText: 'Redirects',
       stepFourText: 'GMB / GA / Strategy',
@@ -195,7 +195,10 @@ export default {
               { value: 'New', text: 'New' },
               { value: 'Upgraded', text: 'Upgraded' },
               { value: 'Modern', text: 'Modern' },
-              { value: 'Luxury', text: 'Luxury' }
+              { value: 'Luxury', text: 'Luxury' },
+              { value: 'Townhome Style', text: 'Townhome Style' },
+              { value: 'Smart', text: 'Smart' },
+              { value: 'Upscale', text: 'Upscale' }
             ]
           }
         },

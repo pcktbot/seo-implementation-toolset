@@ -1,13 +1,7 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col class="text-left" cols="12" md="4">
-        <span class="font-weight-bold">Current Website: </span>{{ location.properties.current_website }}
-      </b-col>
-      <b-col v-if="location.properties.primary_type" class="text-left" cols="12" md="4">
-        <span class="font-weight-bold">Property Type:</span> {{ location.properties.primary_type }}
-      </b-col>
-      <b-col class="text-right pt-0" cols="12" md="4">
+      <b-col class="text-right pt-0" cols="12">
         <span :id="displaySaveTip" tabindex="0">
           <b-btn
             :disabled="disabledSave"
@@ -21,6 +15,20 @@
         <b-tooltip target="step-four-tip" placement="topleft" variant="secondary">
           complete all dropdowns
         </b-tooltip>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col class="text-left" cols="12" md="4">
+        <span class="font-weight-bold">Current Website: </span>{{ location.properties.current_website }}
+      </b-col>
+      <b-col v-if="location.properties.primary_type" class="text-left" cols="12" md="4">
+        <span class="font-weight-bold">Property Type:</span> {{ location.properties.primary_type }}
+      </b-col>
+      <b-col class="text-left" cols="12" md="4">
+        <span class="font-weight-bold">Strategy Link:</span>
+        <b-link :href="getStrategyLink" target="_blank">
+          {{ getStrategyText }}
+        </b-link>
       </b-col>
     </b-row>
     <b-row>
@@ -50,10 +58,10 @@
 </template>
 
 <script>
-import CommentsMixin from '~/mixins/comments'
 import SaveStep from '~/mixins/savestep'
+import Strategies from '~/mixins/strategies'
 export default {
-  mixins: [CommentsMixin, SaveStep],
+  mixins: [SaveStep, Strategies],
   props: {
     location: {
       type: Object,
@@ -98,15 +106,36 @@ export default {
               { value: null, text: 'Select Strategy' },
               { value: 'mfa', text: 'MF A' },
               { value: 'mfb', text: 'MF B' },
-              { value: 'mfc', text: 'MF C' }
+              { value: 'mfc', text: 'MF C' },
+              { value: 'townhomes', text: 'Townhomes' },
+              { value: 'apartmentstownhomes', text: 'Apartments & Townhomes' },
+              { value: 'mobile', text: 'Mobile Homes' },
+              { value: 'fiftyfiveplus', text: '55+ Apartments' },
+              { value: 'senior', text: 'Senior Apartments' },
+              { value: 'student', text: 'Student Apartments' },
+              { value: 'mfa1', text: 'MF A-1' },
+              { value: 'mfb1', text: 'MF B-1' },
+              { value: 'mfc1', text: 'MF C-1' },
+              { value: 'mfa2', text: 'MF A-2' },
+              { value: 'mfb2', text: 'MF B-2' },
+              { value: 'mfc2', text: 'MF C-2' },
+              { value: 'mfa3', text: 'MF A-3' },
+              { value: 'mfb3', text: 'MF B-3' },
+              { value: 'mfc3', text: 'MF C-3' },
+              { value: 'mfa4', text: 'MF A-4' },
+              { value: 'mfb4', text: 'MF B-4' },
+              { value: 'mfc4', text: 'MF C-4' },
+              { value: 'mfy', text: 'MF-Y' },
+              { value: 'mfz', text: 'MF-Z' }
+
             ]
           },
           ssoptions: {
             options: [
               { value: null, text: 'Select Strategy' },
               { value: 'ssa', text: 'SS A' },
-              { value: 'ssb', text: 'SS B' },
-              { value: 'ssc', text: 'SS C' }
+              { value: 'ssalandmark', text: 'SS A - Landmark' },
+              { value: 'ssb', text: 'SS B' }
             ]
           },
           sloptions: {
@@ -127,6 +156,18 @@ export default {
     },
     displaySaveTip() {
       return !this.validateStepFour() ? 'step-four-tip' : 'not-disabled'
+    },
+    getStrategyLink() {
+      const vertical = this.form.selects[0].value
+      const verticalStrategies = Object.keys(this.strategies[vertical])
+      const strategy = this.location.properties.strategy
+      return strategy && verticalStrategies.includes(strategy) ? this.strategies[vertical][strategy].link : ''
+    },
+    getStrategyText() {
+      const vertical = this.form.selects[0].value
+      const verticalStrategies = Object.keys(this.strategies[vertical])
+      const strategy = this.location.properties.strategy
+      return strategy && verticalStrategies.includes(strategy) ? this.strategies[vertical][strategy].description : ''
     }
   },
   methods: {
@@ -146,10 +187,13 @@ export default {
 </script>
 
 <style>
- .comment.card-title {
-   text-align: center;
- }
-
+a {
+  text-decoration: underline;
+}
+a:hover {
+  text-decoration: underline;
+  color: var(--tertiary);
+}
 @media only screen and (max-width: 768px) {
   .col-12 .btn {
     width: 100%;

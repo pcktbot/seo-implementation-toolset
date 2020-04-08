@@ -55,7 +55,7 @@
           id="state"
           :value="form.state"
           :state="form.state !== null"
-          :options="states.options"
+          :options="getStates"
           @change="onInput('state', $event)"
         />
       </b-col>
@@ -99,7 +99,6 @@
           :state="validation('population')"
           @input="onInput('population', $event)"
           placeholder="Enter population"
-          type="number"
         />
       </b-col>
       <b-col
@@ -163,7 +162,6 @@ export default {
       saveTxt: 'Save',
       res: null,
       uspsLink: 'https://tools.usps.com/zip-code-lookup.htm?byaddress',
-      states: this.getStates(),
       country: {
         selected: null,
         options: [
@@ -175,7 +173,7 @@ export default {
       uspsvalid: {
         selected: null,
         options: [
-          { value: null, text: 'Is Location Adress USPS Verified?' },
+          { value: null, text: 'Is Location Address USPS Verified?' },
           { value: true, text: 'Yes - USPS Verified' },
           { value: false, text: 'No - Not USPS Verified' }
         ]
@@ -183,6 +181,12 @@ export default {
     }
   },
   computed: {
+    getStates() {
+      const country = this.location.properties.country
+      return this.location.properties.country
+        ? this.states[country].options
+        : [{ value: null, text: 'Select Country for States' }]
+    },
     displaySaveTip() {
       return !this.validateStepOne() ? 'step-one-tip' : 'not-disabled'
     },

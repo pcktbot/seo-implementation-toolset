@@ -108,7 +108,7 @@
         >
           <b-form-textarea
             :id="`textarea-${keyword}`"
-            :placeholder="`Paste your comma seperated ${keyword.replace(/_/g,' ')} Keywords here`"
+            :placeholder="`Paste your comma seperated ${keyword.replace(/_/g,' ')} here`"
             @input="onInput(keyword, $event)"
             :value="compform[keyword]"
             class="text-left"
