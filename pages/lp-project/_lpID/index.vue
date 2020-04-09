@@ -72,30 +72,16 @@
         </b-row>
       </b-container>
     </div>
-    <div class="footer">
-      <b-row>
-        <b-col class="text-left ml-4">
-          <p class="m-1">
-            SEO
-          </p>
-        </b-col>
-        <b-col class="text-right mr-4">
-          <b-link v-b-modal.feedback-modal style="color: white;">
-            Submit Feedback
-          </b-link>
-        </b-col>
-      </b-row>
-    </div>
-    <submit-feedback />
+    <g5-footer />
   </div>
 </template>
 
 <script>
 // import Papa from 'papaparse'
 import LocationTable from '~/components/location-table'
-import SubmitFeedback from '~/components/modals/submit-feedback'
 import FormStepper from '~/components/form-stepper'
 import g5Nav from '~/components/nav'
+import g5Footer from '~/components/footer'
 import Notes from '~/components/notes'
 import initialSelections from '~/components/initial-selections'
 import Index from '~/mixins/index'
@@ -105,9 +91,9 @@ import Drawer from '~/components/drawer'
 export default {
   components: {
     LocationTable,
-    SubmitFeedback,
     FormStepper,
     g5Nav,
+    g5Footer,
     initialSelections,
     Drawer,
     Notes

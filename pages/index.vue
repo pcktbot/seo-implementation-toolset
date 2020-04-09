@@ -32,22 +32,20 @@
         </b-col>
       </b-row>
     </b-container>
-    <div class="footer">
-      <p class="m-1">
-        SEO
-      </p>
-    </div>
+    <g5-footer />
   </div>
 </template>
 
 <script>
 import g5Nav from '~/components/nav'
+import g5Footer from '~/components/footer'
 import initialSelections from '~/components/initial-selections'
 import Index from '~/mixins/index'
 export default {
   components: {
     g5Nav,
-    initialSelections
+    initialSelections,
+    g5Footer
   },
   mixins: [Index],
   data () {
