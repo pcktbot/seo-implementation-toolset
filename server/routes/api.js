@@ -96,8 +96,8 @@ module.exports = (app) => {
 
   // Create form to the db
   app.post('/api/feedback', async (req, res) => {
-    const { author, feedbackType, feedbackText, resolved } = req.body
-    const feedback = await newFeedback.createFeedback(author, feedbackType, feedbackText, resolved)
+    const { author, feedbackType, feedbackText, status } = req.body
+    const feedback = await newFeedback.createFeedback(author, feedbackType, feedbackText, status)
     res.json(feedback)
   })
 
@@ -107,4 +107,10 @@ module.exports = (app) => {
     res.json(feedback)
   })
   // Update feedback record
+  app.put('/api/feedback/:id', async (req, res) => {
+    const { id } = req.params
+    const { status, resolutionNotes } = req.body
+    const feedback = await newFeedback.updateFeedback(id, status, resolutionNotes)
+    res.json(feedback)
+  })
 }
