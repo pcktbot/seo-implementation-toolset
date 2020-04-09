@@ -1,8 +1,6 @@
 export default {
   methods: {
     onSave(key) {
-      // eslint-disable-next-line no-console
-      console.log(key)
       this.saveTxt = 'Saved!'
       this.$emit('step-save')
       // eslint-disable-next-line no-return-assign

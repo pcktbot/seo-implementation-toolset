@@ -25,8 +25,8 @@
         <span class="font-weight-bold">Property Type:</span> {{ location.properties.primary_type }}
       </b-col>
       <b-col class="text-left" cols="12" md="4">
-        <span class="font-weight-bold">Strategy Link:</span>
-        <b-link :href="getStrategyLink" target="_blank">
+        <span class="font-weight-bold strat-link">Strategy Link:</span>
+        <b-link id="strat-link" :href="getStrategyLink" target="_blank">
           {{ getStrategyText }}
         </b-link>
       </b-col>
@@ -58,10 +58,11 @@
 </template>
 
 <script>
+import Strategies from '~/server/config/strategies'
 import SaveStep from '~/mixins/savestep'
-import Strategies from '~/mixins/strategies'
+// import Strategies from '~/mixins/strategies'
 export default {
-  mixins: [SaveStep, Strategies],
+  mixins: [SaveStep],
   props: {
     location: {
       type: Object,
@@ -78,6 +79,7 @@ export default {
   },
   data () {
     return {
+      strategies: Strategies,
       saveTxt: 'Save',
       options: [
         { value: null, text: 'Select Status' },
@@ -187,11 +189,10 @@ export default {
 </script>
 
 <style>
-a {
-  text-decoration: underline;
+ #strat-link {
+  text-decoration: underline!important;
 }
-a:hover {
-  text-decoration: underline;
+#strat-link:hover {
   color: var(--tertiary);
 }
 @media only screen and (max-width: 768px) {

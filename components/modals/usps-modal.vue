@@ -21,7 +21,7 @@
             </b-row>
             <b-button
               @click="hide"
-              variant="primary"
+              variant="secondary"
               block
               class="text-center"
             >
@@ -59,7 +59,7 @@
             <b-button
               @click="updateData"
               :disabled="res === null || getUSPSProps[0].name === 'Error'"
-              variant="primary"
+              variant="secondary"
               block
               class="text-center"
             >
@@ -141,8 +141,5 @@ export default {
 <style>
   footer {
     margin-top: 0em;
-  }
-  .modal-header {
-    padding-left: 2em;
   }
 </style>

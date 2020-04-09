@@ -104,6 +104,7 @@
       <b-modal
         id="modal-1"
         @ok="onDelete"
+        header-bg-variant="primary"
         title="Delete Location"
       >
         <p class="my-4">
@@ -185,7 +186,7 @@ export default {
         } else {
           this.showAlert('Unselect incomplete locations', 'danger')
         }
-      }
+      } else { this.showAlert('Select a location/s', 'danger') }
     },
     onRowSelected(items) {
       this.$emit('select-location', items, 'locationtbl')
