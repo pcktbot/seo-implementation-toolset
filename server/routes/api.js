@@ -96,12 +96,15 @@ module.exports = (app) => {
 
   // Create form to the db
   app.post('/api/feedback', async (req, res) => {
-    // eslint-disable-next-line no-console
-    console.log('hit feedback route')
     const { author, feedbackType, feedbackText, resolved } = req.body
     const feedback = await newFeedback.createFeedback(author, feedbackType, feedbackText, resolved)
     res.json(feedback)
   })
+
   // Retrieve feedback record
+  app.get('/api/feedback', async (req, res) => {
+    const feedback = await newFeedback.getFeedback()
+    res.json(feedback)
+  })
   // Update feedback record
 }

@@ -1,6 +1,7 @@
 const models = require('../models')
 module.exports = {
-  createFeedback
+  createFeedback,
+  getFeedback
 }
 
 async function createFeedback (author, feedbackType, feedbackText, resolved) {
@@ -10,5 +11,10 @@ async function createFeedback (author, feedbackType, feedbackText, resolved) {
     feedbackText,
     resolved
   })
+  return feedback
+}
+
+async function getFeedback () {
+  const feedback = await models.feedback.findAll()
   return feedback
 }
