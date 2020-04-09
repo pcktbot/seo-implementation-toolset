@@ -1,6 +1,7 @@
 const newLocations = require('../controllers/locations')
 const newProject = require('../controllers/projects')
 const newComment = require('../controllers/comments')
+const newFeedback = require('../controllers/feedback')
 module.exports = (app) => {
   // location routes
   app.post('/api/locations', async (req, res) => {
@@ -90,4 +91,20 @@ module.exports = (app) => {
     await newComment.destroyAllComments(locationId, lpId)
     res.sendStatus(200)
   })
+
+  // FEEDBACK TABLE ROUTES
+
+  // Create form to the db
+  app.post('/api/feedback', async (req, res) => {
+    const { author, feedbackType, feedbackText, resolved } = req.body
+    const feedback = await newFeedback.createFeedback(author, feedbackType, feedbackText, resolved)
+    res.json(feedback)
+  })
+
+  // Retrieve feedback record
+  app.get('/api/feedback', async (req, res) => {
+    const feedback = await newFeedback.getFeedback()
+    res.json(feedback)
+  })
+  // Update feedback record
 }
