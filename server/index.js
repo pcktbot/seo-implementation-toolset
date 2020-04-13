@@ -30,10 +30,10 @@ const authConfig = {
   },
   sucessRedirectPath: '/'
 }
-console.log(authConfig)
 g5Auth.init(app, authConfig)
 
 app.use(bodyParser.json({ limit: '10000kb' }))
+app.use(g5Auth.isAuthenticated)
 require('./routes/api')(app)
 require('./routes/placesapi')(app)
 require('./routes/uspsapi')(app)
