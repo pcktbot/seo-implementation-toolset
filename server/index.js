@@ -30,7 +30,6 @@ const authConfig = {
   },
   sucessRedirectPath: '/'
 }
-console.log(authConfig)
 g5Auth.init(app, authConfig)
 
 app.use(bodyParser.json({ limit: '10000kb' }))
