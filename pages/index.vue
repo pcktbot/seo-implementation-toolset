@@ -12,6 +12,7 @@
             </b-card-header>
             <b-card-body class="py-5">
               <initial-selections
+                :visible="visible"
                 :form="form"
                 @upload-data="onUpload"
                 @field-update="updateSelect"
@@ -51,6 +52,7 @@ export default {
   data () {
     return {
       // data shared between index files in index mixins
+      visible: true
     }
   },
   computed: {
