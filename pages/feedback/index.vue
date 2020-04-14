@@ -16,14 +16,42 @@
               ref="feedbackTable"
               :fields="feedbacktbl.fields"
               :items="feedbacktbl.items"
-              sticky-header="20rem"
+              sticky-header="40rem"
               responsive="true"
               striped
               hover
               head-variant="light"
               bordered
-              class="self-align-center table mt-1 mb-1"
-            />
+              class="table mt-1 mb-1"
+            >
+              <template v-slot:cell(feedbackType)="data">
+                <b-form-select
+                  id="feedback-type"
+                  :value="data.value"
+                  :options="type.options"
+                />
+              </template>
+              <template v-slot:cell(feedbackText)="data">
+                <b-form-textarea
+                  id="feedback-text"
+                  v-model="data.value"
+                />
+              </template>
+              <template v-slot:cell(statusNotes)="data">
+                <b-form-textarea
+                  id="textarea-default"
+                  v-model="data.value"
+                  placeholder="Default textarea"
+                />
+              </template>
+              <template v-slot:cell(status)="data">
+                <b-form-select
+                  id="status"
+                  :value="data.value"
+                  :options="status.options"
+                />
+              </template>
+            </b-table>
           </b-col>
         </b-row>
       </b-container>
@@ -33,7 +61,7 @@
 </template>
 
 <script>
-
+import testfeedback from '~/server/config/testfeedback'
 import g5Nav from '~/components/nav'
 import g5Footer from '~/components/footer'
 export default {
@@ -43,6 +71,26 @@ export default {
   },
   data () {
     return {
+      type: {
+        selected: null,
+        options: [
+          { value: null, text: 'Select Feedback Type' },
+          { value: 'enhancement', text: 'Enhancement' },
+          { value: 'bug', text: 'Bug' }
+        ]
+      },
+      status: {
+        selected: null,
+        options: [
+          { value: null, text: 'Select Status Type' },
+          { value: 'pending', text: 'Pending' },
+          { value: 'open', text: 'Open' },
+          { value: 'accepted', text: 'Accepted' },
+          { value: 'fixed', text: 'Fixed' },
+          { value: 'rejected', text: 'Rejected', class: 'bg-color' },
+          { value: 'future', text: 'Future Consideration' }
+        ]
+      },
       feedbacktbl: {
         fields: [
           {
@@ -51,7 +99,7 @@ export default {
           },
           {
             key: 'updatedAt',
-            label: 'Date',
+            label: 'Submitted Date',
             sortable: true
           },
           {
@@ -80,9 +128,9 @@ export default {
     }
   },
   computed: {
-
   },
-  async created() {
+  created() {
+    this.feedbacktbl.items = testfeedback
   },
   methods: {
   }
@@ -90,5 +138,10 @@ export default {
 </script>
 
 <style scoped>
-
+  table textarea {
+    min-height: 4rem;
+  }
+  select#feedback-type.custom-select, select#status.custom-select {
+    height: 4rem;
+  }
 </style>

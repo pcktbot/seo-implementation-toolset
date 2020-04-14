@@ -1,7 +1,7 @@
 <template>
   <b-modal
     id="feedback-modal"
-    hide-footer="true"
+    :hide-footer="hidden"
     header-bg-variant="primary"
     size="lg"
     title="Submit Feedback"
@@ -53,7 +53,8 @@ export default {
         ]
       },
       text: '',
-      submitTxt: 'Submit'
+      submitTxt: 'Submit',
+      hidden: true
     }
   },
   computed: {

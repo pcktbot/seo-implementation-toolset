@@ -9,28 +9,30 @@
       :form="form"
       @field-update="onChange"
     />
-    <b-row>
-      <b-col
-        v-if="toggle.selected === 'upload'"
-        cols="12"
-        md="4"
-      >
-        <loadfile :form="form" />
-      </b-col>
-      <b-col :md="getColWidth()" cols="12">
-        <lpinput
-          :form="form"
-          @input-update="onInput"
-        />
-      </b-col>
-      <b-col :md="getColWidth()" cols="12">
-        <loadbtn
-          :form="form"
-          :selected="toggle.selected"
-          @upload-data="onUpload"
-        />
-      </b-col>
-    </b-row>
+    <b-collapse id="collapse-1" v-model="visible">
+      <b-row>
+        <b-col
+          v-if="toggle.selected === 'upload'"
+          cols="12"
+          md="4"
+        >
+          <loadfile :form="form" />
+        </b-col>
+        <b-col :md="getColWidth()" cols="12">
+          <lpinput
+            :form="form"
+            @input-update="onInput"
+          />
+        </b-col>
+        <b-col :md="getColWidth()" cols="12">
+          <loadbtn
+            :form="form"
+            :selected="toggle.selected"
+            @upload-data="onUpload"
+          />
+        </b-col>
+      </b-row>
+    </b-collapse>
   </b-container>
 </template>
 
@@ -53,6 +55,12 @@ export default {
       type: Object,
       default() {
         return {}
+      }
+    },
+    visible: {
+      type: Boolean,
+      default() {
+        return false
       }
     }
   },

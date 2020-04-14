@@ -77,6 +77,17 @@
           head-variant="light"
           class="self-align-center table mt-4"
         >
+          <!-- A custom formatted header cell for field 'current_url' -->
+          <template v-slot:head(current_url)="data">
+            {{ data.field.label }}
+            <b-button class="p-0 m-0" variant="light">
+              <b-img
+                src="/copy-icon.png"
+                width="20"
+                height="20"
+              />
+            </b-button>
+          </template>
           <template v-slot:cell(strategy)="data" class="align-self-center">
             <b-col
               style="width:10rem"
@@ -205,6 +216,13 @@ export default {
     }
   },
   methods: {
+    getUrls(type) {
+      let str = ''
+      this.form.redirects.items.forEach((obj) => {
+        str = str ? `${str} \n ${obj[type]}` : obj[type]
+      })
+      return str
+    },
     validateStepThree() {
       return this.location.properties.redirects.items.length > 0
     },

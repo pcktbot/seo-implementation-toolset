@@ -2,9 +2,7 @@
   <div class="footer">
     <b-row>
       <b-col class="text-left ml-4">
-        <p class="m-1">
-          SEO
-        </p>
+        SEO
       </b-col>
       <b-col class="text-right mr-4">
         <b-link v-b-modal.feedback-modal style="color: white;">

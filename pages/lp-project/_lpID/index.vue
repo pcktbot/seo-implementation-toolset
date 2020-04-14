@@ -19,9 +19,10 @@
         </template>
       </drawer>
       <b-container fluid class="scroll-container">
-        <b-row class="pt-5 px-5" style="background-color: Gainsboro">
+        <b-row class="pt-4 px-5" style="background-color: Gainsboro">
           <b-col>
             <initial-selections
+              :visible="visible"
               :form="form"
               @upload-data="onUpload"
               @field-update="updateSelect"
@@ -39,6 +40,10 @@
             </b-alert>
           </b-col>
         </b-row>
+        <accordion-toggle
+          :visible="visible"
+          @update-visibility="updateVisibility"
+        />
         <b-row class="px-5" style="background-color: white">
           <b-col>
             <location-table
@@ -84,6 +89,7 @@ import g5Nav from '~/components/nav'
 import g5Footer from '~/components/footer'
 import Notes from '~/components/notes'
 import initialSelections from '~/components/initial-selections'
+import AccordionToggle from '~/components/accordion-toggle'
 import Index from '~/mixins/index'
 import CommentsMixin from '~/mixins/comments'
 import Drawer from '~/components/drawer'
@@ -95,6 +101,7 @@ export default {
     g5Nav,
     g5Footer,
     initialSelections,
+    AccordionToggle,
     Drawer,
     Notes
   },
@@ -102,6 +109,7 @@ export default {
   // addional data shared between index files in index mixins
   data () {
     return {
+      visible: false,
       selectedLocation: null,
       locationNotes: [],
       projectNotes: [],
@@ -188,6 +196,7 @@ export default {
       : this.showAlert(this.form.errLoadMsg, 'danger')
   },
   methods: {
+    updateVisibility(val) { this.visible = val },
     async updateNotes(tabName) {
       const onLocationTab = tabName === 'location'
       const locID = onLocationTab ? this.selectedLocation.id : null
