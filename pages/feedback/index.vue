@@ -37,11 +37,11 @@
                   v-model="data.value"
                 />
               </template>
-              <template v-slot:cell(statusNotes)="data">
+              <template v-slot:cell(resolutionNotes)="data">
                 <b-form-textarea
                   id="textarea-default"
                   v-model="data.value"
-                  placeholder="Default textarea"
+                  placeholder="Enter Resolution Note"
                 />
               </template>
               <template v-slot:cell(status)="data">
@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import testfeedback from '~/server/config/testfeedback'
+// import testfeedback from '~/server/config/testfeedback'
 import g5Nav from '~/components/nav'
 import g5Footer from '~/components/footer'
 export default {
@@ -112,8 +112,8 @@ export default {
             class: 'text-center'
           },
           {
-            key: 'statusNotes',
-            label: 'Status Notes',
+            key: 'resolutionNotes',
+            label: 'Resolution Notes',
             class: 'text-center'
           },
           {
@@ -128,9 +128,14 @@ export default {
     }
   },
   computed: {
+    getItems() {
+      return this.feedbacktbl.items
+    }
   },
   created() {
-    this.feedbacktbl.items = testfeedback
+    this.$axios.$get(`api/feedback`).then((res) => {
+      this.feedbacktbl.items = res
+    })
   },
   methods: {
   }

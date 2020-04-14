@@ -66,9 +66,17 @@ export default {
     onInput(txt) {
       this.text = txt
     },
-    onSubmit() {
-      this.text = ''
+    async onSubmit() {
       this.submitTxt = 'Submitted!'
+      await this.$axios.$post('api/feedback', {
+        author: 'Colin McCullough', // needs updating with user
+        feedbackType: this.feedback.selected,
+        feedbackText: this.text,
+        status: 'pending',
+        resolutionNotes: ''
+      })
+      this.feedback.selected = null
+      this.text = ''
       // eslint-disable-next-line no-return-assign
       setTimeout(() => this.submitTxt = 'Submit', 3000)
     }
