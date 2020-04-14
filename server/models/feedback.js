@@ -1,5 +1,5 @@
 // Author,feedbackType (string), feedbackText (string), resolved (BOOLEAN)
-const { INTEGER, STRING, BOOLEAN } = require('sequelize')
+const { INTEGER, STRING } = require('sequelize')
 module.exports = sequelize => sequelize.define('feedback', {
   id: {
     type: INTEGER,
@@ -15,7 +15,10 @@ module.exports = sequelize => sequelize.define('feedback', {
   feedbackText: {
     type: STRING
   },
-  resolved: {
-    type: BOOLEAN
+  status: {
+    type: STRING
+  },
+  resolutionNotes: {
+    type: STRING
   }
 })
