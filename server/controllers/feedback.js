@@ -2,7 +2,8 @@ const models = require('../models')
 module.exports = {
   createFeedback,
   getFeedback,
-  updateFeedback
+  updateFeedback,
+  deleteFeedback
 }
 
 async function createFeedback (author, feedbackType, feedbackText, status) {
@@ -23,4 +24,10 @@ async function getFeedback () {
 async function updateFeedback (id, status, resolutionNotes) {
   const feedback = await models.feedback.update({ status, resolutionNotes }, { where: { id } })
   return feedback
+}
+
+function deleteFeedback (id) {
+  return models.feedback.destroy({
+    where: { id }
+  })
 }

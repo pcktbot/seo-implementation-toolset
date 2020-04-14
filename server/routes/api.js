@@ -108,10 +108,15 @@ module.exports = (app) => {
   })
   // Update feedback record
   app.put('/api/feedback/:id', async (req, res) => {
-    console.log('inside route')
     const { id } = req.params
     const { status, resolutionNotes } = req.body
     const feedback = await newFeedback.updateFeedback(id, status, resolutionNotes)
     res.json(feedback)
+  })
+
+  app.delete('/api/feedback/:id', async (req, res) => {
+    const { id } = req.params
+    await newFeedback.deleteFeedback(id)
+    res.sendStatus(200)
   })
 }
