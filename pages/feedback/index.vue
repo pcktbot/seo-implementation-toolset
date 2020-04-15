@@ -62,9 +62,24 @@
                   @input="onChangeCell($event, data.item.id, 'status')"
                 />
               </template>
+              <template v-slot:cell(delete)="data">
+                <b-button v-b-modal.delete-feedback @click="updateID(data.item.id)" variant="danger" style="padding: 0.19rem 0.75rem;">
+                  <b-icon font-scale="1.9" icon="trash" />
+                </b-button>
+              </template>
             </b-table>
           </b-col>
         </b-row>
+        <b-modal
+          id="delete-feedback"
+          @ok="onDelete"
+          header-bg-variant="primary"
+          title="Delete Feedback"
+        >
+          <p class="my-4">
+            Are you sure you want to delete this feedback
+          </p>
+        </b-modal>
       </b-container>
     </div>
     <g5-footer />
@@ -83,6 +98,7 @@ export default {
   },
   data () {
     return {
+      idToDelete: null,
       type: {
         selected: null,
         options: [
@@ -145,6 +161,11 @@ export default {
             label: 'Status',
             sortable: true,
             class: 'text-center'
+          },
+          {
+            key: 'delete',
+            label: 'Delete',
+            class: 'text-center'
           }
         ],
         items: []
@@ -157,7 +178,7 @@ export default {
     }
   },
   created() {
-    this.$axios.$get(`api/feedback`).then((res) => {
+    this.$axios.$get(`/api/feedback`).then((res) => {
       this.feedbacktbl.items = res
     })
   },
@@ -165,12 +186,21 @@ export default {
     onChangeCell(text, feedBackID, field) {
       const feedbackIndex = this.feedbacktbl.items.findIndex(obj => obj.id === feedBackID)
       this.feedbacktbl.items[feedbackIndex][field] = text
-      this.$axios.put(`api/feedback/${feedBackID}`, {
+      this.$axios.put(`/api/feedback/${feedBackID}`, {
         [field]: text
       })
     },
     formattedDate(date) {
       return moment(new Date(date)).format('MM-DD-YY')
+    },
+    updateID(id) { this.idToDelete = id },
+    onDelete() {
+      if (this.idToDelete) {
+        // update front end
+        this.feedbacktbl.items = this.feedbacktbl.items.filter(obj => obj.id !== this.idToDelete)
+        // update DB
+        this.$axios.delete(`/api/feedback/${this.idToDelete}`)
+      }
     }
   }
 }
@@ -178,9 +208,7 @@ export default {
 
 <style scoped>
   table textarea {
-    min-height: 4rem;
-  }
-  select#feedback-type.custom-select, select#status.custom-select {
-    height: 4rem;
+    min-height: 1.5rem;
+    height: calc(1.5em + 0.75rem + 2px);
   }
 </style>
