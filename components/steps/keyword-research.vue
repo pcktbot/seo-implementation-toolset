@@ -292,8 +292,6 @@ export default {
       this.hasMsg = true
     },
     getKeywords(props) {
-      // eslint-disable-next-line no-console
-      console.log(props)
       this.loading = true
       const neighborhoodKeywords = []
       const landmarkKeywords = []
