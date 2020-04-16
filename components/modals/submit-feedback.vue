@@ -32,7 +32,7 @@
             block
             class="text-center"
           >
-            {{ submitTxt }}
+            Submit
           </b-button>
         </b-col>
       </b-row>
@@ -53,7 +53,6 @@ export default {
         ]
       },
       text: '',
-      submitTxt: 'Submit',
       hidden: true
     }
   },
@@ -66,8 +65,10 @@ export default {
     onInput(txt) {
       this.text = txt
     },
+    hide() {
+      this.$bvModal.hide('feedback-modal')
+    },
     async onSubmit() {
-      this.submitTxt = 'Submitted!'
       await this.$axios.$post('api/feedback', {
         author: 'Colin McCullough', // needs updating with user
         feedbackType: this.feedback.selected,
@@ -77,8 +78,7 @@ export default {
       })
       this.feedback.selected = null
       this.text = ''
-      // eslint-disable-next-line no-return-assign
-      setTimeout(() => this.submitTxt = 'Submit', 3000)
+      this.hide()
     }
   }
 }
