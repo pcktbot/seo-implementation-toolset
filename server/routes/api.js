@@ -38,6 +38,14 @@ module.exports = (app) => {
     res.sendStatus(200)
   })
 
+  // Project Info Update Route
+  app.put('/api/lp-project/:lpId', async (req, res) => {
+    const { lpId } = req.params
+    const { selects } = req.body
+    await newProject.updateProject(lpId, selects)
+    res.sendStatus(200)
+  })
+
   // write get route to pull project level info
   app.get('/api/lp-project/:lpId', async (req, res) => {
     const { lpId } = req.params
