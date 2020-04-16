@@ -13,6 +13,7 @@
         <b-row class="px-5">
           <b-col>
             <b-table
+              id="feedbackTable"
               ref="feedbackTable"
               :fields="feedbacktbl.fields"
               :items="feedbacktbl.items"
@@ -25,7 +26,7 @@
               bordered
               class="table mt-1 mb-1"
             >
-              <template v-slot:head(status)="data">
+              <template v-slot:head(status)="data" class="text-left">
                 {{ data.field.label }}
                 <span>
                   <b-form-select
@@ -63,8 +64,8 @@
                 />
               </template>
               <template v-slot:cell(delete)="data">
-                <b-button v-b-modal.delete-feedback @click="updateID(data.item.id)" variant="danger" style="padding: 0.19rem 0.75rem;">
-                  <b-icon font-scale="1.9" icon="trash" />
+                <b-button v-b-modal.delete-feedback @click="updateID(data.item.id)" variant="danger" style="padding: 0.15rem 0.75rem;">
+                  <b-icon font-scale="1.8" icon="trash" />
                 </b-button>
               </template>
             </b-table>
@@ -110,7 +111,7 @@ export default {
       filter: {
         selected: null,
         options: [
-          { value: null, text: 'Filter Status' },
+          { value: null, text: 'All' },
           { value: 'pending', text: 'Pending' },
           { value: 'open', text: 'Open' },
           { value: 'accepted', text: 'Accepted' },
@@ -148,19 +149,16 @@ export default {
           },
           {
             key: 'feedbackText',
-            label: 'Note',
-            class: 'text-center'
+            label: 'Note'
           },
           {
             key: 'resolutionNotes',
-            label: 'Resolution Notes',
-            class: 'text-center'
+            label: 'Resolution Notes'
           },
           {
             key: 'status',
             label: 'Status',
-            sortable: true,
-            class: 'text-center'
+            sortable: true
           },
           {
             key: 'delete',
