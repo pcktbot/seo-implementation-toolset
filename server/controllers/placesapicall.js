@@ -8,6 +8,7 @@ const key = process.env.PLACES_API_KEY
 async function getLatLong(prop) {
   const { address, city, state, zip } = prop
   const reqUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}${city}${state}${zip}&key=${key}`
+  console.log(reqUrl)
   const addrresponse = await axios.get(reqUrl)
   const addrdata = addrresponse.data
   // eslint-disable-next-line no-console
