@@ -21,10 +21,11 @@ function getProject (lpId) {
 }
 
 async function updateProject (lpId, selects) {
+  console.log(selects)
   for (let i = 0; i < selects.length; i++) {
     const key = selects[i].id
     const value = selects[i].value
-    console.log(`key: ${key} and value: ${value}`)
+    // console.log(`key: ${key} and value: ${value}`)
     await models.project.update({ key, value }, { where: { lpId } })
   }
 }
