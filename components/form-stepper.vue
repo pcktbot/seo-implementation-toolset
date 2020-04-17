@@ -9,6 +9,12 @@
         </b-col>
         <b-col class="text-center" cols="12" md="4">
           <h5 class="mb-0">
+            <b-img
+              src="/maps-icon.svg"
+              width="20"
+              height="20"
+              class="maps-icon"
+            />
             <strong>Address: </strong>{{ `${location.properties.street_address_1} ${location.properties.city} ${location.properties.state} ${location.properties.postal_code}` }}
           </h5>
         </b-col>
@@ -244,5 +250,8 @@ export default {
 <style scoped>
   .tab-pane.card-body {
     padding-top: 1rem;
+  }
+  .maps-icon {
+    vertical-align: top;
   }
 </style>

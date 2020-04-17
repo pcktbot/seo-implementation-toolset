@@ -45,6 +45,7 @@
                   id="feedback-text"
                   v-model="data.value"
                   disabled
+                  rows="2"
                 />
               </template>
               <template v-slot:cell(resolutionNotes)="data">
@@ -53,6 +54,7 @@
                   v-model="data.value"
                   @input="onChangeCell($event, data.item.id, 'resolutionNotes')"
                   placeholder="Enter Resolution Note"
+                  rows="2"
                 />
               </template>
               <template v-slot:cell(status)="data">
@@ -206,6 +208,6 @@ export default {
 <style scoped>
   table textarea {
     min-height: 1.5rem;
-    height: calc(1.5em + 0.75rem + 2px);
+    /* height: calc(1.5em + 0.75rem + 2px); */
   }
 </style>
