@@ -88,7 +88,6 @@
 </template>
 
 <script>
-// import testfeedback from '~/server/config/testfeedback'
 import moment from 'moment'
 import g5Nav from '~/components/nav'
 import g5Footer from '~/components/footer'

@@ -2,7 +2,7 @@
   <b-container fluid>
     <b-row>
       <b-col class="text-center">
-        <p class="font-italic">
+        <p class="font-italic mb-0">
           Please select a strategy and paste all redirects below
         </p>
       </b-col>
@@ -29,8 +29,8 @@
             Format Redirects
           </b-btn>
         </span>
-        <b-tooltip target="format-tip" variant="secondary">
-          strategy and paste redirects
+        <b-tooltip target="format-tip" variant="secondary" placement="left">
+          select strategy and paste redirects
         </b-tooltip>
       </b-col>
       <b-col class="top-3 text-right px-0 pb-3 col-12 col-md">
@@ -39,7 +39,7 @@
             :disabled="!validateStep"
             @click="onSave('stepThreeComplete')"
             variant="outline-secondary--darken3"
-            class="px-4"
+            class="px-5"
           >
             {{ saveTxt }}
           </b-btn>
@@ -75,18 +75,31 @@
           striped
           hover
           head-variant="light"
-          class="self-align-center table mt-4"
+          class="self-align-center table mt-2"
         >
           <!-- A custom formatted header cell for field 'current_url' -->
           <template v-slot:head(current_url)="data">
             {{ data.field.label }}
-            <b-button class="p-0 m-0" variant="light">
+            <b-button @click="copyUrls('current_url')" class="p-0 m-0" variant="light">
               <b-img
                 src="/copy-icon.png"
                 width="20"
                 height="20"
               />
             </b-button>
+            <span style="font-weight:normal;">{{ current_url_msg }}</span>
+          </template>
+          <!-- A custom formatted header cell for field 'formatted_url' -->
+          <template v-slot:head(formatted_url)="data">
+            {{ data.field.label }}
+            <b-button @click="copyUrls('formatted_url')" class="p-0 m-0" variant="light">
+              <b-img
+                src="/copy-icon.png"
+                width="20"
+                height="20"
+              />
+            </b-button>
+            <span style="font-weight:normal;">{{ formatted_url_msg }}</span>
           </template>
           <template v-slot:cell(strategy)="data" class="align-self-center">
             <b-col
@@ -176,6 +189,8 @@ export default {
     return {
       hasMsg: false,
       msg: '',
+      current_url_msg: '',
+      formatted_url_msg: '',
       alertvariant: '',
       saveTxt: 'Save'
     }
@@ -216,12 +231,15 @@ export default {
     }
   },
   methods: {
-    getUrls(type) {
+    copyUrls(type) {
       let str = ''
       this.form.redirects.items.forEach((obj) => {
-        str = str ? `${str} \n ${obj[type]}` : obj[type]
+        str = str ? `${str}\n${obj[type]}` : obj[type]
       })
-      return str
+      this.$copyText(str)
+      this[`${type}_msg`] = 'Copied!'
+      // eslint-disable-next-line no-return-assign
+      setTimeout(() => this[`${type}_msg`] = '', 3000)
     },
     validateStepThree() {
       return this.location.properties.redirects.items.length > 0

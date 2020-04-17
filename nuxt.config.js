@@ -16,7 +16,8 @@ module.exports = {
     '@/assets/main.scss'
   ],
   plugins: [
-    '@/plugins/icons.js'
+    '@/plugins/icons.js',
+    '@/plugins/clipboard.js'
   ],
   buildModules: [
     '@nuxtjs/eslint-module'

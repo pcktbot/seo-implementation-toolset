@@ -1,23 +1,6 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col class="text-right pt-0" cols="12">
-        <span :id="displaySaveTip" tabindex="0">
-          <b-btn
-            :disabled="disabledSave"
-            @click="onSave('stepFourComplete')"
-            variant="outline-secondary--darken3"
-            class="px-4"
-          >
-            {{ saveTxt }}
-          </b-btn>
-        </span>
-        <b-tooltip target="step-four-tip" placement="topleft" variant="secondary">
-          complete all dropdowns
-        </b-tooltip>
-      </b-col>
-    </b-row>
-    <b-row>
       <b-col class="text-left" cols="12" md="4">
         <span class="font-weight-bold">Current Website: </span>{{ location.properties.current_website }}
       </b-col>
@@ -52,6 +35,23 @@
             />
           </b-form-group>
         </b-form>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col class="text-right pt-0" cols="12">
+        <span :id="displaySaveTip" tabindex="0">
+          <b-btn
+            :disabled="disabledSave"
+            @click="onSave('stepFourComplete')"
+            variant="outline-secondary--darken3"
+            class="px-5"
+          >
+            {{ saveTxt }}
+          </b-btn>
+        </span>
+        <b-tooltip target="step-four-tip" placement="topleft" variant="secondary">
+          complete all dropdowns
+        </b-tooltip>
       </b-col>
     </b-row>
   </b-container>
