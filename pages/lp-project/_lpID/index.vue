@@ -311,11 +311,13 @@ export default {
       }
     },
     onSave() {
-      this.$axios
-        .$put('api/locations', {
-          lpId: this.form.inputs.lpId,
-          locations: this.locations
-        })
+      this.$axios.$put('api/locations', {
+        lpId: this.form.inputs.lpId,
+        locations: this.locations
+      })
+      this.$axios.$put(`api/lp-project/${this.form.inputs.lpId}`, {
+        selects: this.form.selects
+      })
     },
     allStepsComple(locProp) {
       return locProp.stepOneComplete &&

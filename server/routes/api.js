@@ -72,8 +72,6 @@ module.exports = (app) => {
   app.get('/api/comments/:id/edit', async (req, res) => {
     const { id } = req.params
     const comment = await newComment.getComment(id)
-    // eslint-disable-next-line no-console
-    console.log(comment)
     res.json(comment)
   })
 
