@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col class="text-center">
+      <b-col class="text-center pt-3">
         <b-form-group class="my-1">
           <b-form-radio-group
             id="btn-radios-2"

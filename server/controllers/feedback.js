@@ -1,4 +1,5 @@
 const models = require('../models')
+// const slack = require('./slack')
 module.exports = {
   createFeedback,
   getFeedback,
@@ -7,6 +8,7 @@ module.exports = {
 }
 
 async function createFeedback (author, feedbackType, feedbackText, status) {
+  // slack.onFeedback({ text: feedbackText }) enable once we get url from IT
   const feedback = await models.feedback.create({
     author,
     feedbackType,

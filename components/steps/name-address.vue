@@ -5,26 +5,9 @@
       :res="res"
       @update-address="updateAddress"
     />
-    <b-row class="align-items-center">
-      <b-col class="text-right pt-0">
-        <span :id="displaySaveTip" class="d-inline-block" tabindex="0">
-          <b-btn
-            :disabled="validateStepOne1"
-            @click="onSave('stepOneComplete')"
-            variant="outline-secondary--darken3"
-            class="px-4"
-          >
-            {{ saveTxt }}
-          </b-btn>
-        </span>
-        <b-tooltip target="step-one-tip" placement="left" variant="secondary">
-          complete step to save
-        </b-tooltip>
-      </b-col>
-    </b-row>
     <b-row>
       <b-col
-        v-for="input in inputs"
+        v-for="input in inputs.fields"
         :key="input"
         cols="12"
         md="4"
@@ -116,6 +99,52 @@
         />
       </b-col>
       <b-col
+        v-if="initData.selects[0].value === 'mf'"
+        cols="12"
+        md="4"
+        class="align-self-center mb-2"
+      >
+        <label for="floor_plans">FLOOR PLANS</label>
+        <b-form-input
+          id="floor_plans"
+          :value="form.floor_plans"
+          :state="validation('floor_plans')"
+          @input="onInput('floor_plans', $event)"
+          placeholder="Enter floor plans"
+        />
+      </b-col>
+      <b-col
+        v-if="initData.selects[1].value === 'single'"
+        cols="12"
+        md="4"
+        class="align-self-center mb-2"
+      >
+        <label for="custom_slug">CUSTOM SLUG</label>
+        <b-form-input
+          id="custom_slug"
+          :value="form.custom_slug"
+          :state="validation('custom_slug')"
+          @input="onInput('custom_slug', $event)"
+          placeholder="Enter custom slug"
+        />
+      </b-col>
+      <b-col
+        v-if="initData.selects[0].value === 'mf'"
+        cols="12"
+        md="4"
+        class="align-self-center mb-2"
+      >
+        <label for="property_feature_1">PROPERTY FEATURE</label>
+        <b-form-select
+          id="property_feature_1"
+          :value="pickPropertyVal"
+          :options="inputs.propertyvalue.options"
+          :state="pickPropertyVal !== null"
+          @change="onInput('property_feature_1', $event)"
+          class="pb-1"
+        />
+      </b-col>
+      <b-col
         cols="12"
         md="4"
         class="align-self-center address-col"
@@ -129,6 +158,23 @@
         >
           Verify Address
         </b-btn>
+      </b-col>
+    </b-row>
+    <b-row class="align-items-center">
+      <b-col class="text-right py-0">
+        <span :id="displaySaveTip" class="d-inline-block" tabindex="0">
+          <b-btn
+            :disabled="validateStepOne1"
+            @click="onSave('stepOneComplete')"
+            variant="outline-secondary--darken3"
+            class="px-5"
+          >
+            {{ saveTxt }}
+          </b-btn>
+        </span>
+        <b-tooltip target="step-one-tip" placement="left" variant="secondary">
+          complete step to save
+        </b-tooltip>
       </b-col>
     </b-row>
   </b-container>
@@ -145,12 +191,18 @@ export default {
   mixins: [SaveStep, States],
   props: {
     inputs: {
-      type: Array,
+      type: Object,
       default() {
         return {}
       }
     },
     location: {
+      type: Object,
+      default() {
+        return {}
+      }
+    },
+    initData: {
       type: Object,
       default() {
         return {}
@@ -181,6 +233,10 @@ export default {
     }
   },
   computed: {
+    pickPropertyVal() {
+      const propertyFeatureVal = this.location.properties.property_feature_1
+      return propertyFeatureVal || null
+    },
     getStates() {
       const country = this.location.properties.country
       return this.location.properties.country
@@ -205,7 +261,10 @@ export default {
           postal_code: this.location.properties.postal_code,
           country: this.location.properties.country,
           population: this.location.properties.population,
-          uspsvalid: this.location.properties.uspsvalid
+          uspsvalid: this.location.properties.uspsvalid,
+          floor_plans: this.location.properties.floor_plans,
+          property_feature_1: this.location.properties.property_feature_1,
+          custom_slug: this.location.properties.custom_slug
         }
       },
       set(val) {}
