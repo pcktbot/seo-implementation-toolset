@@ -41,13 +41,13 @@
           </b-btn>
         </template>
         <template v-slot:cell(status)="data">
-          <icons
+          <icons-swap
             :needsCheckIcon="data.value"
             :iconConfig="iconConfig"
           />
         </template>
         <template v-slot:cell(prstatus)="data">
-          <icons
+          <icons-swap
             :needsCheckIcon="data.value"
             :iconConfig="iconConfig"
           />
@@ -112,10 +112,10 @@
 </template>
 
 <script>
-import Icons from '~/components/icons'
+import IconsSwap from '~/components/icons-swap'
 export default {
   components: {
-    Icons
+    IconsSwap
   },
   props: {
     form: {
