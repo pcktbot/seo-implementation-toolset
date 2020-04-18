@@ -80,11 +80,12 @@
           <!-- A custom formatted header cell for field 'current_url' -->
           <template v-slot:head(current_url)="data">
             {{ data.field.label }}
-            <b-button @click="copyUrls('current_url')" class="p-0 m-0" variant="light">
+            <b-button @click="copyUrls('current_url')" class="p-0 m-0 copy-btn">
               <b-img
                 src="/copy-icon.png"
                 width="20"
                 height="20"
+                class="jello-vertical"
               />
             </b-button>
             <span style="font-weight:normal;">{{ current_url_msg }}</span>
@@ -92,11 +93,12 @@
           <!-- A custom formatted header cell for field 'formatted_url' -->
           <template v-slot:head(formatted_url)="data">
             {{ data.field.label }}
-            <b-button @click="copyUrls('formatted_url')" class="p-0 m-0" variant="light">
+            <b-button @click="copyUrls('formatted_url')" class="p-0 m-0 copy-btn">
               <b-img
                 src="/copy-icon.png"
                 width="20"
                 height="20"
+                class="jello-vertical"
               />
             </b-button>
             <span style="font-weight:normal;">{{ formatted_url_msg }}</span>
@@ -346,6 +348,11 @@ export default {
 <style>
   .redirect-alert.alert-dismissible .close {
     padding: 0.25rem 1.25rem!important;
+  }
+
+  .copy-btn, .copy-btn:hover {
+    background-color: #e9ecef;
+    border: none;
   }
 
 @media only screen and (max-width: 768px) {

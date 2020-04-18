@@ -4,7 +4,7 @@
       <b-icon icon="x-circle" variant="danger" />
     </div>
     <div v-else class="pr-1">
-      <b-icon icon="check-circle" variant="success" />
+      <b-icon class="heartbeat" icon="check-circle" variant="success" />
     </div>
     <!-- SOME COMPLETED INDICATION HERE -->
     {{ text }}

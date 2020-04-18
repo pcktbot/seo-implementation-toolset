@@ -41,20 +41,16 @@
           </b-btn>
         </template>
         <template v-slot:cell(status)="data">
-          <template v-if="data.value === true">
-            <b-icon class="h3 mb-0" icon="check-circle" variant="success" />
-          </template>
-          <template v-else>
-            <b-icon class="h3 mb-0" icon="x-circle" variant="danger" />
-          </template>
+          <icons
+            :needsCheckIcon="data.value"
+            :iconConfig="iconConfig"
+          />
         </template>
         <template v-slot:cell(prstatus)="data">
-          <template v-if="data.value === true">
-            <b-icon class="h3 mb-0" icon="check-circle" variant="success" />
-          </template>
-          <template v-else>
-            <b-icon class="h3 mb-0" icon="x-circle" variant="danger" />
-          </template>
+          <icons
+            :needsCheckIcon="data.value"
+            :iconConfig="iconConfig"
+          />
         </template>
       </b-table>
       <b-row class="table-btns ml-0 mr-0">
@@ -116,7 +112,11 @@
 </template>
 
 <script>
+import Icons from '~/components/icons'
 export default {
+  components: {
+    Icons
+  },
   props: {
     form: {
       type: Object,
@@ -142,7 +142,13 @@ export default {
       alertMsg: '',
       alertvariant: '',
       dismissSecs: 4,
-      dismissCountDown: 0
+      dismissCountDown: 0,
+      iconConfig: {
+        width: '20',
+        height: '20',
+        true: '/green-check.svg',
+        false: '/red-x.svg'
+      }
     }
   },
   computed: {

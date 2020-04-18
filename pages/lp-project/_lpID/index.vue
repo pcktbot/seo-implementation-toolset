@@ -4,7 +4,7 @@
     <div class="main-with-nav">
       <drawer>
         <template v-slot:button-text>
-          <b-icon icon="chat-fill" variant="primary" />
+          <b-icon icon="chat-fill" variant="primary" class="jello-vertical" />
         </template>
         <template v-slot:content>
           <notes

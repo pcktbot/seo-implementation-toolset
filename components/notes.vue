@@ -11,6 +11,7 @@
             button-variant="outline-primary"
             size="md"
             name="radio-btn-outline"
+            class="w-75"
           />
         </b-form-group>
       </b-col>

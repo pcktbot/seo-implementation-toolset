@@ -9,7 +9,7 @@
             :options="radioOptions"
             buttons
             button-variant="outline-primary"
-            size="lg"
+            size="md"
             name="radio-btn-outline"
             class="w-75"
           />

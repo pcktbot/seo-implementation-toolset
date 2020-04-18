@@ -9,12 +9,14 @@
         </b-col>
         <b-col class="text-center" cols="12" md="4">
           <h5 class="mb-0">
-            <b-img
-              src="/maps-icon.svg"
-              width="20"
-              height="20"
-              class="maps-icon"
-            />
+            <b-link id="maps-link" :href="getMapsLink" target="_blank">
+              <b-img
+                src="/maps-icon.svg"
+                width="22"
+                height="22"
+                class="maps-icon jello-vertical"
+              />
+            </b-link>
             <strong>Address: </strong>{{ `${location.properties.street_address_1} ${location.properties.city} ${location.properties.state} ${location.properties.postal_code}` }}
           </h5>
         </b-col>
@@ -194,6 +196,13 @@ export default {
     }
   },
   computed: {
+    getMapsLink() {
+      return `https://www.google.com/maps/search/
+        ${this.location.properties.street_address_1} 
+        ${this.location.properties.city} 
+        ${this.location.properties.state} 
+        ${this.location.properties.postal_code}`
+    },
     stepOneComplete() {
       return this.location.properties.stepOneComplete
     },
@@ -254,4 +263,5 @@ export default {
   .maps-icon {
     vertical-align: top;
   }
+
 </style>
