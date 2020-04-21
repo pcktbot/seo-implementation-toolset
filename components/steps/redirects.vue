@@ -34,19 +34,13 @@
         </b-tooltip>
       </b-col>
       <b-col class="top-3 text-right px-0 pb-3 col-12 col-md">
-        <span :id="displaySaveTip" tabindex="0">
-          <b-btn
-            :disabled="!validateStep"
-            @click="onSave('stepThreeComplete')"
-            variant="outline-secondary--darken3"
-            class="px-5"
-          >
-            {{ saveTxt }}
-          </b-btn>
-        </span>
-        <b-tooltip target="disabled-wrapper" placement="topleft" variant="secondary">
-          complete step to save
-        </b-tooltip>
+        <save-step
+          :isDisabled="!validateStep"
+          :saveData="saveData"
+          :tooltipID="displaySaveTip"
+          @step-save="onSave"
+          @step-update="onInput"
+        />
       </b-col>
     </b-row>
     <b-row>
@@ -129,12 +123,10 @@
             />
           </template>
           <template v-slot:cell(select)="{ rowSelected }">
-            <template v-if="rowSelected">
-              <b-icon class="h3 mb-0" icon="check" variant="success" />
-            </template>
-            <template v-else>
-              <b-icon class="h4 mb-0" icon="square" />
-            </template>
+            <icons-swap
+              :needsCheckIcon="rowSelected"
+              :iconConfig="iconConfig"
+            />
           </template>
         </b-table>
         <b-row class="ml-0 mr-0">
@@ -170,9 +162,13 @@
 </template>
 
 <script>
-import SaveStep from '~/mixins/savestep'
+import IconsSwap from '~/components/icons-swap'
+import SaveStep from '~/components/save-step'
 export default {
-  mixins: [SaveStep],
+  components: {
+    SaveStep,
+    IconsSwap
+  },
   props: {
     location: {
       type: Object,
@@ -189,6 +185,16 @@ export default {
   },
   data () {
     return {
+      iconConfig: {
+        width: '30',
+        height: '30',
+        true: '/check-box.svg',
+        false: '/square.svg'
+      },
+      saveData: {
+        tooltipTargetID: 'step-three-tip',
+        stepUpdateTxt: 'stepThreeComplete'
+      },
       hasMsg: false,
       msg: '',
       current_url_msg: '',
@@ -205,7 +211,7 @@ export default {
         ? 'format-tip' : 'not-disabled'
     },
     displaySaveTip() {
-      return !this.validateStepThree() ? 'disabled-wrapper' : 'not-disabled'
+      return !this.validateStepThree() ? 'step-three-tip' : 'not-disabled'
     },
     validateStep() {
       return this.location.properties.redirects.items.length > 0
@@ -233,6 +239,9 @@ export default {
     }
   },
   methods: {
+    onSave() {
+      this.$emit('step-save')
+    },
     copyUrls(type) {
       let str = ''
       this.form.redirects.items.forEach((obj) => {

@@ -98,6 +98,7 @@
           :location="location"
           :form="form"
           @step-update="onUpdate"
+          @step-save="onSave"
         />
       </b-tab>
     </b-tabs>
@@ -232,6 +233,8 @@ export default {
       this.$emit('stepper-updated', data)
     },
     onSave(prop, value) {
+      // eslint-disable-next-line no-console
+      console.log('made-it')
       this.$emit('save-step')
     },
     addRows(rows, id) {

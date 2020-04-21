@@ -16,7 +16,7 @@
         </b-form-group>
       </b-col>
     </b-row>
-    <b-card class="py-0">
+    <b-card class="py-0 mb-2">
       <b-row class="align-items-center">
         <b-col cols="12" lg="12" xl="6">
           <h5 class="text-left mb-0">
@@ -119,31 +119,28 @@
       </b-row>
     </b-card>
     <b-row class="align-items-center">
-      <b-col class="text-right pb-0">
-        <span :id="displaySaveTip" class="d-inline-block" tabindex="0">
-          <b-btn
-            :disabled="!validateStepTwo1"
-            @click="onSave('stepTwoComplete')"
-            variant="outline-secondary--darken3"
-            class="px-5"
-          >
-            {{ saveTxt }}
-          </b-btn>
-        </span>
-        <b-tooltip target="step-two-tip" placement="left" variant="secondary">
-          complete step to save
-        </b-tooltip>
+      <b-col class="text-right py-0">
+        <save-step
+          :isDisabled="!validateStepTwo1"
+          :saveData="saveData"
+          :tooltipID="displaySaveTip"
+          @step-save="onSave"
+          @step-update="onInput"
+        />
       </b-col>
     </b-row>
   </b-container>
 </template>
 
 <script>
+import SaveStep from '~/components/save-step'
 import PhraseGenerator from '~/mixins/phrases'
 import Diacritics from '~/mixins/diacritics'
-import SaveStep from '~/mixins/savestep'
 export default {
-  mixins: [PhraseGenerator, Diacritics, SaveStep],
+  components: {
+    SaveStep
+  },
+  mixins: [PhraseGenerator, Diacritics],
   props: {
     inputs: {
       type: Object,
@@ -166,6 +163,10 @@ export default {
   },
   data () {
     return {
+      saveData: {
+        tooltipTargetID: 'step-two-tip',
+        stepUpdateTxt: 'stepTwoComplete'
+      },
       loading: false,
       saveTxt: 'Save',
       mfRequiredFields: [
@@ -235,6 +236,9 @@ export default {
     }
   },
   methods: {
+    onSave() {
+      this.$emit('step-save')
+    },
     getFields() {
       return this.form.selects[0].value === 'mf'
         ? this.mfRequiredFields

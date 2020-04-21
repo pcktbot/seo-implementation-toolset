@@ -39,19 +39,13 @@
     </b-row>
     <b-row>
       <b-col class="text-right pt-0" cols="12">
-        <span :id="displaySaveTip" tabindex="0">
-          <b-btn
-            :disabled="disabledSave"
-            @click="onSave('stepFourComplete')"
-            variant="outline-secondary--darken3"
-            class="px-5"
-          >
-            {{ saveTxt }}
-          </b-btn>
-        </span>
-        <b-tooltip target="step-four-tip" placement="topleft" variant="secondary">
-          complete all dropdowns
-        </b-tooltip>
+        <save-step
+          :isDisabled="disabledSave"
+          :saveData="saveData"
+          :tooltipID="displaySaveTip"
+          @step-save="onSave"
+          @step-update="onInput"
+        />
       </b-col>
     </b-row>
   </b-container>
@@ -59,10 +53,11 @@
 
 <script>
 import Strategies from '~/server/config/strategies'
-import SaveStep from '~/mixins/savestep'
-// import Strategies from '~/mixins/strategies'
+import SaveStep from '~/components/save-step'
 export default {
-  mixins: [SaveStep],
+  components: {
+    SaveStep
+  },
   props: {
     location: {
       type: Object,
@@ -80,6 +75,10 @@ export default {
   data () {
     return {
       strategies: Strategies,
+      saveData: {
+        tooltipTargetID: 'step-four-tip',
+        stepUpdateTxt: 'stepFourComplete'
+      },
       saveTxt: 'Save',
       options: [
         { value: null, text: 'Select Status' },
@@ -173,6 +172,9 @@ export default {
     }
   },
   methods: {
+    onSave() {
+      this.$emit('step-save')
+    },
     validateStepFour() {
       const properties = this.location.properties
       return properties.gmb && properties.ga && properties.strategy

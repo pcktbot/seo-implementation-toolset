@@ -70,9 +70,8 @@
 <script>
 import moment from 'moment'
 import CommentsMixin from '~/mixins/comments'
-import SaveStep from '~/mixins/savestep'
 export default {
-  mixins: [CommentsMixin, SaveStep],
+  mixins: [CommentsMixin],
   props: {
     location: {
       type: Object,

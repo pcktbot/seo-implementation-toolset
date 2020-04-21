@@ -162,19 +162,13 @@
     </b-row>
     <b-row class="align-items-center">
       <b-col class="text-right py-0">
-        <span :id="displaySaveTip" class="d-inline-block" tabindex="0">
-          <b-btn
-            :disabled="validateStepOne1"
-            @click="onSave('stepOneComplete')"
-            variant="outline-secondary--darken3"
-            class="px-5"
-          >
-            {{ saveTxt }}
-          </b-btn>
-        </span>
-        <b-tooltip target="step-one-tip" placement="left" variant="secondary">
-          complete step to save
-        </b-tooltip>
+        <save-step
+          :isDisabled="validateStepOne1"
+          :saveData="saveData"
+          :tooltipID="displaySaveTip"
+          @step-save="onSave"
+          @step-update="onInput"
+        />
       </b-col>
     </b-row>
   </b-container>
@@ -182,13 +176,14 @@
 
 <script>
 import UspsModal from '~/components/modals/usps-modal'
-import SaveStep from '~/mixins/savestep'
+import SaveStep from '~/components/save-step'
 import States from '~/mixins/states'
 export default {
   components: {
-    UspsModal
+    UspsModal,
+    SaveStep
   },
-  mixins: [SaveStep, States],
+  mixins: [States],
   props: {
     inputs: {
       type: Object,
@@ -211,7 +206,10 @@ export default {
   },
   data () {
     return {
-      saveTxt: 'Save',
+      saveData: {
+        tooltipTargetID: 'step-one-tip',
+        stepUpdateTxt: 'stepOneComplete'
+      },
       res: null,
       uspsLink: 'https://tools.usps.com/zip-code-lookup.htm?byaddress',
       country: {
@@ -271,6 +269,9 @@ export default {
     }
   },
   methods: {
+    onSave() {
+      this.$emit('step-save')
+    },
     validation(field) {
       let valid = true
       if (this.form[field] === '' || this.form[field] === null) {

@@ -182,6 +182,8 @@ export default {
     this.locationtbl.items = [
       ...res.map((location) => {
         const { name, properties } = location
+        // eslint-disable-next-line no-console
+        console.log(properties.prComplete)
         return {
           select: false,
           location: `${name} - ${properties.street_address_1}`,
@@ -371,7 +373,13 @@ export default {
       this.locationtbl.items.push(...[
         ...res.map((location) => {
           const { name, properties } = location
-          return { select: false, location: `${name} - ${properties.street_address_1}`, status: properties.locationComplete, value: location.id }
+          return {
+            select: false,
+            location: `${name} - ${properties.street_address_1}`,
+            status: properties.locationComplete,
+            prstatus: properties.prComplete,
+            value: location.id
+          }
         })
       ])
       this.form.loading = false

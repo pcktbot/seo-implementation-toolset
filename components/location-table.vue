@@ -17,12 +17,10 @@
         class="self-align-center table mt-3 mb-1"
       >
         <template v-slot:cell(select)="{ rowSelected }">
-          <template v-if="rowSelected">
-            <b-icon class="h3 mb-0" icon="check" variant="success" />
-          </template>
-          <template v-else>
-            <b-icon class="h4 mb-0" icon="square" />
-          </template>
+          <icons-swap
+            :needsCheckIcon="rowSelected"
+            :iconConfig="iconCheckConfig"
+          />
         </template>
         <template v-slot:cell(location)="data">
           {{ data.value }}
@@ -148,6 +146,12 @@ export default {
         height: '20',
         true: '/green-check.svg',
         false: '/red-x.svg'
+      },
+      iconCheckConfig: {
+        width: '27',
+        height: '27',
+        true: '/check-box.svg',
+        false: '/square.svg'
       }
     }
   },
