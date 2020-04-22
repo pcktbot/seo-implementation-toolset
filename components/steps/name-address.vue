@@ -149,15 +149,21 @@
         md="4"
         class="align-self-center address-col"
       >
-        <b-btn
-          v-b-modal.usps-modal
-          @click="verifyAddress"
-          variant="outline-secondary--darken3"
-          class="px-4"
-          block
-        >
-          Verify Address
-        </b-btn>
+        <span :id="verifyAddTip" class="d-inline-block" tabindex="0">
+          <b-btn
+            v-b-modal.usps-modal
+            :disabled="disabledAddress"
+            @click="verifyAddress"
+            variant="outline-secondary--darken3"
+            class="px-4"
+            block
+          >
+            Verify Address
+          </b-btn>
+        </span>
+        <b-tooltip target="address-tip" variant="secondary" placement="top">
+          complete address fields
+        </b-tooltip>
       </b-col>
     </b-row>
     <b-row class="align-items-center">
@@ -231,6 +237,9 @@ export default {
     }
   },
   computed: {
+    disabledAddress() {
+      return !this.validateAddFields()
+    },
     pickPropertyVal() {
       const propertyFeatureVal = this.location.properties.property_feature_1
       return propertyFeatureVal || null
@@ -240,6 +249,9 @@ export default {
       return this.location.properties.country
         ? this.states[country].options
         : [{ value: null, text: 'Select Country for States' }]
+    },
+    verifyAddTip() {
+      return !this.validateAddFields() ? 'address-tip' : 'not-disabled'
     },
     displaySaveTip() {
       return !this.validateStepOne() ? 'step-one-tip' : 'not-disabled'
@@ -269,6 +281,12 @@ export default {
     }
   },
   methods: {
+    validateAddFields() {
+      return (this.location.properties.street_address_1 &&
+        this.location.properties.city &&
+        this.location.properties.state &&
+        this.location.properties.postal_code)
+    },
     onSave() {
       this.$emit('step-save')
     },
@@ -294,8 +312,14 @@ export default {
       this.$emit('step-update', { key, val, id: this.location.id })
     },
     async verifyAddress() {
-      const res = await this.$axios.post('/routes/uspsapi/verify-address', { form: this.form })
-      this.res = res
+      try {
+        const res = await this.$axios.post('/routes/uspsapi/verify-address', { form: this.form })
+        this.res = res
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(e)
+        this.res = null
+      }
     },
     updateAddress(data) {
       this.$emit('update-address', data)

@@ -25,17 +25,23 @@
           </h5>
         </b-col>
         <b-col class="text-right pr-1 pl-2" cols="12" lg="4" xl="3">
-          <b-btn
-            @click="getKeywords(apiProps)"
-            variant="secondary"
-            class="mb-1"
-            block
-          >
-            <div class="d-flex justify-content-center">
-              Get Keywords
-              <b-spinner v-if="loading" class="mt-1 ml-1" small label="Loading..." />
-            </div>
-          </b-btn>
+          <span :id="disabledKeywordsToolTip" class="block" tabindex="0" block>
+            <b-btn
+              @click="getKeywords(apiProps)"
+              :disabled="disabledGetKeywords"
+              variant="secondary"
+              class="mb-1"
+              block
+            >
+              <div class="d-flex justify-content-center">
+                Get Keywords
+                <b-spinner v-if="loading" class="mt-1 ml-1" small label="Loading..." />
+              </div>
+            </b-btn>
+          </span>
+          <b-tooltip target="get-keywords" variant="secondary" placement="top">
+            missing address fields
+          </b-tooltip>
         </b-col>
         <b-col class="text-right pr-2 pl-1" cols="12" lg="4" xl="3">
           <b-btn
@@ -196,17 +202,16 @@ export default {
       return this.form.selects[0].value === 'mf' ? this.options : this.options.slice(0, -1)
     },
     apiProps() {
-      return {
-        vertical: this.form.selects[0].value,
-        address: this.location.properties.street_address_1,
-        class: this.location.properties.class,
-        city: this.location.properties.city,
-        state: this.location.properties.state,
-        zip: this.location.properties.postal_code
-      }
+      return this.getApiProps()
+    },
+    disabledGetKeywords() {
+      return !this.validApiProps()
     },
     displaySaveTip() {
       return !this.validateStepTwo() ? 'step-two-tip' : 'not-disabled'
+    },
+    disabledKeywordsToolTip() {
+      return !this.validApiProps() ? 'get-keywords' : 'not-disabled'
     },
     validateStepTwo1() {
       const valid = this.validateStepTwo()
@@ -244,6 +249,27 @@ export default {
         ? this.mfRequiredFields
         : []
     },
+    getApiProps() {
+      return {
+        vertical: this.form.selects[0].value,
+        address: this.location.properties.street_address_1,
+        class: this.location.properties.class,
+        city: this.location.properties.city,
+        state: this.location.properties.state,
+        zip: this.location.properties.postal_code
+      }
+    },
+    validApiProps() {
+      let val = true
+      const obj = this.getApiProps()
+      for (const key in obj) {
+        if (!obj[key]) {
+          val = false
+          break
+        }
+      }
+      return val
+    },
     validateField(field) {
       let valid = null
       const reqFields = this.getFields()
@@ -278,6 +304,8 @@ export default {
       this.loading = true
       const neighborhoodKeywords = []
       const landmarkKeywords = []
+      // eslint-disable-next-line no-console
+      console.log(props)
       this.$axios.$put('/placesapi/placesRequest', { props })
         .then((res) => {
           const { type1, type2 } = res

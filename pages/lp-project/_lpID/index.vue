@@ -241,6 +241,7 @@ export default {
     loadLocation(payload) {
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
       this.locationNotes = this.getLocationNotes(this.selectedLocation.id)
+      this.$store.commit('tabindex/set', 0)
     },
     toggleWildcard() {
       const i = this.getLocationIndex()

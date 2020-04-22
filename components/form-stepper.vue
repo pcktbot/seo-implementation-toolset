@@ -36,7 +36,7 @@
         </b-col>
       </b-row>
     </b-card-header>
-    <b-tabs card content-class="my-2">
+    <b-tabs v-model="tabIndex" card content-class="my-2" justified>
       <b-tab>
         <template v-slot:title>
           <tabs
@@ -135,6 +135,7 @@ export default {
   },
   data () {
     return {
+      // tabIndex: 0,
       stepOneText: 'Location Info Validation',
       stepTwoText: 'Keyword Research',
       stepThreeText: 'Redirects',
@@ -197,6 +198,14 @@ export default {
     }
   },
   computed: {
+    tabIndex: {
+      get() {
+        return this.$store.state.tabindex.index
+      },
+      set(index) {
+        this.$store.commit('tabindex/set', index)
+      }
+    },
     getMapsLink() {
       return `https://www.google.com/maps/search/
         ${this.location.properties.street_address_1} 
