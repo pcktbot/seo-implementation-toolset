@@ -149,7 +149,7 @@
         md="4"
         class="align-self-center address-col"
       >
-        <span :id="verifyAddTip" class="d-inline-block" tabindex="0">
+        <span :id="verifyAddTip" class="block" tabindex="0">
           <b-btn
             v-b-modal.usps-modal
             :disabled="disabledAddress"
@@ -161,7 +161,7 @@
             Verify Address
           </b-btn>
         </span>
-        <b-tooltip target="address-tip" variant="secondary" placement="top">
+        <b-tooltip target="address-tip" variant="secondary" placement="auto">
           complete address fields
         </b-tooltip>
       </b-col>

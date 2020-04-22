@@ -54,6 +54,15 @@
           </b-btn>
         </b-col>
       </b-row>
+      <b-alert
+        :show="dismissCountDown"
+        @dismissed="dismissCountDown=0"
+        @dismiss-count-down="countDownChanged"
+        variant="warning"
+        dismissible
+      >
+        {{ alertMsg }}
+      </b-alert>
       <b-row>
         <b-col
           v-for="input in getInputs"
@@ -169,6 +178,10 @@ export default {
   },
   data () {
     return {
+      alertMsg: 'Get Keywords Failed. Check the address for this location',
+      dismissSecs: 5,
+      dismissCountDown: 0,
+      showDismissibleAlert: false,
       saveData: {
         tooltipTargetID: 'step-two-tip',
         stepUpdateTxt: 'stepTwoComplete'
@@ -241,6 +254,12 @@ export default {
     }
   },
   methods: {
+    countDownChanged(dismissCountDown) {
+      this.dismissCountDown = dismissCountDown
+    },
+    showAlert() {
+      this.dismissCountDown = this.dismissSecs
+    },
     onSave() {
       this.$emit('step-save')
     },
@@ -295,17 +314,10 @@ export default {
       }
       return valid
     },
-    showMsg(msg) {
-      this.msg = msg
-      this.alertvariant = 'danger'
-      this.hasMsg = true
-    },
     getKeywords(props) {
       this.loading = true
       const neighborhoodKeywords = []
       const landmarkKeywords = []
-      // eslint-disable-next-line no-console
-      console.log(props)
       this.$axios.$put('/placesapi/placesRequest', { props })
         .then((res) => {
           const { type1, type2 } = res
@@ -321,6 +333,7 @@ export default {
         }).catch((err) => {
           // eslint-disable-next-line no-console
           console.log(err)
+          this.showAlert()
           this.loading = false
         })
     },

@@ -242,8 +242,6 @@ export default {
       this.$emit('stepper-updated', data)
     },
     onSave(prop, value) {
-      // eslint-disable-next-line no-console
-      console.log('made-it')
       this.$emit('save-step')
     },
     addRows(rows, id) {
