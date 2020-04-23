@@ -11,6 +11,10 @@ module.exports = {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
+  server: {
+    host: '35.247.14.57',
+    port: 80
+  },
   loading: { color: '#fff' },
   css: [
     '@/assets/main.scss'
