@@ -12,7 +12,6 @@ module.exports = {
     ]
   },
   server: {
-    host: '35.247.14.57',
     port: 80
   },
   loading: { color: '#fff' },
