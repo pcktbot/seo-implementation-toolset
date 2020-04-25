@@ -9,10 +9,10 @@
       >
         {{ saveTxt }}
       </b-btn>
+      <b-tooltip :target="saveData.tooltipTargetID" placement="left" variant="secondary">
+        complete step to save
+      </b-tooltip>
     </span>
-    <b-tooltip :target="saveData.tooltipTargetID" placement="left" variant="secondary">
-      complete step to save
-    </b-tooltip>
   </div>
 </template>
 

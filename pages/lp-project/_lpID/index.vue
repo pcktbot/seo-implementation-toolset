@@ -72,6 +72,8 @@
               @delete-redirects="onDeleteRedirects"
               @toggle-wildcard="toggleWildcard"
               @update-address="updateAddress"
+              @remove-keyword="removeKeyword"
+              @update-keyword="updateKeyword"
             />
           </b-col>
         </b-row>
@@ -167,35 +169,59 @@ export default {
   async created() {
     const { lpID } = this.$nuxt._route.params
     // loads initial selections
-    await this.$axios.$get(`api/lp-project/${lpID}`).then((res) => {
-      this.form.inputs.lpId = res[0].lpId
-      this.form.selects.forEach((select) => {
-        select.value = res[0][select.id]
+    try {
+      await this.$axios.$get(`api/lp-project/${lpID}`).then((res) => {
+      // eslint-disable-next-line no-console
+        console.log(res[0])
+        this.form.inputs.lpId = res[0].lpId
+        this.form.selects.forEach((select) => {
+          select.value = res[0][select.id]
+        })
       })
-    })
-    this.allNotes = await this.getAllNotes(lpID)
-    this.projectNotes = this.getProjectNotes()
-    const res = await this.$axios.$get(`api/locations/${lpID}`)
-    // adds location data to front end and fills out location table
-    this.locations = res
-    // adds data to locations table
-    this.locationtbl.items = [
-      ...res.map((location) => {
-        const { name, properties } = location
-        return {
-          select: false,
-          location: `${name} - ${properties.street_address_1}`,
-          status: properties.locationComplete,
-          value: location.id,
-          prstatus: properties.prComplete
-        }
-      })
-    ]
-    this.locationtbl.items.length > 0
-      ? this.showAlert(this.form.successLoadMsg, 'success')
-      : this.showAlert(this.form.errLoadMsg, 'danger')
+      this.allNotes = await this.getAllNotes(lpID)
+      this.projectNotes = this.getProjectNotes()
+      const res = await this.$axios.$get(`api/locations/${lpID}`)
+      // adds location data to front end and fills out location table
+      this.locations = res
+      // adds data to locations table
+      this.locationtbl.items = [
+        ...res.map((location) => {
+          const { name, properties } = location
+          return {
+            select: false,
+            location: `${name} - ${properties.street_address_1}`,
+            status: properties.locationComplete,
+            value: location.id,
+            prstatus: properties.prComplete
+          }
+        })
+      ]
+      this.locationtbl.items.length > 0
+        ? this.showAlert(this.form.successLoadMsg, 'success')
+        : this.showAlert(this.form.errLoadMsg, 'danger')
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e)
+      this.showAlert(this.form.errLoadMsg, 'danger')
+    }
   },
   methods: {
+    removeKeyword({ key, index, id }) {
+      const locIndex = this.locations.findIndex(loc => loc.id === id)
+      this.locations[locIndex].properties[key].splice(index, 1)
+    },
+    updateKeyword({ key, index, data, locId }) {
+      // eslint-disable-next-line no-console
+      console.log(key)
+      // eslint-disable-next-line no-console
+      console.log(index)
+      // eslint-disable-next-line no-console
+      console.log(locId)
+      // eslint-disable-next-line no-console
+      console.log(data)
+      const locIndex = this.locations.findIndex(loc => loc.id === locId)
+      this.locations[locIndex].properties[key][index].name = data
+    },
     updateVisibility(val) { this.visible = val },
     async updateNotes(tabName) {
       const onLocationTab = tabName === 'location'

@@ -38,10 +38,10 @@
                 <b-spinner v-if="loading" class="mt-1 ml-1" small label="Loading..." />
               </div>
             </b-btn>
+            <b-tooltip target="get-keywords" variant="secondary" placement="topleft">
+              missing address fields
+            </b-tooltip>
           </span>
-          <b-tooltip target="get-keywords" variant="secondary" placement="top">
-            missing address fields
-          </b-tooltip>
         </b-col>
         <b-col class="text-right pr-2 pl-1" cols="12" lg="4" xl="3">
           <b-btn
@@ -90,9 +90,33 @@
         <b-col
           v-for="keyword in getKeywordInputs"
           :key="keyword"
-          class="col-12 col-lg"
+          class="col-12 col-lg col-xl"
         >
-          <b-form-group
+          <label :for="`textarea-${keyword}`">
+            {{ `${keyword.replace(/_/g,' ').toUpperCase()}` }}
+          </label>
+          <b-container class="p-3 mr-0 ml-0" style="border: 1.5px solid #ccc; width: 100%; height: 250px; overflow-y: scroll; scroll-behavior: smooth">
+            <draggable
+              :list="compform[keyword]"
+              :group="{ name: keyword, pull: 'clone', put: false }"
+              :clone="cloneItem"
+              @change="log"
+              class="dragArea list-group pill-box"
+            >
+              <b-list-group-item
+                v-for="element in compform[keyword]"
+                :key="`${element.name}-${element.id}`"
+                class="list-group-item pillz"
+              >
+                <!-- Need to add event handler so edit text updates data -->
+                <span @input="updateKeyword(keyword, element.id, $event)" class="text" contenteditable="true">{{ element.name }}</span>
+                <i @click="removeAt(keyword, element.id)" class="m-0 p-0" onmouseover="" style="cursor: pointer;">
+                  <b-img width="10" height="10" src="/red-x.svg" />
+                </i>
+              </b-list-group-item>
+            </draggable>
+          </b-container>
+          <!-- <b-form-group
             :for="`textarea-${keyword}`"
             :label="`${keyword.replace(/_/g,' ').toUpperCase()}`"
             class="pb-0 mb-0 text-left text-uppercase"
@@ -106,7 +130,7 @@
               rows="4"
               required
             />
-          </b-form-group>
+          </b-form-group> -->
         </b-col>
       </b-row>
       <b-row>
@@ -116,10 +140,22 @@
           class="col-12 col-md"
         >
           <b-form-group
-            :for="`textarea-${phrase}`"
-            :label="`${phrase.replace(/_/g,' ').toUpperCase()}`"
             class="pb-0 mb-0 text-left text-uppercase"
           >
+            <label :for="`textarea-${phrase}`">
+              {{ `${phrase.replace(/_/g,' ').toUpperCase()}` }}
+              <b-button @click="copyPhrases(phrase)" class="p-0 m-0" variant="light">
+                <b-img
+                  src="/copy-icon.png"
+                  width="20"
+                  height="20"
+                  class="jello-vertical"
+                />
+              </b-button>
+              <span style="font-weight:normal;">
+                {{ text }}
+              </span>
+            </label>
             <b-form-textarea
               :id="`textarea-${phrase}`"
               :placeholder="`${phrase.replace(/_/g,' ')} will auto-populate here after running generate phrases`"
@@ -148,12 +184,15 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable'
 import SaveStep from '~/components/save-step'
 import PhraseGenerator from '~/mixins/phrases'
 import Diacritics from '~/mixins/diacritics'
+let idGlobal = 8
 export default {
   components: {
-    SaveStep
+    SaveStep,
+    draggable
   },
   mixins: [PhraseGenerator, Diacritics],
   props: {
@@ -178,6 +217,8 @@ export default {
   },
   data () {
     return {
+      splitRgx: /\s*(?:,|$)\s*/,
+      text: '',
       alertMsg: 'Get Keywords Failed. Check the address for this location',
       dismissSecs: 5,
       dismissCountDown: 0,
@@ -254,6 +295,38 @@ export default {
     }
   },
   methods: {
+    log(evt) {
+      window.console.log(evt)
+    },
+    onAdd(payload) {
+      const name = payload.added.element.name
+      if (this.list2.length === 2) {
+        const removeIndex = this.list2.findIndex(item => item.name !== name)
+        this.removeAt(removeIndex)
+      }
+    },
+    cloneItem(payload) {
+      const { name } = payload
+      return { id: idGlobal++, name: `${name}` }
+    },
+    removeAt(list, id) {
+      const idx = this.compform[list].findIndex(item => item.id === id)
+      this.$emit('remove-keyword', { key: list, index: idx, id: this.location.id })
+    },
+    updateKeyword(property, id, event) {
+      const idx = this.compform[property].findIndex(item => item.id === id)
+      this.$emit('update-keyword', { key: property, index: idx, data: event.srcElement.innerHTML, locId: this.location.id })
+    },
+    addKeyword() {
+      this.list1.push({ id: idGlobal++, name: this.keyword })
+      this.keyword = ''
+    },
+    copyPhrases(id) {
+      this.$copyText(this.location.properties[id])
+      this.text = 'Copied!'
+      // eslint-disable-next-line no-return-assign
+      setTimeout(() => this.text = '', 3000)
+    },
     countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown
     },
@@ -314,6 +387,12 @@ export default {
       }
       return valid
     },
+    makeObject(arr) {
+      for (let i = 0; i < arr.length; i++) {
+        arr[i] = { name: arr[i], id: i }
+      }
+      return arr
+    },
     getKeywords(props) {
       this.loading = true
       const neighborhoodKeywords = []
@@ -327,8 +406,8 @@ export default {
           for (const type in type2) {
             type2[type].forEach(place => landmarkKeywords.push(this.formatName(place)))
           }
-          this.$emit('step-update', { key: 'api_neighborhood_keywords', val: neighborhoodKeywords.toString(), id: this.location.id })
-          this.$emit('step-update', { key: 'api_landmark_keywords', val: landmarkKeywords.toString(), id: this.location.id })
+          this.$emit('step-update', { key: 'api_neighborhood_keywords', val: this.makeObject(neighborhoodKeywords), id: this.location.id })
+          this.$emit('step-update', { key: 'api_landmark_keywords', val: this.makeObject(landmarkKeywords), id: this.location.id })
           this.loading = false
         }).catch((err) => {
           // eslint-disable-next-line no-console
@@ -341,9 +420,8 @@ export default {
       this.$emit('step-update', { key, val, id: this.location.id })
     },
     splitMapFilterTrim(data1, data2) {
-      return data1.split(',')
-        .concat(data2.split(','))
-        .map(item => item.trim())
+      return data1.concat(data2)
+        .map(item => item.name.trim())
         .filter(item => item)
     },
     getKeywordsObj() {
@@ -352,7 +430,7 @@ export default {
       return {
         neighborhood_phrases: this.splitMapFilterTrim(api_neighborhood_keywords, neighborhood_keywords),
         landmark_phrases: this.splitMapFilterTrim(api_landmark_keywords, landmark_keywords),
-        amenity_phrases: this.form.selects[0].value === 'mf' ? this.compform.amenity_keywords.split(',').map(item => item.trim()).filter(item => item) : []
+        amenity_phrases: this.form.selects[0].value === 'mf' ? this.compform.amenity_keywords.map(item => item.name.trim()).filter(item => item) : []
       }
     },
     getPhrases() {
@@ -381,5 +459,34 @@ export default {
 </script>
 
 <style>
-
+@media only screen and (min-width: 1200px) {
+  .container {
+    max-width: 2500px;
+  }
+}
+.pillz  {
+    color: black;
+    background:var(--quaternary);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: default;
+    float: left;
+    padding: 4px 15px;
+    min-width: 70px;
+    min-height: 32px;
+}
+.pill-box  {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: block;
+    line-height: 1.42857143;
+    list-style: none;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 </style>

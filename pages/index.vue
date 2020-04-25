@@ -80,6 +80,8 @@ export default {
           this.form.loading = true
           const data = await this.parseCSV(this.form.inputs.file)
           const locations = await this.getLocationData(data)
+          // eslint-disable-next-line no-console
+          console.log(locations)
           if (locations.length) {
             this.postToDB(locations)
           } else {

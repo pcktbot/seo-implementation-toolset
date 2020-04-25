@@ -2,6 +2,8 @@ import Papa from 'papaparse'
 export default {
   data () {
     return {
+      splitRgx: /\s*(?:,|$)\s*/,
+      propertiesToArr: ['neighborhood_keywords', 'landmark_keywords', 'amenity_keywords'],
       form: {
         inputs: {
           lpId: null,
@@ -91,8 +93,8 @@ export default {
         gmb: null,
         ga: null,
         strategy: null,
-        api_neighborhood_keywords: '',
-        api_landmark_keywords: '',
+        api_neighborhood_keywords: [],
+        api_landmark_keywords: [],
         neighborhood_phrases: '',
         landmark_phrases: '',
         amenity_phrases: '',
@@ -163,6 +165,13 @@ export default {
         for (const prop in addPropertyFields) {
           properties[prop] = addPropertyFields[prop]
         }
+        this.propertiesToArr.forEach((prop) => {
+          const arr = properties[prop].split(this.splitRgx)
+          for (let i = 0; i < arr.length; i++) {
+            arr[i] = { name: arr[i], id: i }
+          }
+          properties[prop] = arr
+        })
         return { name, properties }
       }).filter(location => location.name) : []
     }

@@ -65,7 +65,9 @@
           :location="location"
           :form="form"
           @step-save="onSave"
+          @remove-keyword="removeKeyword"
           @step-update="onUpdate"
+          @update-keyword="updateKeyword"
         />
       </b-tab>
       <b-tab>
@@ -230,6 +232,9 @@ export default {
     }
   },
   methods: {
+    removeKeyword(data) {
+      this.$emit('remove-keyword', data)
+    },
     updatePR(prop, value) {
       this.onUpdate({ key: prop, val: value, id: this.location.id })
     },
@@ -261,6 +266,9 @@ export default {
     },
     updateAddress(data) {
       this.$emit('update-address', data)
+    },
+    updateKeyword(data) {
+      this.$emit('update-keyword', data)
     }
   }
 }
