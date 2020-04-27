@@ -210,11 +210,8 @@ export default {
       }
     },
     getMapsLink() {
-      return `https://www.google.com/maps/search/
-        ${this.location.properties.street_address_1} 
-        ${this.location.properties.city} 
-        ${this.location.properties.state} 
-        ${this.location.properties.postal_code}`
+      const prop = this.location.properties
+      return `https://www.google.com/maps/search/${prop.street_address_1} ${prop.city} ${prop.state} ${prop.postal_code}`
     },
     stepOneComplete() {
       return this.location.properties.stepOneComplete

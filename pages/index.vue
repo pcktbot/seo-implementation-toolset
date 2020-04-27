@@ -52,7 +52,7 @@ export default {
   data () {
     return {
       // data shared between index files in index mixins
-      visible: true
+      visible: true // in init-selects store
     }
   },
   computed: {

@@ -1,6 +1,24 @@
 <template>
   <div class="m-5">
     <b-row>
+      <b-col
+        v-for="select in selects"
+        :key="select.id"
+        class="mb-2 p"
+        cols="12"
+        md="4"
+      >
+        <b-form>
+          <b-form-select
+            :id="select.id"
+            :value="select.value"
+            :options="select.options"
+            @change="onChange(select.id, $event)"
+          />
+        </b-form>
+      </b-col>
+    </b-row>
+    <b-row>
       <b-col>
         <span class="text-justify">
           <b-input
@@ -57,6 +75,7 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 import draggable from 'vuedraggable'
 let idGlobal = 8
 export default {
@@ -78,7 +97,19 @@ export default {
       list2: []
     }
   },
+  computed: {
+    ...mapState({
+      selects: state => state.initSelects.selects
+    })
+  },
   methods: {
+    ...mapMutations({
+      updateSelects: 'initSelects/updateSelects'
+    }),
+    onChange(key, value) {
+      const i = this.selects.findIndex(select => select.id === key)
+      this.updateSelects({ val: value, index: i })
+    },
     log(evt) {
       window.console.log(evt)
     },

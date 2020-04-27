@@ -2,7 +2,8 @@ import Papa from 'papaparse'
 export default {
   data () {
     return {
-      splitRgx: /\s*(?:,|$)\s*/,
+      splitRgx: /\s*(?:,|$)\s*/, // staying here
+      // staying here
       propertiesToArr: [
         'neighborhood_keywords',
         'landmark_keywords',
@@ -13,13 +14,14 @@ export default {
         'apartment_amenity_1',
         'community_amenity_1'
       ],
-      propertiesToString: [
+      propertiesToString: [ // in exportData store
         'neighborhood',
         'neighborhood_2',
         'landmark_1_name',
         'apartment_amenity_1',
         'community_amenity_1'
       ],
+      // in initSelects store
       form: {
         inputs: {
           lpId: null,
@@ -69,6 +71,7 @@ export default {
     }
   },
   methods: {
+    // in additional Properties store
     getAddPropFields() {
       return {
         population: null,

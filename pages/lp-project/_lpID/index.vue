@@ -112,14 +112,14 @@ export default {
   // addional data shared between index files in index mixins
   data () {
     return {
-      visible: false,
-      selectedLocation: null,
-      locationNotes: [],
-      projectNotes: [],
-      allNotes: [],
-      projectNoteField: '',
-      locations: [],
-      locationtbl: {
+      visible: false, // in itit-selects store
+      selectedLocation: null, // in selected loc store
+      locationNotes: [], // in notes store
+      projectNotes: [], // in notes store
+      allNotes: [], // in notes store
+      projectNoteField: '', // in notes store
+      locations: [], // in locations store
+      locationtbl: { // in locationsTable store
         fields: [
           {
             key: 'select',
@@ -182,6 +182,7 @@ export default {
       const res = await this.$axios.$get(`api/locations/${lpID}`)
       // adds location data to front end and fills out location table
       this.locations = res
+      this.$store.commit('locations/setLocations', res) // sets locations to store
       // adds data to locations table
       this.locationtbl.items = [
         ...res.map((location) => {

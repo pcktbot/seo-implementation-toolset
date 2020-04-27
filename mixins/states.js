@@ -1,7 +1,7 @@
 export default {
   data () {
     return {
-      states: {
+      states: { // in states store file
         selected: null,
         US: {
           options: [

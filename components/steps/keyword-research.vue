@@ -403,8 +403,6 @@ export default {
       return val
     },
     validateField(field) {
-      // eslint-disable-next-line no-console
-      console.log(field)
       let valid = null
       const reqFields = this.getFields()
       if (reqFields.includes(field)) {
