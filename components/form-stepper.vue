@@ -7,15 +7,19 @@
             <strong>Name: </strong>{{ location.name }}
           </h5>
         </b-col>
-        <b-col class="text-center" cols="12" md="4">
+        <b-col class="text-center align-items-center" cols="12" md="4">
           <h5 class="mb-0">
+            <b-link id="fb-link" :href="getFBLink" target="_blank">
+              <b-img src="/facebook.svg" width="22" height="22" class="maps-icon jello-vertical" />
+            </b-link>
+            <b-link id="yelp-link" :href="getYelpLink" target="_blank">
+              <b-img src="/yelp.svg" width="22" height="22" class="maps-icon jello-vertical" />
+            </b-link>
+            <b-link id="search-link" :href="getSearchLink" target="_blank">
+              <b-img src="/google-icon.svg" width="22" height="22" class="maps-icon jello-vertical" />
+            </b-link>
             <b-link id="maps-link" :href="getMapsLink" target="_blank">
-              <b-img
-                src="/maps-icon.svg"
-                width="22"
-                height="22"
-                class="maps-icon jello-vertical"
-              />
+              <b-img src="/maps-icon.svg" width="22" height="22" class="maps-icon jello-vertical" />
             </b-link>
             <strong>Address: </strong>{{ `${location.properties.street_address_1} ${location.properties.city} ${location.properties.state} ${location.properties.postal_code}` }}
           </h5>
@@ -208,6 +212,18 @@ export default {
       set(index) {
         this.$store.commit('tabindex/set', index)
       }
+    },
+    getFBLink() {
+      const prop = this.location.properties
+      return `https://www.facebook.com/search/top/?q=${this.location.name} ${prop.city}, ${prop.state}`
+    },
+    getYelpLink() {
+      const prop = this.location.properties
+      return `https://www.yelp.com/search?find_desc=${this.location.name}&find_loc=${prop.city}, ${prop.state}`
+    },
+    getSearchLink() {
+      const prop = this.location.properties
+      return `https://www.google.com/search?q=${this.location.name} ${prop.street_address_1} ${prop.city} ${prop.state} ${prop.postal_code}`
     },
     getMapsLink() {
       const prop = this.location.properties

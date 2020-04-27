@@ -182,7 +182,7 @@ export default {
       const res = await this.$axios.$get(`api/locations/${lpID}`)
       // adds location data to front end and fills out location table
       this.locations = res
-      this.$store.commit('locations/setLocations', res) // sets locations to store
+      // this.$store.commit('locations/setLocations', res) // sets locations to store
       // adds data to locations table
       this.locationtbl.items = [
         ...res.map((location) => {
