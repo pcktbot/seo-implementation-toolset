@@ -74,6 +74,7 @@
               @update-address="updateAddress"
               @remove-keyword="removeKeyword"
               @update-keyword="updateKeyword"
+              @add-keyword="addKeyword"
             />
           </b-col>
         </b-row>
@@ -171,8 +172,6 @@ export default {
     // loads initial selections
     try {
       await this.$axios.$get(`api/lp-project/${lpID}`).then((res) => {
-      // eslint-disable-next-line no-console
-        console.log(res[0])
         this.form.inputs.lpId = res[0].lpId
         this.form.selects.forEach((select) => {
           select.value = res[0][select.id]
@@ -206,20 +205,20 @@ export default {
     }
   },
   methods: {
+    addKeyword({ key, val, id }) {
+      const locIndex = this.getLocationIndex()
+      const keywords = this.locations[locIndex].properties[key]
+      const largestId = keywords.length > 0
+        ? Math.max.apply(Math, keywords.map(function(o) { return o.id }))
+        : 0
+      keywords.push({ name: val, id: largestId + 1 })
+    },
     removeKeyword({ key, index, id }) {
-      const locIndex = this.locations.findIndex(loc => loc.id === id)
+      const locIndex = this.getLocationIndex()
       this.locations[locIndex].properties[key].splice(index, 1)
     },
     updateKeyword({ key, index, data, locId }) {
-      // eslint-disable-next-line no-console
-      console.log(key)
-      // eslint-disable-next-line no-console
-      console.log(index)
-      // eslint-disable-next-line no-console
-      console.log(locId)
-      // eslint-disable-next-line no-console
-      console.log(data)
-      const locIndex = this.locations.findIndex(loc => loc.id === locId)
+      const locIndex = this.getLocationIndex()
       this.locations[locIndex].properties[key][index].name = data
     },
     updateVisibility(val) { this.visible = val },
@@ -319,7 +318,11 @@ export default {
             formattedLoc.name = location.name
             for (const [key, val] of entries) {
               if (!filterVal.includes(key)) {
-                formattedLoc[key] = val
+                if (this.propertiesToString.includes(key)) {
+                  formattedLoc[key] = val[0].name
+                } else {
+                  formattedLoc[key] = val
+                }
               }
             }
             selectedLocations.push(formattedLoc)

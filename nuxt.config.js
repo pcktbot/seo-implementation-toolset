@@ -17,7 +17,8 @@ module.exports = {
   ],
   plugins: [
     '@/plugins/icons.js',
-    '@/plugins/clipboard.js'
+    '@/plugins/clipboard.js',
+    '@/plugins/autowidth.js'
   ],
   buildModules: [
     '@nuxtjs/eslint-module'

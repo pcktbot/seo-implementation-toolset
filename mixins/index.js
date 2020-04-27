@@ -3,7 +3,23 @@ export default {
   data () {
     return {
       splitRgx: /\s*(?:,|$)\s*/,
-      propertiesToArr: ['neighborhood_keywords', 'landmark_keywords', 'amenity_keywords'],
+      propertiesToArr: [
+        'neighborhood_keywords',
+        'landmark_keywords',
+        'amenity_keywords',
+        'neighborhood',
+        'neighborhood_2',
+        'landmark_1_name',
+        'apartment_amenity_1',
+        'community_amenity_1'
+      ],
+      propertiesToString: [
+        'neighborhood',
+        'neighborhood_2',
+        'landmark_1_name',
+        'apartment_amenity_1',
+        'community_amenity_1'
+      ],
       form: {
         inputs: {
           lpId: null,
@@ -164,9 +180,9 @@ export default {
         const addPropertyFields = this.getAddPropFields()
         for (const prop in addPropertyFields) {
           properties[prop] = addPropertyFields[prop]
-        }
+        } // turns keyword string into arr objects
         this.propertiesToArr.forEach((prop) => {
-          const arr = properties[prop].split(this.splitRgx)
+          const arr = properties[prop] ? properties[prop].split(this.splitRgx) : []
           for (let i = 0; i < arr.length; i++) {
             arr[i] = { name: arr[i], id: i }
           }

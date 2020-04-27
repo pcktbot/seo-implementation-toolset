@@ -30,12 +30,12 @@
       </b-col>
       <b-col>
         <h3>Draggable 2</h3>
-        <b-container class="p-3" style="border: 1.5px solid #ccc; min-height: 67px;">
+        <b-container class="" style="border: 1px solid #ced4da; height: calc(1.5em + 0.75rem + 2px); border-radius: 0.25rem">
           <draggable
             :list="list2"
             @change="onAdd"
             tag="ul"
-            class="dragArea list-group"
+            class="dragArea list-group pill-box"
             group="people"
           >
             <li
@@ -116,7 +116,7 @@ export default {
     float: left;
     padding: 4px 15px;
     min-width: 70px;
-    min-height: 32px;
+    min-height: 3px;
 }
 .pill-box  {
     -webkit-box-sizing: border-box;

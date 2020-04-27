@@ -68,6 +68,7 @@
           @remove-keyword="removeKeyword"
           @step-update="onUpdate"
           @update-keyword="updateKeyword"
+          @add-keyword="addKeyword"
         />
       </b-tab>
       <b-tab>
@@ -232,6 +233,9 @@ export default {
     }
   },
   methods: {
+    addKeyword(data) {
+      this.$emit('add-keyword', data)
+    },
     removeKeyword(data) {
       this.$emit('remove-keyword', data)
     },

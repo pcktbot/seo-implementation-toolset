@@ -65,25 +65,43 @@
       </b-alert>
       <b-row>
         <b-col
-          v-for="input in getInputs"
-          :key="input"
+          v-for="(input, index) in getInputs"
+          :key="`${input}-${index}`"
           class="col-12 col-md"
         >
-          <b-form-group
-            :id="`input-group-${input}`"
-            :label="input.replace(/_/g,' ')"
-            :label-for="`input-${input}`"
-            class="text-left text-uppercase mb-0"
-          >
-            <b-form-input
-              :id="`input-${input}`"
-              :value="compform[input]"
-              :state="validateField(input)"
-              :placeholder="`Enter ${input.replace(/_/g,' ')}`"
-              @input="onInput(input, $event)"
-              required
-            />
-          </b-form-group>
+          <label :for="input">
+            {{ `${input.replace(/_/g,' ').toUpperCase()}` }}
+          </label>
+          <b-container class="p-1 mr-0 ml-0 keywords" style="border: 1px solid #ced4da; height:42px; border-radius: 0.25rem">
+            <draggable
+              :list="compform[input]"
+              :group="{ name: input, put: true }"
+              @change="onAdd(input, $event)"
+              class="dragArea list-group pill-box"
+            >
+              <b-list-group-item
+                v-for="element in compform[input]"
+                :key="`${input}-${element.id}`"
+                :state="validateField(input)"
+                class="list-group-item pillz"
+              >
+                <div class="form-inline">
+                  <b-input
+                    :key="`${element.id}`"
+                    v-autowidth="{maxWidth: '960px', minWidth: '20px', comfortZone: 0}"
+                    v-model="element.name"
+                    @input="updateKeyword(input, element.id, $event)"
+                    style="background-color: var(--quaternary); border: none; height: 1.25em; .form-control:focus "
+                    type="text"
+                    class="p-0"
+                  />
+                  <span @click="removeAt(input, element.id)" class="m-0 p-0" onmouseover="" style="cursor: pointer;">
+                    <b-img width="10" height="10" src="/red-x.svg" />
+                  </span>
+                </div>
+              </b-list-group-item>
+            </draggable>
+          </b-container>
         </b-col>
       </b-row>
       <b-row>
@@ -92,10 +110,27 @@
           :key="keyword"
           class="col-12 col-lg col-xl"
         >
-          <label :for="`textarea-${keyword}`">
-            {{ `${keyword.replace(/_/g,' ').toUpperCase()}` }}
-          </label>
-          <b-container class="p-3 mr-0 ml-0" style="border: 1.5px solid #ccc; width: 100%; height: 250px; overflow-y: scroll; scroll-behavior: smooth">
+          <div class="form-inline">
+            <label :for="`textarea-${keyword}`">
+              {{ `${keyword.replace(/_/g,' ').toUpperCase()}` }}
+              <b-button
+                @click="addKeyword(keyword)"
+                size="sm"
+                variant="secondary"
+                class="mx-1"
+                style="padding: 0rem 0.15rem; margin-bottom: 4px;"
+              >
+                <b-icon icon="plus" />
+              </b-button>
+              <b-form-input
+                v-model="keywordInput[keyword]"
+                size="sm"
+                style="height: 1.7em; margin-bottom: 4px;"
+                placeholder="add keywords here"
+              />
+            </label>
+          </div>
+          <b-container class="p-2 mr-0 ml-0 keywords" style="border: 1.5px solid #ccc; width: 100%; height: 250px; overflow-y: scroll; scroll-behavior: smooth">
             <draggable
               :list="compform[keyword]"
               :group="{ name: keyword, pull: 'clone', put: false }"
@@ -105,34 +140,29 @@
             >
               <b-list-group-item
                 v-for="element in compform[keyword]"
-                :key="`${element.name}-${element.id}`"
+                :key="`${keyword}-${element.id}`"
                 class="list-group-item pillz"
               >
-                <!-- Need to add event handler so edit text updates data -->
-                <span @input="updateKeyword(keyword, element.id, $event)" class="text" contenteditable="true">{{ element.name }}</span>
-                <i @click="removeAt(keyword, element.id)" class="m-0 p-0" onmouseover="" style="cursor: pointer;">
-                  <b-img width="10" height="10" src="/red-x.svg" />
-                </i>
+                <div class="form-inline">
+                  <b-input
+                    :key="`${element.id}`"
+                    v-autowidth="{maxWidth: '960px', minWidth: '20px', comfortZone: 0}"
+                    v-model="element.name"
+                    @input="updateKeyword(keyword, element.id, $event)"
+                    style="background-color: var(--quaternary); border: none; height: 1.25em;"
+                    type="text"
+                    class="p-0"
+                  />
+                  <span @click="removeAt(keyword, element.id)" class="m-0 p-0" onmouseover="" style="cursor: pointer;">
+                    <b-img width="10" height="10" src="/red-x.svg" />
+                  </span>
+                </div>
               </b-list-group-item>
             </draggable>
           </b-container>
-          <!-- <b-form-group
-            :for="`textarea-${keyword}`"
-            :label="`${keyword.replace(/_/g,' ').toUpperCase()}`"
-            class="pb-0 mb-0 text-left text-uppercase"
-          >
-            <b-form-textarea
-              :id="`textarea-${keyword}`"
-              :placeholder="`Paste your comma seperated ${keyword.replace(/_/g,' ')} here`"
-              @input="onInput(keyword, $event)"
-              :value="compform[keyword]"
-              class="text-left"
-              rows="4"
-              required
-            />
-          </b-form-group> -->
         </b-col>
       </b-row>
+      <!-- Phrases Section -->
       <b-row>
         <b-col
           v-for="phrase in getPhraseInputs"
@@ -188,7 +218,7 @@ import draggable from 'vuedraggable'
 import SaveStep from '~/components/save-step'
 import PhraseGenerator from '~/mixins/phrases'
 import Diacritics from '~/mixins/diacritics'
-let idGlobal = 8
+let idGlobal = 1000
 export default {
   components: {
     SaveStep,
@@ -217,6 +247,14 @@ export default {
   },
   data () {
     return {
+      list2: [],
+      keywordInput: {
+        neighborhood_keywords: '',
+        landmark_keywords: '',
+        amenity_keywords: '',
+        api_neighborhood_keywords: '',
+        api_landmark_keywords: ''
+      },
       splitRgx: /\s*(?:,|$)\s*/,
       text: '',
       alertMsg: 'Get Keywords Failed. Check the address for this location',
@@ -298,11 +336,12 @@ export default {
     log(evt) {
       window.console.log(evt)
     },
-    onAdd(payload) {
-      const name = payload.added.element.name
-      if (this.list2.length === 2) {
-        const removeIndex = this.list2.findIndex(item => item.name !== name)
-        this.removeAt(removeIndex)
+    onAdd(input, payload) {
+      const { id } = payload.added.element
+      if (this.compform[input].length === 2) {
+        const itemIndex = this.compform[input].findIndex(item => item.id !== id)
+        const removeID = this.compform[input][itemIndex].id
+        this.removeAt(input, removeID)
       }
     },
     cloneItem(payload) {
@@ -315,11 +354,12 @@ export default {
     },
     updateKeyword(property, id, event) {
       const idx = this.compform[property].findIndex(item => item.id === id)
-      this.$emit('update-keyword', { key: property, index: idx, data: event.srcElement.innerHTML, locId: this.location.id })
+      this.$emit('update-keyword', { key: property, index: idx, data: event, locId: this.location.id })
     },
-    addKeyword() {
-      this.list1.push({ id: idGlobal++, name: this.keyword })
-      this.keyword = ''
+    addKeyword(property) {
+      const value = this.keywordInput[property]
+      this.keywordInput[property] = ''
+      this.$emit('add-keyword', { key: property, val: value, id: this.location.id })
     },
     copyPhrases(id) {
       this.$copyText(this.location.properties[id])
@@ -363,11 +403,13 @@ export default {
       return val
     },
     validateField(field) {
+      // eslint-disable-next-line no-console
+      console.log(field)
       let valid = null
       const reqFields = this.getFields()
       if (reqFields.includes(field)) {
         const val = this.location.properties[field]
-        if (val === '' || val === null) {
+        if (val === '' || val === null || val.length === 0) {
           valid = false
         } else {
           valid = true
@@ -380,7 +422,7 @@ export default {
       const reqFields = this.getFields()
       for (const index in reqFields) {
         const field = this.compform[reqFields[index]]
-        if (field === '' || field === null) {
+        if (field === '' || field === null || field.length === 0) {
           valid = false
           break
         }
@@ -463,6 +505,9 @@ export default {
   .container {
     max-width: 2500px;
   }
+}
+.keywords .form-control:focus {
+  box-shadow: none;
 }
 .pillz  {
     color: black;
