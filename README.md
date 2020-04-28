@@ -20,3 +20,12 @@ $ npm run generate
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+
+#Publish commands
+cd ~/seo-implementation-toolset
+npm i ( if you need to install a new package )
+npm run build
+sudo pm2 restart 0
+
+to tail logs -
+sudo pm2 logs 0
