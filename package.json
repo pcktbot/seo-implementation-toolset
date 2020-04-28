@@ -14,6 +14,7 @@
     "proxy": "./cloud_sql_proxy -instances=operational-excellence-239518:us-central1:opex-pg-staging=tcp:5432"
   },
   "dependencies": {
+    "@getg5/g5-auth": "^2.0.3",
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/dotenv": "^1.4.0",
     "bootstrap": "^4.1.3",

@@ -30,7 +30,9 @@ const sequelize = new Sequelize(dbUrl, {
 })
 
 // Add Models from plugins
+const authModels = require('@getg5/g5-auth').models(sequelize)
 const db = {
+  ...authModels
 }
 
 fs.readdirSync(__dirname)
