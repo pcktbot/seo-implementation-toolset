@@ -88,3 +88,5 @@ sw.*
 
 # Vim swap files
 *.swp
+t { INTEGER, STRING } = require('sequelize')
+tatus {

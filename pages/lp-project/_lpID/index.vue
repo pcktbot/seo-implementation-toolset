@@ -4,7 +4,7 @@
     <div class="main-with-nav">
       <drawer>
         <template v-slot:button-text>
-          <b-icon icon="chat-fill" variant="primary" />
+          <b-icon icon="chat-fill" variant="primary" class="jello-vertical" />
         </template>
         <template v-slot:content>
           <notes
@@ -19,9 +19,10 @@
         </template>
       </drawer>
       <b-container fluid class="scroll-container">
-        <b-row class="pt-5 px-5" style="background-color: Gainsboro">
+        <b-row class="pt-4 px-5" style="background-color: Gainsboro">
           <b-col>
             <initial-selections
+              :visible="visible"
               :form="form"
               @upload-data="onUpload"
               @field-update="updateSelect"
@@ -39,6 +40,10 @@
             </b-alert>
           </b-col>
         </b-row>
+        <accordion-toggle
+          :visible="visible"
+          @update-visibility="updateVisibility"
+        />
         <b-row class="px-5" style="background-color: white">
           <b-col>
             <location-table
@@ -72,11 +77,7 @@
         </b-row>
       </b-container>
     </div>
-    <div class="footer">
-      <p class="m-1">
-        SEO
-      </p>
-    </div>
+    <g5-footer />
   </div>
 </template>
 
@@ -85,8 +86,10 @@
 import LocationTable from '~/components/location-table'
 import FormStepper from '~/components/form-stepper'
 import g5Nav from '~/components/nav'
+import g5Footer from '~/components/footer'
 import Notes from '~/components/notes'
 import initialSelections from '~/components/initial-selections'
+import AccordionToggle from '~/components/accordion-toggle'
 import Index from '~/mixins/index'
 import CommentsMixin from '~/mixins/comments'
 import Drawer from '~/components/drawer'
@@ -96,7 +99,9 @@ export default {
     LocationTable,
     FormStepper,
     g5Nav,
+    g5Footer,
     initialSelections,
+    AccordionToggle,
     Drawer,
     Notes
   },
@@ -104,6 +109,7 @@ export default {
   // addional data shared between index files in index mixins
   data () {
     return {
+      visible: false,
       selectedLocation: null,
       locationNotes: [],
       projectNotes: [],
@@ -190,6 +196,7 @@ export default {
       : this.showAlert(this.form.errLoadMsg, 'danger')
   },
   methods: {
+    updateVisibility(val) { this.visible = val },
     async updateNotes(tabName) {
       const onLocationTab = tabName === 'location'
       const locID = onLocationTab ? this.selectedLocation.id : null
@@ -232,6 +239,7 @@ export default {
     loadLocation(payload) {
       this.selectedLocation = this.locations.filter(location => location.id === payload)[0]
       this.locationNotes = this.getLocationNotes(this.selectedLocation.id)
+      this.$store.commit('tabindex/set', 0)
     },
     toggleWildcard() {
       const i = this.getLocationIndex()
@@ -304,11 +312,13 @@ export default {
       }
     },
     onSave() {
-      this.$axios
-        .$put('api/locations', {
-          lpId: this.form.inputs.lpId,
-          locations: this.locations
-        })
+      this.$axios.$put('api/locations', {
+        lpId: this.form.inputs.lpId,
+        locations: this.locations
+      })
+      this.$axios.$put(`api/lp-project/${this.form.inputs.lpId}`, {
+        selects: this.form.selects
+      })
     },
     allStepsComple(locProp) {
       return locProp.stepOneComplete &&
@@ -362,7 +372,13 @@ export default {
       this.locationtbl.items.push(...[
         ...res.map((location) => {
           const { name, properties } = location
-          return { select: false, location: `${name} - ${properties.street_address_1}`, status: properties.locationComplete, value: location.id }
+          return {
+            select: false,
+            location: `${name} - ${properties.street_address_1}`,
+            status: properties.locationComplete,
+            prstatus: properties.prComplete,
+            value: location.id
+          }
         })
       ])
       this.form.loading = false

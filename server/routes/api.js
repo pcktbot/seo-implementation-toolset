@@ -1,6 +1,7 @@
 const newLocations = require('../controllers/locations')
 const newProject = require('../controllers/projects')
 const newComment = require('../controllers/comments')
+const newFeedback = require('../controllers/feedback')
 module.exports = (app) => {
   // location routes
   app.post('/api/locations', async (req, res) => {
@@ -37,6 +38,14 @@ module.exports = (app) => {
     res.sendStatus(200)
   })
 
+  // Project Info Update Route
+  app.put('/api/lp-project/:lpId', async (req, res) => {
+    const { lpId } = req.params
+    const { selects } = req.body
+    await newProject.updateProject(lpId, selects)
+    res.sendStatus(200)
+  })
+
   // write get route to pull project level info
   app.get('/api/lp-project/:lpId', async (req, res) => {
     const { lpId } = req.params
@@ -63,8 +72,6 @@ module.exports = (app) => {
   app.get('/api/comments/:id/edit', async (req, res) => {
     const { id } = req.params
     const comment = await newComment.getComment(id)
-    // eslint-disable-next-line no-console
-    console.log(comment)
     res.json(comment)
   })
 
@@ -88,6 +95,34 @@ module.exports = (app) => {
   app.delete('/api/comments', async (req, res) => {
     const { locationId, lpId } = req.query
     await newComment.destroyAllComments(locationId, lpId)
+    res.sendStatus(200)
+  })
+
+  // FEEDBACK TABLE ROUTES
+
+  // Create form to the db
+  app.post('/api/feedback', async (req, res) => {
+    const { author, feedbackType, feedbackText, status } = req.body
+    const feedback = await newFeedback.createFeedback(author, feedbackType, feedbackText, status)
+    res.json(feedback)
+  })
+
+  // Retrieve feedback record
+  app.get('/api/feedback', async (req, res) => {
+    const feedback = await newFeedback.getFeedback()
+    res.json(feedback)
+  })
+  // Update feedback record
+  app.put('/api/feedback/:id', async (req, res) => {
+    const { id } = req.params
+    const { status, resolutionNotes } = req.body
+    const feedback = await newFeedback.updateFeedback(id, status, resolutionNotes)
+    res.json(feedback)
+  })
+
+  app.delete('/api/feedback/:id', async (req, res) => {
+    const { id } = req.params
+    await newFeedback.deleteFeedback(id)
     res.sendStatus(200)
   })
 }

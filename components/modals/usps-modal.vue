@@ -21,7 +21,7 @@
             </b-row>
             <b-button
               @click="hide"
-              variant="primary"
+              variant="secondary"
               block
               class="text-center"
             >
@@ -33,7 +33,7 @@
           <b-card class="h-100">
             <h5>USPS Address</h5>
             <hr>
-            <div v-if="res === null || getUSPSProps[0].name === 'Error'">
+            <div v-if="res === null || getUSPSProps[0].name === 'Error' || res.data.elements[0].name === 'Error'">
               <b-row
                 v-for="(prop,index) in Object.keys(headers)"
                 :key="index"
@@ -59,7 +59,7 @@
             <b-button
               @click="updateData"
               :disabled="res === null || getUSPSProps[0].name === 'Error'"
-              variant="primary"
+              variant="secondary"
               block
               class="text-center"
             >
@@ -141,8 +141,5 @@ export default {
 <style>
   footer {
     margin-top: 0em;
-  }
-  .modal-header {
-    padding-left: 2em;
   }
 </style>

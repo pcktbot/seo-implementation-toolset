@@ -9,6 +9,14 @@
         </b-col>
         <b-col class="text-center" cols="12" md="4">
           <h5 class="mb-0">
+            <b-link id="maps-link" :href="getMapsLink" target="_blank">
+              <b-img
+                src="/maps-icon.svg"
+                width="22"
+                height="22"
+                class="maps-icon jello-vertical"
+              />
+            </b-link>
             <strong>Address: </strong>{{ `${location.properties.street_address_1} ${location.properties.city} ${location.properties.state} ${location.properties.postal_code}` }}
           </h5>
         </b-col>
@@ -28,7 +36,7 @@
         </b-col>
       </b-row>
     </b-card-header>
-    <b-tabs card content-class="my-2">
+    <b-tabs v-model="tabIndex" card content-class="my-2" justified>
       <b-tab>
         <template v-slot:title>
           <tabs
@@ -39,6 +47,7 @@
         <name-address
           :inputs="validation.steponefields"
           :location="location"
+          :initData="form"
           @step-update="onUpdate"
           @step-save="onSave"
           @update-address="updateAddress"
@@ -52,12 +61,9 @@
           />
         </template>
         <keyword-research
-          :inputs="stepTwoInputs"
-          :keywords="stepTwoKeywordAreas"
-          :phrases="stepTwoPhraseAreas"
+          :inputs="validation.steptwofields"
           :location="location"
           :form="form"
-          :validation="validation"
           @step-save="onSave"
           @step-update="onUpdate"
         />
@@ -92,6 +98,7 @@
           :location="location"
           :form="form"
           @step-update="onUpdate"
+          @step-save="onSave"
         />
       </b-tab>
     </b-tabs>
@@ -128,61 +135,19 @@ export default {
   },
   data () {
     return {
-      stepOneText: 'Name / Address Validation',
+      // tabIndex: 0,
+      stepOneText: 'Location Info Validation',
       stepTwoText: 'Keyword Research',
       stepThreeText: 'Redirects',
       stepFourText: 'GMB / GA / Strategy',
       validation: {
-        steponefields: [
-          'name',
-          'recommended_name',
-          'street_address_1',
-          'city'
-        ],
-        steptwofields: {
-          inputs: {
-            mf: [
-              'neighborhood',
-              'neighborhood_2',
-              'landmark_1_name',
-              'apartment_amenity_1',
-              'community_amenity_1',
-              'floor_plans',
-              'custom_slug'
-            ],
-            other: [
-              'neighborhood',
-              'neighborhood_2',
-              'landmark_1_name',
-              'custom_slug'
-            ]
-          },
-          keywords: {
-            mf: [
-              'neighborhood_keywords',
-              'landmark_keywords',
-              'amenity_keywords',
-              'api_neighborhood_keywords',
-              'api_landmark_keywords'
-            ],
-            other: [
-              'neighborhood_keywords',
-              'landmark_keywords',
-              'api_neighborhood_keywords',
-              'api_landmark_keywords'
-            ]
-          },
-          phrases: {
-            mf: [
-              'neighborhood_phrases',
-              'landmark_phrases',
-              'amenity_phrases'
-            ],
-            other: [
-              'neighborhood phrases',
-              'landmark phrases'
-            ]
-          },
+        steponefields: {
+          fields: [
+            'name',
+            'recommended_name',
+            'street_address_1',
+            'city'
+          ],
           propertyvalue: {
             selected: null,
             options: [
@@ -202,6 +167,23 @@ export default {
             ]
           }
         },
+        steptwofields: {
+          neighborhood: {
+            inputs: ['neighborhood', 'neighborhood_2'],
+            keywords: ['neighborhood_keywords', 'api_neighborhood_keywords'],
+            phrases: ['neighborhood_phrases']
+          },
+          landmark: {
+            inputs: ['landmark_1_name'],
+            keywords: ['landmark_keywords', 'api_landmark_keywords'],
+            phrases: ['landmark_phrases']
+          },
+          amenity: {
+            inputs: ['apartment_amenity_1', 'community_amenity_1'],
+            keywords: ['amenity_keywords'],
+            phrases: ['amenity_phrases']
+          }
+        },
         stepthreefields: {
           options: [
             { value: null, text: 'Select Strategy' },
@@ -216,6 +198,21 @@ export default {
     }
   },
   computed: {
+    tabIndex: {
+      get() {
+        return this.$store.state.tabindex.index
+      },
+      set(index) {
+        this.$store.commit('tabindex/set', index)
+      }
+    },
+    getMapsLink() {
+      return `https://www.google.com/maps/search/
+        ${this.location.properties.street_address_1} 
+        ${this.location.properties.city} 
+        ${this.location.properties.state} 
+        ${this.location.properties.postal_code}`
+    },
     stepOneComplete() {
       return this.location.properties.stepOneComplete
     },
@@ -230,24 +227,6 @@ export default {
     },
     getPRText() {
       return this.location.properties.prComplete ? 'Peer Review Complete' : 'Peer Review Incomplete'
-    },
-    stepTwoInputs() {
-      const inputs = this.form.selects[0].value === 'mf'
-        ? this.validation.steptwofields.inputs.mf
-        : this.validation.steptwofields.inputs.other
-      return this.form.selects[1].value === 'multi'
-        ? inputs.slice(0, -1)
-        : inputs
-    },
-    stepTwoKeywordAreas() {
-      return this.form.selects[0].value === 'mf'
-        ? this.validation.steptwofields.keywords.mf
-        : this.validation.steptwofields.keywords.other
-    },
-    stepTwoPhraseAreas() {
-      return this.form.selects[0].value === 'mf'
-        ? this.validation.steptwofields.phrases.mf
-        : this.validation.steptwofields.phrases.other
     }
   },
   methods: {
@@ -291,4 +270,8 @@ export default {
   .tab-pane.card-body {
     padding-top: 1rem;
   }
+  .maps-icon {
+    vertical-align: top;
+  }
+
 </style>

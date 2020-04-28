@@ -1,23 +1,6 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col class="text-right pt-0" cols="12">
-        <span :id="displaySaveTip" tabindex="0">
-          <b-btn
-            :disabled="disabledSave"
-            @click="onSave('stepFourComplete')"
-            variant="outline-secondary--darken3"
-            class="px-4"
-          >
-            {{ saveTxt }}
-          </b-btn>
-        </span>
-        <b-tooltip target="step-four-tip" placement="topleft" variant="secondary">
-          complete all dropdowns
-        </b-tooltip>
-      </b-col>
-    </b-row>
-    <b-row>
       <b-col class="text-left" cols="12" md="4">
         <span class="font-weight-bold">Current Website: </span>{{ location.properties.current_website }}
       </b-col>
@@ -25,8 +8,8 @@
         <span class="font-weight-bold">Property Type:</span> {{ location.properties.primary_type }}
       </b-col>
       <b-col class="text-left" cols="12" md="4">
-        <span class="font-weight-bold">Strategy Link:</span>
-        <b-link :href="getStrategyLink" target="_blank">
+        <span class="font-weight-bold strat-link">Strategy Link:</span>
+        <b-link id="strat-link" :href="getStrategyLink" target="_blank">
           {{ getStrategyText }}
         </b-link>
       </b-col>
@@ -54,14 +37,27 @@
         </b-form>
       </b-col>
     </b-row>
+    <b-row>
+      <b-col class="text-right pt-0" cols="12">
+        <save-step
+          :isDisabled="disabledSave"
+          :saveData="saveData"
+          :tooltipID="displaySaveTip"
+          @step-save="onSave"
+          @step-update="onInput"
+        />
+      </b-col>
+    </b-row>
   </b-container>
 </template>
 
 <script>
-import SaveStep from '~/mixins/savestep'
-import Strategies from '~/mixins/strategies'
+import Strategies from '~/server/config/strategies'
+import SaveStep from '~/components/save-step'
 export default {
-  mixins: [SaveStep, Strategies],
+  components: {
+    SaveStep
+  },
   props: {
     location: {
       type: Object,
@@ -78,6 +74,11 @@ export default {
   },
   data () {
     return {
+      strategies: Strategies,
+      saveData: {
+        tooltipTargetID: 'step-four-tip',
+        stepUpdateTxt: 'stepFourComplete'
+      },
       saveTxt: 'Save',
       options: [
         { value: null, text: 'Select Status' },
@@ -171,6 +172,9 @@ export default {
     }
   },
   methods: {
+    onSave() {
+      this.$emit('step-save')
+    },
     validateStepFour() {
       const properties = this.location.properties
       return properties.gmb && properties.ga && properties.strategy
@@ -187,11 +191,10 @@ export default {
 </script>
 
 <style>
-a {
-  text-decoration: underline;
+ #strat-link {
+  text-decoration: underline!important;
 }
-a:hover {
-  text-decoration: underline;
+#strat-link:hover {
   color: var(--tertiary);
 }
 @media only screen and (max-width: 768px) {

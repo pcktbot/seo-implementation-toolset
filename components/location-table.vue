@@ -17,12 +17,10 @@
         class="self-align-center table mt-3 mb-1"
       >
         <template v-slot:cell(select)="{ rowSelected }">
-          <template v-if="rowSelected">
-            <b-icon class="h3 mb-0" icon="check" variant="success" />
-          </template>
-          <template v-else>
-            <b-icon class="h4 mb-0" icon="square" />
-          </template>
+          <icons-swap
+            :needsCheckIcon="rowSelected"
+            :iconConfig="iconCheckConfig"
+          />
         </template>
         <template v-slot:cell(location)="data">
           {{ data.value }}
@@ -41,20 +39,16 @@
           </b-btn>
         </template>
         <template v-slot:cell(status)="data">
-          <template v-if="data.value === true">
-            <b-icon class="h3 mb-0" icon="check-circle" variant="success" />
-          </template>
-          <template v-else>
-            <b-icon class="h3 mb-0" icon="x-circle" variant="danger" />
-          </template>
+          <icons-swap
+            :needsCheckIcon="data.value"
+            :iconConfig="iconConfig"
+          />
         </template>
         <template v-slot:cell(prstatus)="data">
-          <template v-if="data.value === true">
-            <b-icon class="h3 mb-0" icon="check-circle" variant="success" />
-          </template>
-          <template v-else>
-            <b-icon class="h3 mb-0" icon="x-circle" variant="danger" />
-          </template>
+          <icons-swap
+            :needsCheckIcon="data.value"
+            :iconConfig="iconConfig"
+          />
         </template>
       </b-table>
       <b-row class="table-btns ml-0 mr-0">
@@ -104,6 +98,7 @@
       <b-modal
         id="modal-1"
         @ok="onDelete"
+        header-bg-variant="primary"
         title="Delete Location"
       >
         <p class="my-4">
@@ -115,7 +110,11 @@
 </template>
 
 <script>
+import IconsSwap from '~/components/icons-swap'
 export default {
+  components: {
+    IconsSwap
+  },
   props: {
     form: {
       type: Object,
@@ -141,7 +140,19 @@ export default {
       alertMsg: '',
       alertvariant: '',
       dismissSecs: 4,
-      dismissCountDown: 0
+      dismissCountDown: 0,
+      iconConfig: {
+        width: '20',
+        height: '20',
+        true: '/green-check.svg',
+        false: '/red-x.svg'
+      },
+      iconCheckConfig: {
+        width: '27',
+        height: '27',
+        true: '/check-box.svg',
+        false: '/square.svg'
+      }
     }
   },
   computed: {
@@ -185,7 +196,7 @@ export default {
         } else {
           this.showAlert('Unselect incomplete locations', 'danger')
         }
-      }
+      } else { this.showAlert('Select a location/s', 'danger') }
     },
     onRowSelected(items) {
       this.$emit('select-location', items, 'locationtbl')

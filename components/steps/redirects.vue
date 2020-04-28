@@ -2,7 +2,7 @@
   <b-container fluid>
     <b-row>
       <b-col class="text-center">
-        <p class="font-italic">
+        <p class="font-italic mb-0">
           Please select a strategy and paste all redirects below
         </p>
       </b-col>
@@ -29,24 +29,18 @@
             Format Redirects
           </b-btn>
         </span>
-        <b-tooltip target="format-tip" variant="secondary">
-          strategy and paste redirects
+        <b-tooltip target="format-tip" variant="secondary" placement="left">
+          select strategy and paste redirects
         </b-tooltip>
       </b-col>
       <b-col class="top-3 text-right px-0 pb-3 col-12 col-md">
-        <span :id="displaySaveTip" tabindex="0">
-          <b-btn
-            :disabled="!validateStep"
-            @click="onSave('stepThreeComplete')"
-            variant="outline-secondary--darken3"
-            class="px-4"
-          >
-            {{ saveTxt }}
-          </b-btn>
-        </span>
-        <b-tooltip target="disabled-wrapper" placement="topleft" variant="secondary">
-          complete step to save
-        </b-tooltip>
+        <save-step
+          :isDisabled="!validateStep"
+          :saveData="saveData"
+          :tooltipID="displaySaveTip"
+          @step-save="onSave"
+          @step-update="onInput"
+        />
       </b-col>
     </b-row>
     <b-row>
@@ -75,8 +69,34 @@
           striped
           hover
           head-variant="light"
-          class="self-align-center table mt-4"
+          class="self-align-center table mt-2"
         >
+          <!-- A custom formatted header cell for field 'current_url' -->
+          <template v-slot:head(current_url)="data">
+            {{ data.field.label }}
+            <b-button @click="copyUrls('current_url')" class="p-0 m-0 copy-btn">
+              <b-img
+                src="/copy-icon.png"
+                width="20"
+                height="20"
+                class="jello-vertical"
+              />
+            </b-button>
+            <span style="font-weight:normal;">{{ current_url_msg }}</span>
+          </template>
+          <!-- A custom formatted header cell for field 'formatted_url' -->
+          <template v-slot:head(formatted_url)="data">
+            {{ data.field.label }}
+            <b-button @click="copyUrls('formatted_url')" class="p-0 m-0 copy-btn">
+              <b-img
+                src="/copy-icon.png"
+                width="20"
+                height="20"
+                class="jello-vertical"
+              />
+            </b-button>
+            <span style="font-weight:normal;">{{ formatted_url_msg }}</span>
+          </template>
           <template v-slot:cell(strategy)="data" class="align-self-center">
             <b-col
               style="width:10rem"
@@ -103,12 +123,10 @@
             />
           </template>
           <template v-slot:cell(select)="{ rowSelected }">
-            <template v-if="rowSelected">
-              <b-icon class="h3 mb-0" icon="check" variant="success" />
-            </template>
-            <template v-else>
-              <b-icon class="h4 mb-0" icon="square" />
-            </template>
+            <icons-swap
+              :needsCheckIcon="rowSelected"
+              :iconConfig="iconConfig"
+            />
           </template>
         </b-table>
         <b-row class="ml-0 mr-0">
@@ -144,9 +162,13 @@
 </template>
 
 <script>
-import SaveStep from '~/mixins/savestep'
+import IconsSwap from '~/components/icons-swap'
+import SaveStep from '~/components/save-step'
 export default {
-  mixins: [SaveStep],
+  components: {
+    SaveStep,
+    IconsSwap
+  },
   props: {
     location: {
       type: Object,
@@ -163,8 +185,20 @@ export default {
   },
   data () {
     return {
+      iconConfig: {
+        width: '30',
+        height: '30',
+        true: '/check-box.svg',
+        false: '/square.svg'
+      },
+      saveData: {
+        tooltipTargetID: 'step-three-tip',
+        stepUpdateTxt: 'stepThreeComplete'
+      },
       hasMsg: false,
       msg: '',
+      current_url_msg: '',
+      formatted_url_msg: '',
       alertvariant: '',
       saveTxt: 'Save'
     }
@@ -177,7 +211,7 @@ export default {
         ? 'format-tip' : 'not-disabled'
     },
     displaySaveTip() {
-      return !this.validateStepThree() ? 'disabled-wrapper' : 'not-disabled'
+      return !this.validateStepThree() ? 'step-three-tip' : 'not-disabled'
     },
     validateStep() {
       return this.location.properties.redirects.items.length > 0
@@ -205,6 +239,19 @@ export default {
     }
   },
   methods: {
+    onSave() {
+      this.$emit('step-save')
+    },
+    copyUrls(type) {
+      let str = ''
+      this.form.redirects.items.forEach((obj) => {
+        str = str ? `${str}\n${obj[type]}` : obj[type]
+      })
+      this.$copyText(str)
+      this[`${type}_msg`] = 'Copied!'
+      // eslint-disable-next-line no-return-assign
+      setTimeout(() => this[`${type}_msg`] = '', 3000)
+    },
     validateStepThree() {
       return this.location.properties.redirects.items.length > 0
     },
@@ -310,6 +357,11 @@ export default {
 <style>
   .redirect-alert.alert-dismissible .close {
     padding: 0.25rem 1.25rem!important;
+  }
+
+  .copy-btn, .copy-btn:hover {
+    background-color: #e9ecef;
+    border: none;
   }
 
 @media only screen and (max-width: 768px) {

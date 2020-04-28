@@ -1,7 +1,8 @@
 const models = require('../models')
 module.exports = {
   createProject,
-  getProject
+  getProject,
+  updateProject
 }
 
 async function createProject (lpId, selects) {
@@ -17,4 +18,12 @@ async function createProject (lpId, selects) {
 
 function getProject (lpId) {
   return models.project.findAll({ where: { lpId } })
+}
+
+async function updateProject (lpId, selects) {
+  const update = selects.reduce((obj, select) => {
+    obj[select.id] = select.value
+    return obj
+  }, {})
+  await models.project.update(update, { where: { lpId } })
 }

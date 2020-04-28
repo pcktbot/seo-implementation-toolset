@@ -1,7 +1,7 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col class="text-center">
+      <b-col class="text-center pt-3">
         <b-form-group class="my-1">
           <b-form-radio-group
             id="btn-radios-2"
@@ -11,6 +11,7 @@
             button-variant="outline-primary"
             size="md"
             name="radio-btn-outline"
+            class="w-75"
           />
         </b-form-group>
       </b-col>
@@ -69,9 +70,8 @@
 <script>
 import moment from 'moment'
 import CommentsMixin from '~/mixins/comments'
-import SaveStep from '~/mixins/savestep'
 export default {
-  mixins: [CommentsMixin, SaveStep],
+  mixins: [CommentsMixin],
   props: {
     location: {
       type: Object,

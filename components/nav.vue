@@ -11,20 +11,6 @@
       </h2>
     </b-navbar-brand>
   </b-navbar>
-  <!-- <div>
-    <b-navbar type="dark">
-      <b-navbar-brand href="/" class="d-flex align-items-center">
-        <b-img
-          class="mr-2 logo"
-          src="/g5-logo-2.png"
-          alt="G5 Corporate Logo"
-        />
-        <h2 class="nav-text">
-          SEO Implementation
-        </span>
-      </b-navbar-brand>
-    </b-navbar>
-  </div> -->
 </template>
 
 <script>

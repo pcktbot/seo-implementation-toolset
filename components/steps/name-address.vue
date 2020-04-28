@@ -5,26 +5,9 @@
       :res="res"
       @update-address="updateAddress"
     />
-    <b-row class="align-items-center">
-      <b-col class="text-right pt-0">
-        <span :id="displaySaveTip" class="d-inline-block" tabindex="0">
-          <b-btn
-            :disabled="validateStepOne1"
-            @click="onSave('stepOneComplete')"
-            variant="outline-secondary--darken3"
-            class="px-4"
-          >
-            {{ saveTxt }}
-          </b-btn>
-        </span>
-        <b-tooltip target="step-one-tip" placement="left" variant="secondary">
-          complete step to save
-        </b-tooltip>
-      </b-col>
-    </b-row>
     <b-row>
       <b-col
-        v-for="input in inputs"
+        v-for="input in inputs.fields"
         :key="input"
         cols="12"
         md="4"
@@ -116,19 +99,82 @@
         />
       </b-col>
       <b-col
+        v-if="initData.selects[0].value === 'mf'"
+        cols="12"
+        md="4"
+        class="align-self-center mb-2"
+      >
+        <label for="floor_plans">FLOOR PLANS</label>
+        <b-form-input
+          id="floor_plans"
+          :value="form.floor_plans"
+          :state="validation('floor_plans')"
+          @input="onInput('floor_plans', $event)"
+          placeholder="Enter floor plans"
+        />
+      </b-col>
+      <b-col
+        v-if="initData.selects[1].value === 'single'"
+        cols="12"
+        md="4"
+        class="align-self-center mb-2"
+      >
+        <label for="custom_slug">CUSTOM SLUG</label>
+        <b-form-input
+          id="custom_slug"
+          :value="form.custom_slug"
+          :state="validation('custom_slug')"
+          @input="onInput('custom_slug', $event)"
+          placeholder="Enter custom slug"
+        />
+      </b-col>
+      <b-col
+        v-if="initData.selects[0].value === 'mf'"
+        cols="12"
+        md="4"
+        class="align-self-center mb-2"
+      >
+        <label for="property_feature_1">PROPERTY FEATURE</label>
+        <b-form-select
+          id="property_feature_1"
+          :value="pickPropertyVal"
+          :options="inputs.propertyvalue.options"
+          :state="pickPropertyVal !== null"
+          @change="onInput('property_feature_1', $event)"
+          class="pb-1"
+        />
+      </b-col>
+      <b-col
         cols="12"
         md="4"
         class="align-self-center address-col"
       >
-        <b-btn
-          v-b-modal.usps-modal
-          @click="verifyAddress"
-          variant="outline-secondary--darken3"
-          class="px-4"
-          block
-        >
-          Verify Address
-        </b-btn>
+        <span :id="verifyAddTip" class="block" tabindex="0">
+          <b-btn
+            v-b-modal.usps-modal
+            :disabled="disabledAddress"
+            @click="verifyAddress"
+            variant="outline-secondary--darken3"
+            class="px-4"
+            block
+          >
+            Verify Address
+          </b-btn>
+        </span>
+        <b-tooltip target="address-tip" variant="secondary" placement="auto">
+          complete address fields
+        </b-tooltip>
+      </b-col>
+    </b-row>
+    <b-row class="align-items-center">
+      <b-col class="text-right py-0">
+        <save-step
+          :isDisabled="validateStepOne1"
+          :saveData="saveData"
+          :tooltipID="displaySaveTip"
+          @step-save="onSave"
+          @step-update="onInput"
+        />
       </b-col>
     </b-row>
   </b-container>
@@ -136,16 +182,17 @@
 
 <script>
 import UspsModal from '~/components/modals/usps-modal'
-import SaveStep from '~/mixins/savestep'
+import SaveStep from '~/components/save-step'
 import States from '~/mixins/states'
 export default {
   components: {
-    UspsModal
+    UspsModal,
+    SaveStep
   },
-  mixins: [SaveStep, States],
+  mixins: [States],
   props: {
     inputs: {
-      type: Array,
+      type: Object,
       default() {
         return {}
       }
@@ -155,11 +202,20 @@ export default {
       default() {
         return {}
       }
+    },
+    initData: {
+      type: Object,
+      default() {
+        return {}
+      }
     }
   },
   data () {
     return {
-      saveTxt: 'Save',
+      saveData: {
+        tooltipTargetID: 'step-one-tip',
+        stepUpdateTxt: 'stepOneComplete'
+      },
       res: null,
       uspsLink: 'https://tools.usps.com/zip-code-lookup.htm?byaddress',
       country: {
@@ -181,11 +237,21 @@ export default {
     }
   },
   computed: {
+    disabledAddress() {
+      return !this.validateAddFields()
+    },
+    pickPropertyVal() {
+      const propertyFeatureVal = this.location.properties.property_feature_1
+      return propertyFeatureVal || null
+    },
     getStates() {
       const country = this.location.properties.country
       return this.location.properties.country
         ? this.states[country].options
         : [{ value: null, text: 'Select Country for States' }]
+    },
+    verifyAddTip() {
+      return !this.validateAddFields() ? 'address-tip' : 'not-disabled'
     },
     displaySaveTip() {
       return !this.validateStepOne() ? 'step-one-tip' : 'not-disabled'
@@ -205,13 +271,25 @@ export default {
           postal_code: this.location.properties.postal_code,
           country: this.location.properties.country,
           population: this.location.properties.population,
-          uspsvalid: this.location.properties.uspsvalid
+          uspsvalid: this.location.properties.uspsvalid,
+          floor_plans: this.location.properties.floor_plans,
+          property_feature_1: this.location.properties.property_feature_1,
+          custom_slug: this.location.properties.custom_slug
         }
       },
       set(val) {}
     }
   },
   methods: {
+    validateAddFields() {
+      return (this.location.properties.street_address_1 &&
+        this.location.properties.city &&
+        this.location.properties.state &&
+        this.location.properties.postal_code)
+    },
+    onSave() {
+      this.$emit('step-save')
+    },
     validation(field) {
       let valid = true
       if (this.form[field] === '' || this.form[field] === null) {
@@ -234,8 +312,14 @@ export default {
       this.$emit('step-update', { key, val, id: this.location.id })
     },
     async verifyAddress() {
-      const res = await this.$axios.post('/routes/uspsapi/verify-address', { form: this.form })
-      this.res = res
+      try {
+        const res = await this.$axios.post('/routes/uspsapi/verify-address', { form: this.form })
+        this.res = res
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.log(e)
+        this.res = null
+      }
     },
     updateAddress(data) {
       this.$emit('update-address', data)
