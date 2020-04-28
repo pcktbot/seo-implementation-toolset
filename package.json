@@ -7,8 +7,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon server/index.js --watch server",
     "build": "nuxt build",
-    "start": "cross-env NODE_ENV=production node server/index.js",
-    "greenlock": "NODE_ENV=production node server/server.js",
+    "start": "NODE_ENV=production node server/server.js",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "proxy": "./cloud_sql_proxy -instances=operational-excellence-239518:us-central1:opex-pg-staging=tcp:5432"
