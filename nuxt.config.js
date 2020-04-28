@@ -12,7 +12,7 @@ module.exports = {
     ]
   },
   server: {
-    host: 'seo-implementation.g5marketingcloud.com',
+    host: 'localhost',
     port: 80
   },
   loading: { color: '#fff' },
