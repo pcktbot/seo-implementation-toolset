@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 module.exports = {
   mode: 'spa',
   head: {
@@ -12,8 +14,8 @@ module.exports = {
     ]
   },
   server: {
-    host: '35.247.14.57',
-    port: 80
+    host: process.env.BASE_URL || 'localhost',
+    port: process.env.PORT || 80
   },
   loading: { color: '#fff' },
   css: [
@@ -32,6 +34,7 @@ module.exports = {
     '@nuxtjs/dotenv'
   ],
   axios: {
+    browserBaseURL: `//${process.env.BROWSER_URL}`
   },
   build: {
     extend (config, ctx) {
