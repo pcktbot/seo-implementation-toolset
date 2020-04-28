@@ -1,6 +1,19 @@
 <template>
   <div>
-    <g5-nav />
+    <g5-nav>
+      <template v-slot:content>
+        <b-alert
+          :show="form.dismissCountDown"
+          :variant="form.alertvariant"
+          @dismiss-count-down="countDownChanged"
+          @dismissed="form.alertvariant='', form.alertMsg=''"
+          dismissible
+          fade
+        >
+          {{ form.alertMsg }}
+        </b-alert>
+      </template>
+    </g5-nav>
     <b-container fluid class="px-5">
       <b-row>
         <b-col>

@@ -1,6 +1,19 @@
 <template>
   <div>
-    <g5-nav />
+    <g5-nav>
+      <template v-slot:content>
+        <b-alert
+          :show="form.dismissCountDown"
+          :variant="form.alertvariant"
+          @dismiss-count-down="countDownChanged"
+          @dismissed="form.alertvariant='', form.alertMsg=''"
+          dismissible
+          fade
+        >
+          {{ form.alertMsg }}
+        </b-alert>
+      </template>
+    </g5-nav>
     <div class="main-with-nav">
       <drawer>
         <template v-slot:button-text>
@@ -28,16 +41,6 @@
               @field-update="updateSelect"
               @input-update="updateInput"
             />
-            <b-alert
-              :show="form.dismissCountDown"
-              :variant="form.alertvariant"
-              @dismiss-count-down="countDownChanged"
-              @dismissed="form.alertvariant='', form.alertMsg=''"
-              dismissible
-              fade
-            >
-              {{ form.alertMsg }}
-            </b-alert>
           </b-col>
         </b-row>
         <accordion-toggle
