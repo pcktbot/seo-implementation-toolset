@@ -13,7 +13,7 @@ module.exports = {
   },
   server: {
     host: 'seo-implementation.g5marketingcloud.com',
-    port: 443
+    port: 80
   },
   loading: { color: '#fff' },
   css: [
