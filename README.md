@@ -17,6 +17,18 @@ $ npm run start
 
 # generate static project
 $ npm run generate
+
+# publish commands
+cd ~/seo-implementation-toolset
+$ npm i ( if you need to install a new package )
+$ npm run build
+$ sudo pm2 restart 0
+
+# to tail logs -
+$ sudo pm2 logs 0
+
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+
+
