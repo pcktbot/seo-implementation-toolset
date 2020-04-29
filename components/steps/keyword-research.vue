@@ -72,7 +72,7 @@
           <label :for="input">
             {{ `${input.replace(/_/g,' ').toUpperCase()}` }}
           </label>
-          <b-container class="p-1 mr-0 ml-0 keywords" style="border: 1px solid #ced4da; height:42px; border-radius: 0.25rem">
+          <b-container :style="getStateStyle(input)" class="p-1 mr-0 ml-0 keywords">
             <draggable
               :list="compform[input]"
               :group="{ name: input, put: true }"
@@ -402,15 +402,17 @@ export default {
       }
       return val
     },
+    getStateStyle(field) {
+      const val = this.validateField(field)
+      return (val) ? 'border: 1px solid #ced4da; height:42px; border-radius: 0.25rem' : 'border: 1.5px solid red; height:42px; border-radius: 0.25rem'
+    },
     validateField(field) {
-      let valid = null
+      let valid = true
       const reqFields = this.getFields()
       if (reqFields.includes(field)) {
         const val = this.location.properties[field]
         if (val === '' || val === null || val.length === 0) {
           valid = false
-        } else {
-          valid = true
         }
       }
       return valid
