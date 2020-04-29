@@ -160,10 +160,10 @@
           >
             Verify Address
           </b-btn>
+          <b-tooltip target="address-tip" variant="secondary" placement="auto">
+            complete address fields
+          </b-tooltip>
         </span>
-        <b-tooltip target="address-tip" variant="secondary" placement="auto">
-          complete address fields
-        </b-tooltip>
       </b-col>
     </b-row>
     <b-row class="align-items-center">
