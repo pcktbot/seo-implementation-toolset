@@ -233,6 +233,18 @@ export default {
           { value: true, text: 'Yes - USPS Verified' },
           { value: false, text: 'No - Not USPS Verified' }
         ]
+      },
+      removeFields: {
+        multi: {
+          mf: ['custom_slug'],
+          ss: ['floor_plans', 'property_feature_1', 'custom_slug'],
+          sl: ['floor_plans', 'property_feature_1', 'custom_slug']
+        },
+        single: {
+          mf: [],
+          ss: ['floor_plans', 'property_feature_1'],
+          sl: ['floor_plans', 'property_feature_1']
+        }
       }
     }
   },
@@ -300,13 +312,24 @@ export default {
     },
     validateStepOne() {
       let valid = true
-      for (const prop in this.form) {
-        if (this.form[prop] === '' || this.form[prop] === null) {
+      const filteredForm = this.getRequiredFields()
+      for (const prop in filteredForm) {
+        if (filteredForm[prop] === '' || filteredForm[prop] === null) {
           valid = false
           break
         }
       }
       return valid
+    },
+    getRequiredFields() {
+      const fieldsToExclude = this.removeFields[this.initData.selects[1].value][this.initData.selects[0].value]
+      const filtered = Object.keys(this.form)
+        .filter(key => !fieldsToExclude.includes(key))
+        .reduce((obj, key) => {
+          obj[key] = this.form[key]
+          return obj
+        }, {})
+      return filtered
     },
     onInput(key, val) {
       this.$emit('step-update', { key, val, id: this.location.id })
