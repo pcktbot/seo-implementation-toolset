@@ -14,10 +14,10 @@
           <b-spinner v-if="form.loading" class="mt-1 ml-5" small label="Loading..." />
         </div>
       </b-btn>
+      <b-tooltip target="upload-tip" placement="top" variant="secondary">
+        complete fields
+      </b-tooltip>
     </span>
-    <b-tooltip target="upload-tip" placement="top" variant="secondary">
-      complete fields
-    </b-tooltip>
   </b-container>
 </template>
 

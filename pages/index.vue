@@ -1,6 +1,19 @@
 <template>
   <div>
-    <g5-nav />
+    <g5-nav>
+      <template v-slot:content>
+        <b-alert
+          :show="form.dismissCountDown"
+          :variant="form.alertvariant"
+          @dismiss-count-down="countDownChanged"
+          @dismissed="form.alertvariant='', form.alertMsg=''"
+          dismissible
+          fade
+        >
+          {{ form.alertMsg }}
+        </b-alert>
+      </template>
+    </g5-nav>
     <b-container fluid class="px-5">
       <b-row>
         <b-col>
@@ -52,7 +65,7 @@ export default {
   data () {
     return {
       // data shared between index files in index mixins
-      visible: true
+      visible: true // in init-selects store
     }
   },
   computed: {
@@ -80,6 +93,8 @@ export default {
           this.form.loading = true
           const data = await this.parseCSV(this.form.inputs.file)
           const locations = await this.getLocationData(data)
+          // eslint-disable-next-line no-console
+          console.log(locations)
           if (locations.length) {
             this.postToDB(locations)
           } else {

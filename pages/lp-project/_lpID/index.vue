@@ -1,6 +1,19 @@
 <template>
   <div>
-    <g5-nav />
+    <g5-nav>
+      <template v-slot:content>
+        <b-alert
+          :show="form.dismissCountDown"
+          :variant="form.alertvariant"
+          @dismiss-count-down="countDownChanged"
+          @dismissed="form.alertvariant='', form.alertMsg=''"
+          dismissible
+          fade
+        >
+          {{ form.alertMsg }}
+        </b-alert>
+      </template>
+    </g5-nav>
     <div class="main-with-nav">
       <drawer>
         <template v-slot:button-text>
@@ -28,16 +41,6 @@
               @field-update="updateSelect"
               @input-update="updateInput"
             />
-            <b-alert
-              :show="form.dismissCountDown"
-              :variant="form.alertvariant"
-              @dismiss-count-down="countDownChanged"
-              @dismissed="form.alertvariant='', form.alertMsg=''"
-              dismissible
-              fade
-            >
-              {{ form.alertMsg }}
-            </b-alert>
           </b-col>
         </b-row>
         <accordion-toggle
@@ -72,6 +75,9 @@
               @delete-redirects="onDeleteRedirects"
               @toggle-wildcard="toggleWildcard"
               @update-address="updateAddress"
+              @remove-keyword="removeKeyword"
+              @update-keyword="updateKeyword"
+              @add-keyword="addKeyword"
             />
           </b-col>
         </b-row>
@@ -109,14 +115,14 @@ export default {
   // addional data shared between index files in index mixins
   data () {
     return {
-      visible: false,
-      selectedLocation: null,
-      locationNotes: [],
-      projectNotes: [],
-      allNotes: [],
-      projectNoteField: '',
-      locations: [],
-      locationtbl: {
+      visible: false, // in itit-selects store
+      selectedLocation: null, // in selected loc store
+      locationNotes: [], // in notes store
+      projectNotes: [], // in notes store
+      allNotes: [], // in notes store
+      projectNoteField: '', // in notes store
+      locations: [], // in locations store
+      locationtbl: { // in locationsTable store
         fields: [
           {
             key: 'select',
@@ -167,35 +173,58 @@ export default {
   async created() {
     const { lpID } = this.$nuxt._route.params
     // loads initial selections
-    await this.$axios.$get(`api/lp-project/${lpID}`).then((res) => {
-      this.form.inputs.lpId = res[0].lpId
-      this.form.selects.forEach((select) => {
-        select.value = res[0][select.id]
+    try {
+      await this.$axios.$get(`api/lp-project/${lpID}`).then((res) => {
+        this.form.inputs.lpId = res[0].lpId
+        this.form.selects.forEach((select) => {
+          select.value = res[0][select.id]
+        })
       })
-    })
-    this.allNotes = await this.getAllNotes(lpID)
-    this.projectNotes = this.getProjectNotes()
-    const res = await this.$axios.$get(`api/locations/${lpID}`)
-    // adds location data to front end and fills out location table
-    this.locations = res
-    // adds data to locations table
-    this.locationtbl.items = [
-      ...res.map((location) => {
-        const { name, properties } = location
-        return {
-          select: false,
-          location: `${name} - ${properties.street_address_1}`,
-          status: properties.locationComplete,
-          value: location.id,
-          prstatus: properties.prComplete
-        }
-      })
-    ]
-    this.locationtbl.items.length > 0
-      ? this.showAlert(this.form.successLoadMsg, 'success')
-      : this.showAlert(this.form.errLoadMsg, 'danger')
+      this.allNotes = await this.getAllNotes(lpID)
+      this.projectNotes = this.getProjectNotes()
+      const res = await this.$axios.$get(`api/locations/${lpID}`)
+      // adds location data to front end and fills out location table
+      this.locations = res
+      // this.$store.commit('locations/setLocations', res) // sets locations to store
+      // adds data to locations table
+      this.locationtbl.items = [
+        ...res.map((location) => {
+          const { name, properties } = location
+          return {
+            select: false,
+            location: `${name} - ${properties.street_address_1}`,
+            status: properties.locationComplete,
+            value: location.id,
+            prstatus: properties.prComplete
+          }
+        })
+      ]
+      this.locationtbl.items.length > 0
+        ? this.showAlert(this.form.successLoadMsg, 'success')
+        : this.showAlert(this.form.errLoadMsg, 'danger')
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e)
+      this.showAlert(this.form.errLoadMsg, 'danger')
+    }
   },
   methods: {
+    addKeyword({ key, val, id }) {
+      const locIndex = this.getLocationIndex()
+      const keywords = this.locations[locIndex].properties[key]
+      const largestId = keywords.length > 0
+        ? Math.max.apply(Math, keywords.map(function(o) { return o.id }))
+        : 0
+      keywords.push({ name: val, id: largestId + 1 })
+    },
+    removeKeyword({ key, index, id }) {
+      const locIndex = this.getLocationIndex()
+      this.locations[locIndex].properties[key].splice(index, 1)
+    },
+    updateKeyword({ key, index, data, locId }) {
+      const locIndex = this.getLocationIndex()
+      this.locations[locIndex].properties[key][index].name = data
+    },
     updateVisibility(val) { this.visible = val },
     async updateNotes(tabName) {
       const onLocationTab = tabName === 'location'
@@ -293,7 +322,11 @@ export default {
             formattedLoc.name = location.name
             for (const [key, val] of entries) {
               if (!filterVal.includes(key)) {
-                formattedLoc[key] = val
+                if (this.propertiesToString.includes(key)) {
+                  formattedLoc[key] = val[0].name
+                } else {
+                  formattedLoc[key] = val
+                }
               }
             }
             selectedLocations.push(formattedLoc)

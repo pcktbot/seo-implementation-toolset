@@ -38,10 +38,10 @@
                 <b-spinner v-if="loading" class="mt-1 ml-1" small label="Loading..." />
               </div>
             </b-btn>
+            <b-tooltip target="get-keywords" variant="secondary" placement="topleft">
+              missing address fields
+            </b-tooltip>
           </span>
-          <b-tooltip target="get-keywords" variant="secondary" placement="top">
-            missing address fields
-          </b-tooltip>
         </b-col>
         <b-col class="text-right pr-2 pl-1" cols="12" lg="4" xl="3">
           <b-btn
@@ -65,50 +65,104 @@
       </b-alert>
       <b-row>
         <b-col
-          v-for="input in getInputs"
-          :key="input"
+          v-for="(input, index) in getInputs"
+          :key="`${input}-${index}`"
           class="col-12 col-md"
         >
-          <b-form-group
-            :id="`input-group-${input}`"
-            :label="input.replace(/_/g,' ')"
-            :label-for="`input-${input}`"
-            class="text-left text-uppercase mb-0"
-          >
-            <b-form-input
-              :id="`input-${input}`"
-              :value="compform[input]"
-              :state="validateField(input)"
-              :placeholder="`Enter ${input.replace(/_/g,' ')}`"
-              @input="onInput(input, $event)"
-              required
-            />
-          </b-form-group>
+          <label :for="input">
+            {{ `${input.replace(/_/g,' ').toUpperCase()}` }}
+          </label>
+          <b-container class="p-1 mr-0 ml-0 keywords" style="border: 1px solid #ced4da; height:42px; border-radius: 0.25rem">
+            <draggable
+              :list="compform[input]"
+              :group="{ name: input, put: true }"
+              @change="onAdd(input, $event)"
+              class="dragArea list-group pill-box"
+            >
+              <b-list-group-item
+                v-for="element in compform[input]"
+                :key="`${input}-${element.id}`"
+                :state="validateField(input)"
+                class="list-group-item pillz"
+              >
+                <div class="form-inline">
+                  <b-input
+                    :key="`${element.id}`"
+                    v-autowidth="{maxWidth: '960px', minWidth: '20px', comfortZone: 0}"
+                    v-model="element.name"
+                    @input="updateKeyword(input, element.id, $event)"
+                    style="background-color: var(--quaternary); border: none; height: 1.25em; .form-control:focus "
+                    type="text"
+                    class="p-0"
+                  />
+                  <span @click="removeAt(input, element.id)" class="m-0 p-0" onmouseover="" style="cursor: pointer;">
+                    <b-img width="10" height="10" src="/red-x.svg" />
+                  </span>
+                </div>
+              </b-list-group-item>
+            </draggable>
+          </b-container>
         </b-col>
       </b-row>
       <b-row>
         <b-col
           v-for="keyword in getKeywordInputs"
           :key="keyword"
-          class="col-12 col-lg"
+          class="col-12 col-lg col-xl"
         >
-          <b-form-group
-            :for="`textarea-${keyword}`"
-            :label="`${keyword.replace(/_/g,' ').toUpperCase()}`"
-            class="pb-0 mb-0 text-left text-uppercase"
-          >
-            <b-form-textarea
-              :id="`textarea-${keyword}`"
-              :placeholder="`Paste your comma seperated ${keyword.replace(/_/g,' ')} here`"
-              @input="onInput(keyword, $event)"
-              :value="compform[keyword]"
-              class="text-left"
-              rows="4"
-              required
-            />
-          </b-form-group>
+          <div class="form-inline">
+            <label :for="`textarea-${keyword}`">
+              {{ `${keyword.replace(/_/g,' ').toUpperCase()}` }}
+              <b-button
+                @click="addKeyword(keyword)"
+                size="sm"
+                variant="secondary"
+                class="mx-1"
+                style="padding: 0rem 0.15rem; margin-bottom: 4px;"
+              >
+                <b-icon icon="plus" />
+              </b-button>
+              <b-form-input
+                v-model="keywordInput[keyword]"
+                size="sm"
+                style="height: 1.7em; margin-bottom: 4px;"
+                placeholder="add keywords here"
+              />
+            </label>
+          </div>
+          <b-container class="p-2 mr-0 ml-0 keywords" style="border: 1.5px solid #ccc; width: 100%; height: 250px; overflow-y: scroll; scroll-behavior: smooth">
+            <draggable
+              :list="compform[keyword]"
+              :group="{ name: keyword, pull: 'clone', put: false }"
+              :clone="cloneItem"
+              @change="log"
+              class="dragArea list-group pill-box"
+            >
+              <b-list-group-item
+                v-for="element in compform[keyword]"
+                :key="`${keyword}-${element.id}`"
+                class="list-group-item pillz"
+              >
+                <div class="form-inline">
+                  <b-input
+                    :key="`${element.id}`"
+                    v-autowidth="{maxWidth: '960px', minWidth: '20px', comfortZone: 0}"
+                    v-model="element.name"
+                    @input="updateKeyword(keyword, element.id, $event)"
+                    style="background-color: var(--quaternary); border: none; height: 1.25em;"
+                    type="text"
+                    class="p-0"
+                  />
+                  <span @click="removeAt(keyword, element.id)" class="m-0 p-0" onmouseover="" style="cursor: pointer;">
+                    <b-img width="10" height="10" src="/red-x.svg" />
+                  </span>
+                </div>
+              </b-list-group-item>
+            </draggable>
+          </b-container>
         </b-col>
       </b-row>
+      <!-- Phrases Section -->
       <b-row>
         <b-col
           v-for="phrase in getPhraseInputs"
@@ -116,10 +170,22 @@
           class="col-12 col-md"
         >
           <b-form-group
-            :for="`textarea-${phrase}`"
-            :label="`${phrase.replace(/_/g,' ').toUpperCase()}`"
             class="pb-0 mb-0 text-left text-uppercase"
           >
+            <label :for="`textarea-${phrase}`">
+              {{ `${phrase.replace(/_/g,' ').toUpperCase()}` }}
+              <b-button @click="copyPhrases(phrase)" class="p-0 m-0" variant="light">
+                <b-img
+                  src="/copy-icon.png"
+                  width="20"
+                  height="20"
+                  class="jello-vertical"
+                />
+              </b-button>
+              <span style="font-weight:normal;">
+                {{ text }}
+              </span>
+            </label>
             <b-form-textarea
               :id="`textarea-${phrase}`"
               :placeholder="`${phrase.replace(/_/g,' ')} will auto-populate here after running generate phrases`"
@@ -148,12 +214,15 @@
 </template>
 
 <script>
+import draggable from 'vuedraggable'
 import SaveStep from '~/components/save-step'
 import PhraseGenerator from '~/mixins/phrases'
 import Diacritics from '~/mixins/diacritics'
+let idGlobal = 1000
 export default {
   components: {
-    SaveStep
+    SaveStep,
+    draggable
   },
   mixins: [PhraseGenerator, Diacritics],
   props: {
@@ -178,6 +247,16 @@ export default {
   },
   data () {
     return {
+      list2: [],
+      keywordInput: {
+        neighborhood_keywords: '',
+        landmark_keywords: '',
+        amenity_keywords: '',
+        api_neighborhood_keywords: '',
+        api_landmark_keywords: ''
+      },
+      splitRgx: /\s*(?:,|$)\s*/,
+      text: '',
       alertMsg: 'Get Keywords Failed. Check the address for this location',
       dismissSecs: 5,
       dismissCountDown: 0,
@@ -254,6 +333,40 @@ export default {
     }
   },
   methods: {
+    log(evt) {
+      window.console.log(evt)
+    },
+    onAdd(input, payload) {
+      const { id } = payload.added.element
+      if (this.compform[input].length === 2) {
+        const itemIndex = this.compform[input].findIndex(item => item.id !== id)
+        const removeID = this.compform[input][itemIndex].id
+        this.removeAt(input, removeID)
+      }
+    },
+    cloneItem(payload) {
+      const { name } = payload
+      return { id: idGlobal++, name: `${name}` }
+    },
+    removeAt(list, id) {
+      const idx = this.compform[list].findIndex(item => item.id === id)
+      this.$emit('remove-keyword', { key: list, index: idx, id: this.location.id })
+    },
+    updateKeyword(property, id, event) {
+      const idx = this.compform[property].findIndex(item => item.id === id)
+      this.$emit('update-keyword', { key: property, index: idx, data: event, locId: this.location.id })
+    },
+    addKeyword(property) {
+      const value = this.keywordInput[property]
+      this.keywordInput[property] = ''
+      this.$emit('add-keyword', { key: property, val: value, id: this.location.id })
+    },
+    copyPhrases(id) {
+      this.$copyText(this.location.properties[id])
+      this.text = 'Copied!'
+      // eslint-disable-next-line no-return-assign
+      setTimeout(() => this.text = '', 3000)
+    },
     countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown
     },
@@ -294,7 +407,7 @@ export default {
       const reqFields = this.getFields()
       if (reqFields.includes(field)) {
         const val = this.location.properties[field]
-        if (val === '' || val === null) {
+        if (val === '' || val === null || val.length === 0) {
           valid = false
         } else {
           valid = true
@@ -307,12 +420,18 @@ export default {
       const reqFields = this.getFields()
       for (const index in reqFields) {
         const field = this.compform[reqFields[index]]
-        if (field === '' || field === null) {
+        if (field === '' || field === null || field.length === 0) {
           valid = false
           break
         }
       }
       return valid
+    },
+    makeObject(arr) {
+      for (let i = 0; i < arr.length; i++) {
+        arr[i] = { name: arr[i], id: i }
+      }
+      return arr
     },
     getKeywords(props) {
       this.loading = true
@@ -327,8 +446,8 @@ export default {
           for (const type in type2) {
             type2[type].forEach(place => landmarkKeywords.push(this.formatName(place)))
           }
-          this.$emit('step-update', { key: 'api_neighborhood_keywords', val: neighborhoodKeywords.toString(), id: this.location.id })
-          this.$emit('step-update', { key: 'api_landmark_keywords', val: landmarkKeywords.toString(), id: this.location.id })
+          this.$emit('step-update', { key: 'api_neighborhood_keywords', val: this.makeObject(neighborhoodKeywords), id: this.location.id })
+          this.$emit('step-update', { key: 'api_landmark_keywords', val: this.makeObject(landmarkKeywords), id: this.location.id })
           this.loading = false
         }).catch((err) => {
           // eslint-disable-next-line no-console
@@ -341,9 +460,8 @@ export default {
       this.$emit('step-update', { key, val, id: this.location.id })
     },
     splitMapFilterTrim(data1, data2) {
-      return data1.split(',')
-        .concat(data2.split(','))
-        .map(item => item.trim())
+      return data1.concat(data2)
+        .map(item => item.name.trim())
         .filter(item => item)
     },
     getKeywordsObj() {
@@ -352,7 +470,7 @@ export default {
       return {
         neighborhood_phrases: this.splitMapFilterTrim(api_neighborhood_keywords, neighborhood_keywords),
         landmark_phrases: this.splitMapFilterTrim(api_landmark_keywords, landmark_keywords),
-        amenity_phrases: this.form.selects[0].value === 'mf' ? this.compform.amenity_keywords.split(',').map(item => item.trim()).filter(item => item) : []
+        amenity_phrases: this.form.selects[0].value === 'mf' ? this.compform.amenity_keywords.map(item => item.name.trim()).filter(item => item) : []
       }
     },
     getPhrases() {
@@ -381,5 +499,37 @@ export default {
 </script>
 
 <style>
-
+@media only screen and (min-width: 1200px) {
+  .container {
+    max-width: 2500px;
+  }
+}
+.keywords .form-control:focus {
+  box-shadow: none;
+}
+.pillz  {
+    color: black;
+    background:var(--quaternary);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: default;
+    float: left;
+    padding: 4px 15px;
+    min-width: 70px;
+    min-height: 32px;
+}
+.pill-box  {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: block;
+    line-height: 1.42857143;
+    list-style: none;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 </style>

@@ -28,10 +28,10 @@
           >
             Format Redirects
           </b-btn>
+          <b-tooltip target="format-tip" variant="secondary" placement="left">
+            select strategy and paste redirects
+          </b-tooltip>
         </span>
-        <b-tooltip target="format-tip" variant="secondary" placement="left">
-          select strategy and paste redirects
-        </b-tooltip>
       </b-col>
       <b-col class="top-3 text-right px-0 pb-3 col-12 col-md">
         <save-step
@@ -74,7 +74,7 @@
           <!-- A custom formatted header cell for field 'current_url' -->
           <template v-slot:head(current_url)="data">
             {{ data.field.label }}
-            <b-button @click="copyUrls('current_url')" class="p-0 m-0 copy-btn">
+            <b-button @click="copyUrls('current_url')" class="p-0 m-0" variant="light">
               <b-img
                 src="/copy-icon.png"
                 width="20"
@@ -87,7 +87,7 @@
           <!-- A custom formatted header cell for field 'formatted_url' -->
           <template v-slot:head(formatted_url)="data">
             {{ data.field.label }}
-            <b-button @click="copyUrls('formatted_url')" class="p-0 m-0 copy-btn">
+            <b-button @click="copyUrls('formatted_url')" class="p-0 m-0" variant="light">
               <b-img
                 src="/copy-icon.png"
                 width="20"
@@ -357,11 +357,6 @@ export default {
 <style>
   .redirect-alert.alert-dismissible .close {
     padding: 0.25rem 1.25rem!important;
-  }
-
-  .copy-btn, .copy-btn:hover {
-    background-color: #e9ecef;
-    border: none;
   }
 
 @media only screen and (max-width: 768px) {

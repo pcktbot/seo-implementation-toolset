@@ -38,10 +38,10 @@
           >
             Submit
           </b-button>
+          <b-tooltip target="submit-tip" placement="topleft" variant="secondary">
+            enter a note to submit
+          </b-tooltip>
         </span>
-        <b-tooltip target="submit-tip" placement="topleft" variant="secondary">
-          enter a note to submit
-        </b-tooltip>
       </b-col>
     </b-row>
     <b-row>
