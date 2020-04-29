@@ -10,6 +10,12 @@
         SEO Implementation
       </h2>
     </b-navbar-brand>
+    <!-- Right aligned nav items -->
+    <b-navbar-nav class="ml-auto pr-2">
+      <b-navbar-nav>
+        <slot name="content" />
+      </b-navbar-nav>
+    </b-navbar-nav>
   </b-navbar>
 </template>
 
@@ -23,7 +29,7 @@ export default {
   width: 3em;
   height: 3em;
 }
-nav {
+.navbar {
   background-color: var(--primary)
 }
 

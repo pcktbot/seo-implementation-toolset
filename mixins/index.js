@@ -2,6 +2,26 @@ import Papa from 'papaparse'
 export default {
   data () {
     return {
+      splitRgx: /\s*(?:,|$)\s*/, // staying here
+      // staying here
+      propertiesToArr: [
+        'neighborhood_keywords',
+        'landmark_keywords',
+        'amenity_keywords',
+        'neighborhood',
+        'neighborhood_2',
+        'landmark_1_name',
+        'apartment_amenity_1',
+        'community_amenity_1'
+      ],
+      propertiesToString: [ // in exportData store
+        'neighborhood',
+        'neighborhood_2',
+        'landmark_1_name',
+        'apartment_amenity_1',
+        'community_amenity_1'
+      ],
+      // in initSelects store
       form: {
         inputs: {
           lpId: null,
@@ -51,6 +71,7 @@ export default {
     }
   },
   methods: {
+    // in additional Properties store
     getAddPropFields() {
       return {
         population: null,
@@ -91,8 +112,8 @@ export default {
         gmb: null,
         ga: null,
         strategy: null,
-        api_neighborhood_keywords: '',
-        api_landmark_keywords: '',
+        api_neighborhood_keywords: [],
+        api_landmark_keywords: [],
         neighborhood_phrases: '',
         landmark_phrases: '',
         amenity_phrases: '',
@@ -162,7 +183,14 @@ export default {
         const addPropertyFields = this.getAddPropFields()
         for (const prop in addPropertyFields) {
           properties[prop] = addPropertyFields[prop]
-        }
+        } // turns keyword string into arr objects
+        this.propertiesToArr.forEach((prop) => {
+          const arr = properties[prop] ? properties[prop].split(this.splitRgx) : []
+          for (let i = 0; i < arr.length; i++) {
+            arr[i] = { name: arr[i], id: i }
+          }
+          properties[prop] = arr
+        })
         return { name, properties }
       }).filter(location => location.name) : []
     }
