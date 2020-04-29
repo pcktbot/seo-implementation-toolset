@@ -125,4 +125,17 @@ module.exports = (app) => {
     await newFeedback.deleteFeedback(id)
     res.sendStatus(200)
   })
+
+  // Get G5 Auth user info
+  // eslint-disable-next-line require-await
+  app.get('/api/auth/me', async (req, res) => {
+    const { user } = req
+    const currentUser = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      role: user.role
+    }
+    res.json(currentUser)
+  })
 }
