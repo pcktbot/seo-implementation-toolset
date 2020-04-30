@@ -10,16 +10,16 @@
         <b-col class="text-center align-items-center" cols="12" md="4">
           <h5 class="mb-0">
             <b-link id="fb-link" :href="getFBLink" target="_blank">
-              <b-img src="/facebook.svg" width="22" height="22" class="maps-icon jello-vertical" />
+              <b-img src="/facebook.svg" width="20" height="20" class="maps-icon jello-vertical" style="position: relative; bottom: 3px;" />
             </b-link>
             <b-link id="yelp-link" :href="getYelpLink" target="_blank">
-              <b-img src="/yelp.svg" width="22" height="22" class="maps-icon jello-vertical" />
+              <b-img src="/yelp.svg" width="20" height="20" class="maps-icon jello-vertical" style="position: relative; bottom: 3px;" />
             </b-link>
             <b-link id="search-link" :href="getSearchLink" target="_blank">
-              <b-img src="/google-icon.svg" width="22" height="22" class="maps-icon jello-vertical" />
+              <b-img src="/google-icon.svg" width="20" height="20" class="maps-icon jello-vertical" style="position: relative; bottom: 3px;" />
             </b-link>
             <b-link id="maps-link" :href="getMapsLink" target="_blank">
-              <b-img src="/maps-icon.svg" width="22" height="22" class="maps-icon jello-vertical" />
+              <b-img src="/maps-icon.svg" width="21" height="21" class="maps-icon jello-vertical" style="position: relative; bottom: 3px;" />
             </b-link>
             <strong>Address: </strong>{{ `${location.properties.street_address_1} ${location.properties.city} ${location.properties.state} ${location.properties.postal_code}` }}
           </h5>
@@ -31,10 +31,11 @@
             v-model="location.properties.prComplete"
             @change="updatePR('prComplete', $event)"
             name="check-button"
-            size="lg"
+            height="1.2em"
+            width="1.2em"
           >
             <h5 class="mb-0">
-              <strong> {{ getPRText }}</strong>
+              {{ getPRText }}
             </h5>
           </b-form-checkbox>
         </b-col>
@@ -295,8 +296,7 @@ export default {
   .tab-pane.card-body {
     padding-top: 1rem;
   }
-  .maps-icon {
+  /* .maps-icon {
     vertical-align: top;
-  }
-
+  } */
 </style>

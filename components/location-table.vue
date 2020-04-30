@@ -73,12 +73,13 @@
         <b-col class="col-12 col-md-6 col-lg">
           <b-button @click="onSave" block>
             Save All
+            <b-img src="/save-icon.svg" width="18" height="18" style="position: relative; bottom: 2px;" />
           </b-button>
         </b-col>
         <b-col class="col-12 col-md-6 col-lg">
           <b-button v-b-modal.modal-1 variant="danger" block>
             Delete Selected
-            <b-icon style="position: relative; bottom: 1px;" icon="trash" />
+            <b-icon style="position: relative; bottom: 2px;" icon="trash" width="20" height="20" />
           </b-button>
         </b-col>
       </b-row>
@@ -144,14 +145,14 @@ export default {
       dismissSecs: 4,
       dismissCountDown: 0,
       iconConfig: {
-        width: '18',
-        height: '18',
+        width: '28',
+        height: '28',
         true: '/green-check.svg',
         false: '/red-x.svg'
       },
       iconCheckConfig: {
-        width: '25',
-        height: '25',
+        width: '28',
+        height: '28',
         true: '/check-box.svg',
         false: '/square.svg'
       }

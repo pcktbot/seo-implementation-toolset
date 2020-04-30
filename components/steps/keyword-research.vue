@@ -96,7 +96,7 @@
                     class="p-0"
                   />
                   <span @click="removeAt(input, element.id)" class="m-0 p-0" onmouseover="" style="cursor: pointer;">
-                    <b-img width="10" height="10" src="/red-x.svg" />
+                    <b-img width="17" height="17" src="/red-x.svg" />
                   </span>
                 </div>
               </b-list-group-item>
@@ -154,7 +154,7 @@
                     class="p-0"
                   />
                   <span @click="removeAt(keyword, element.id)" class="m-0 p-0" onmouseover="" style="cursor: pointer;">
-                    <b-img width="10" height="10" src="/red-x.svg" />
+                    <b-img width="17" height="17" src="/red-x.svg" style="position: relative; bottom: .5px;" />
                   </span>
                 </div>
               </b-list-group-item>
