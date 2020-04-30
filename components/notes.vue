@@ -68,6 +68,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import moment from 'moment'
 import CommentsMixin from '~/mixins/comments'
 export default {
@@ -123,6 +124,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      userInfo: state => state.userInfo
+    }),
     inputTxt: {
       get() {
         return this.toggle.selected === 'location'

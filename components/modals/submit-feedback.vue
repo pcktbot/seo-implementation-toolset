@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   data () {
     return {
@@ -57,6 +58,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      userInfo: state => state.userInfo
+    }),
     disabledSubmit() {
       return !(this.feedback.selected && this.text)
     }
@@ -70,7 +74,7 @@ export default {
     },
     async onSubmit() {
       await this.$axios.$post('api/feedback', {
-        author: 'Colin McCullough', // needs updating with user
+        author: `${this.userInfo.firstName} ${this.userInfo.lastName}`,
         feedbackType: this.feedback.selected,
         feedbackText: this.text,
         status: 'pending',

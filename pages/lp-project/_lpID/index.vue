@@ -89,6 +89,7 @@
 
 <script>
 // import Papa from 'papaparse'
+import { mapState } from 'vuex'
 import LocationTable from '~/components/location-table'
 import FormStepper from '~/components/form-stepper'
 import g5Nav from '~/components/nav'
@@ -157,6 +158,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      userInfo: state => state.userInfo
+    }),
     disabledUpload() {
       const values = [this.form.inputs.lpId]
       this.form.selects.forEach(select => values.push(select.value))
@@ -169,6 +173,9 @@ export default {
       }
       return !(valid)
     }
+  },
+  async fetch({ store }) {
+    await store.dispatch('userInfo/get')
   },
   async created() {
     const { lpID } = this.$nuxt._route.params
@@ -232,7 +239,7 @@ export default {
       const txt = onLocationTab ? this.selectedLocation.properties.locationNote : this.projectNoteField
       await this.postComment(
         {
-          author: 'Colin McCullough', // need to add the author
+          author: `${this.userInfo.firstName} ${this.userInfo.lastName}`,
           lpId: this.form.inputs.lpId,
           locationId: locID,
           text: txt

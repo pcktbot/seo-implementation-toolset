@@ -51,6 +51,7 @@
 </template>
 
 <script>
+// import { mapState } from 'vuex'
 import g5Nav from '~/components/nav'
 import g5Footer from '~/components/footer'
 import initialSelections from '~/components/initial-selections'
@@ -68,8 +69,8 @@ export default {
       visible: true // in init-selects store
     }
   },
-  computed: {
-    //
+  async fetch({ store }) {
+    await store.dispatch('userInfo/get')
   },
   methods: {
     async postToDB(locations) {
@@ -93,8 +94,6 @@ export default {
           this.form.loading = true
           const data = await this.parseCSV(this.form.inputs.file)
           const locations = await this.getLocationData(data)
-          // eslint-disable-next-line no-console
-          console.log(locations)
           if (locations.length) {
             this.postToDB(locations)
           } else {
