@@ -176,6 +176,9 @@ export default {
       return this.filter.selected
     }
   },
+  async fetch({ store }) {
+    await store.dispatch('userInfo/get')
+  },
   created() {
     this.$axios.$get(`/api/feedback`).then((res) => {
       this.feedbacktbl.items = res
