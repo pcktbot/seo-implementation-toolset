@@ -34,8 +34,10 @@
             class="px-4"
             size="sm"
             block
+            style="font-size: 1rem; align-items: center;"
           >
             Edit
+            <b-icon style="position: relative; bottom: 2px;" icon="pencil" />
           </b-btn>
         </template>
         <template v-slot:cell(status)="data">
@@ -65,7 +67,7 @@
         <b-col class="col-12 col-md-4 col-lg">
           <b-button @click="exportSelected" block>
             Export Selected
-            <b-icon icon="download" />
+            <b-icon style="position: relative; bottom: 1px;" icon="download" />
           </b-button>
         </b-col>
         <b-col class="col-12 col-md-6 col-lg">
@@ -76,7 +78,7 @@
         <b-col class="col-12 col-md-6 col-lg">
           <b-button v-b-modal.modal-1 variant="danger" block>
             Delete Selected
-            <b-icon icon="trash" />
+            <b-icon style="position: relative; bottom: 1px;" icon="trash" />
           </b-button>
         </b-col>
       </b-row>
@@ -142,14 +144,14 @@ export default {
       dismissSecs: 4,
       dismissCountDown: 0,
       iconConfig: {
-        width: '20',
-        height: '20',
+        width: '18',
+        height: '18',
         true: '/green-check.svg',
         false: '/red-x.svg'
       },
       iconCheckConfig: {
-        width: '27',
-        height: '27',
+        width: '25',
+        height: '25',
         true: '/check-box.svg',
         false: '/square.svg'
       }

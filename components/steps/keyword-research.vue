@@ -404,7 +404,7 @@ export default {
     },
     getStateStyle(field) {
       const val = this.validateField(field)
-      return (val) ? 'border: 1px solid #ced4da; height:42px; border-radius: 0.25rem' : 'border: 1.5px solid red; height:42px; border-radius: 0.25rem'
+      return (val) ? 'border: 1px solid #ced4da; height:42px; border-radius: 0.25rem' : 'border: 1px solid red; height:42px; border-radius: 0.25rem'
     },
     validateField(field) {
       let valid = true
