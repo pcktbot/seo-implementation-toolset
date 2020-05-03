@@ -1,19 +1,8 @@
 export const state = () => ({
-  visible: false,
-  inputs: {
-    lpId: null,
-    file: null
-  },
+  visible: true,
+  lpId: null,
+  file: null,
   loading: false,
-  alertMsg: '',
-  alertvariant: '',
-  dismissSecs: 5,
-  dismissCountDown: 0,
-  existingLPMsg: 'There is already a LP project under this ID. To add additional locations, load the LP project',
-  successLoadMsg: 'Successfully loaded locations',
-  errLoadMsg: 'Error loading location/s, check to ensure the url is using the correct LP ID',
-  csvSuccessMsg: 'Your new location/s have beeen successfully added, please select a location below',
-  csvErrMsg: 'There was an error uploading the csv',
   selects: [
     {
       id: 'vertical',
@@ -43,23 +32,43 @@ export const state = () => ({
         { value: 'no', text: 'No' }
       ]
     }
-  ]
+  ],
+  toggle: {
+    selected: 'upload',
+    options: [
+      { text: 'New LP Project', value: 'upload' },
+      { text: 'Load LP Project', value: 'import' }
+    ]
+  }
 })
 
 export const getters = {
-  getSelects(state) {
-    return state.selects
+  selectedToggle(state) {
+    return state.toggle.selected
   },
-  getLpId(state) {
-    return state.inputs.lpId
+  visible(state) {
+    return state.visible
   },
-  getFile(state) {
-    return state.inputs.file
+  file(state) {
+    return state.file
+  },
+  lpId(state) {
+    return state.lpId
   }
 }
 
 export const mutations = {
-  updateSelects(state, { val, index }) {
+  UPDATE_SELECTS(state, { val, index }) {
     state.selects[index].value = val
+  },
+  UPDATE_TOGGLE(state, val) {
+    // eslint-disable-next-line no-console
+    console.log(val)
+    state.toggle.selected = val
+  },
+  SET(state, obj) {
+    const keys = Object.keys(obj)
+    // eslint-disable-next-line no-return-assign
+    keys.forEach(key => state[key] = obj[key])
   }
 }

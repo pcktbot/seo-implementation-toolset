@@ -1,11 +1,10 @@
 <template>
   <b-form>
     <b-input
-      v-model="form.inputs.lpId"
+      v-model="lpId"
       :state="validation"
-      :value="form.inputs.lpId"
       :disabled="onLpPage"
-      @input="onInput('lpId', $event)"
+      @input="setLpId($event)"
       placeholder="Enter 8 digit LP Id"
       required
       type="number"
@@ -19,26 +18,22 @@
 
 <script>
 export default {
-  props: {
-    form: {
-      type: Object,
-      default() {
-        return {}
-      }
-    }
-  },
   computed: {
+    lpId: {
+      get() { return this.$store.getters['initSelects/lpId'] },
+      set(val) {
+        this.$store.commit('initSelects/SET', { 'lpId': val })
+      }
+    },
     onLpPage() {
-      return !!this.$nuxt._route.params.lpID
+      return !!this.$nuxt._route.params.lpId
     },
     validation() {
-      return !!(this.form.inputs.lpId && this.form.inputs.lpId.toString().length === 8)
+      return !!(this.lpId && this.lpId.toString().length === 8)
     }
   },
   methods: {
-    onInput(key, val) {
-      this.$emit('input-update', key, val)
-    }
+    setLpId(val) { this.lpId = val }
   }
 }
 </script>

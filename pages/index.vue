@@ -3,14 +3,14 @@
     <g5-nav>
       <template v-slot:content>
         <b-alert
-          :show="form.dismissCountDown"
-          :variant="form.alertvariant"
+          :show="alertProps.dismissCountDown"
+          :variant="alertProps.alertvariant"
           @dismiss-count-down="countDownChanged"
-          @dismissed="form.alertvariant='', form.alertMsg=''"
+          @dismissed="set({alertMsg: '',alertvariant: '', dismissCountDown: 0})"
           dismissible
           fade
         >
-          {{ form.alertMsg }}
+          {{ alertProps.alertMsg }}
         </b-alert>
       </template>
     </g5-nav>
@@ -24,23 +24,7 @@
               </h4>
             </b-card-header>
             <b-card-body class="py-5">
-              <initial-selections
-                :visible="visible"
-                :form="form"
-                @upload-data="onUpload"
-                @field-update="updateSelect"
-                @input-update="updateInput"
-              />
-              <b-alert
-                :show="form.dismissCountDown"
-                :variant="form.alertvariant"
-                @dismiss-count-down="countDownChanged"
-                @dismissed="form.alertvariant='', form.alertMsg=''"
-                dismissible
-                fade
-              >
-                {{ form.alertMsg }}
-              </b-alert>
+              <initial-selections />
             </b-card-body>
           </b-card>
         </b-col>
@@ -51,7 +35,6 @@
 </template>
 
 <script>
-// import { mapState } from 'vuex'
 import g5Nav from '~/components/nav'
 import g5Footer from '~/components/footer'
 import initialSelections from '~/components/initial-selections'
@@ -64,51 +47,12 @@ export default {
   },
   mixins: [Index],
   data () {
-    return {
-      // data shared between index files in index mixins
-      visible: true // in init-selects store
-    }
+    return {}
   },
   async fetch({ store }) {
     await store.dispatch('userInfo/get')
   },
-  methods: {
-    async postToDB(locations) {
-      await this.$axios.$post('api/locations', {
-        lpId: this.form.inputs.lpId,
-        locations
-      })
-      await this.$axios.$post('api/lp-project', {
-        lpId: this.form.inputs.lpId,
-        selects: this.form.selects
-      })
-      window.open(`/lp-project/${this.form.inputs.lpId}`, '_self')
-      this.form.loading = false
-    },
-    async onUpload() {
-      try {
-        const lpId = this.form.inputs.lpId
-        const dbResult = await this.$axios.$get(`api/locations/${lpId}`)
-        // finds LP project in DB
-        if (!dbResult.length) {
-          this.form.loading = true
-          const data = await this.parseCSV(this.form.inputs.file)
-          const locations = await this.getLocationData(data)
-          if (locations.length) {
-            this.postToDB(locations)
-          } else {
-            this.showAlert(this.form.csvErrMsg, 'danger')
-            this.form.loading = false
-          }
-        } else {
-          this.showAlert(this.form.existingLPMsg, 'danger')
-        }
-      } catch (err) {
-        this.showAlert(this.form.csvErrMsg, 'danger')
-        this.form.loading = false
-      }
-    }
-  }
+  methods: {}
 }
 </script>
 

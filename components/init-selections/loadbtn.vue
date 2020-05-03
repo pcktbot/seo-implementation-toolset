@@ -11,7 +11,7 @@
       >
         <div class="d-flex justify-content-center">
           {{ btnText }}
-          <b-spinner v-if="form.loading" class="mt-1 ml-5" small label="Loading..." />
+          <b-spinner v-if="initSelects.loading" class="mt-1 ml-5" small label="Loading..." />
         </div>
       </b-btn>
       <b-tooltip target="upload-tip" placement="top" variant="secondary">
@@ -22,25 +22,32 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import Upload from '~/mixins/upload'
 export default {
-  props: {
-    form: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    selected: {
-      type: String,
-      default() {
-        return {}
-      }
-    }
-  },
+  // props: {
+  //   form: {
+  //     type: Object,
+  //     default() {
+  //       return {}
+  //     }
+  //   },
+  //   selected: {
+  //     type: String,
+  //     default() {
+  //       return {}
+  //     }
+  //   }
+  // },
+  mixins: [Upload],
   computed: {
+    ...mapState({
+      initSelects: state => state.initSelects,
+      toggle: state => state.initSelects.toggle
+    }),
     btnText() {
       let btnTxt = ''
-      if (this.selected === 'upload') {
+      if (this.toggle.selected === 'upload') {
         btnTxt = this.$nuxt._route.params.lpID ? 'Add Locations' : 'Upload'
       } else {
         btnTxt = 'Load LP Project'
@@ -49,7 +56,7 @@ export default {
     },
     disabledUpload() {
       let valid
-      if (this.selected === 'upload') {
+      if (this.toggle.selected === 'upload') {
         valid = !this.validateIntitialSelections()
       } else {
         valid = !(this.validateLPID())
@@ -58,7 +65,7 @@ export default {
     },
     uploadTip() {
       let val = 'not-disabled'
-      if ((this.selected === 'upload' && !this.validateIntitialSelections()) || (this.selected === 'import' && !this.validateLPID())) {
+      if ((this.toggle.selected === 'upload' && !this.validateIntitialSelections()) || (this.toggle.selected === 'import' && !this.validateLPID())) {
         val = 'upload-tip'
       }
       return val
@@ -66,13 +73,13 @@ export default {
   },
   methods: {
     onUpload() {
-      this.selected === 'upload'
-        ? this.$emit('upload-data')
-        : window.open(`/lp-project/${this.form.inputs.lpId}`, '_self')
+      this.toggle.selected === 'upload'
+        ? this.upload()
+        : window.open(`/lp-project/${this.initSelects.lpId}`, '_self')
     },
     validateIntitialSelections() {
-      const values = [this.form.inputs.lpId]
-      this.form.selects.forEach(select => values.push(select.value))
+      const values = [this.initSelects.lpId]
+      this.initSelects.selects.forEach(select => values.push(select.value))
       let valid = true
       for (let i = 0; i < values.length; i++) {
         if (!values[i]) {
@@ -80,10 +87,10 @@ export default {
           break
         }
       }
-      return (valid && this.form.inputs.file && this.form.inputs.lpId.toString().length === 8)
+      return (valid && this.initSelects.file && this.initSelects.lpId.toString().length === 8)
     },
     validateLPID() {
-      return this.form.inputs.lpId && this.form.inputs.lpId.toString().length === 8
+      return this.initSelects.lpId && this.initSelects.lpId.toString().length === 8
     }
 
   }

@@ -3,14 +3,14 @@
     <g5-nav>
       <template v-slot:content>
         <b-alert
-          :show="form.dismissCountDown"
-          :variant="form.alertvariant"
+          :show="alertProps.dismissCountDown"
+          :variant="alertProps.alertvariant"
           @dismiss-count-down="countDownChanged"
-          @dismissed="form.alertvariant='', form.alertMsg=''"
+          @dismissed="set({alertMsg: '',alertvariant: '', dismissCountDown: 0})"
           dismissible
           fade
         >
-          {{ form.alertMsg }}
+          {{ alertProps.alertMsg }}
         </b-alert>
       </template>
     </g5-nav>
@@ -207,12 +207,12 @@ export default {
         })
       ]
       this.locationtbl.items.length > 0
-        ? this.showAlert(this.form.successLoadMsg, 'success')
-        : this.showAlert(this.form.errLoadMsg, 'danger')
+        ? this.showAlert(this.alertProps.successLoadMsg, 'success')
+        : this.showAlert(this.alertProps.errLoadMsg, 'danger')
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e)
-      this.showAlert(this.form.errLoadMsg, 'danger')
+      this.showAlert(this.alertProps.errLoadMsg, 'danger')
     }
   },
   methods: {
@@ -422,7 +422,7 @@ export default {
         })
       ])
       this.form.loading = false
-      this.showAlert(this.form.csvSuccessMsg, 'success')
+      this.showAlert(this.alertProps.csvSuccessMsg, 'success')
     },
     async onUpload() {
       try {
@@ -430,13 +430,17 @@ export default {
         const data = await this.parseCSV(this.form.inputs.file)
         const locations = await this.getLocationData(data)
         if (locations[0].name) {
+          // eslint-disable-next-line no-console
+          console.log(locations[0].name)
           this.loadLocations(locations)
         } else {
-          this.showAlert(this.csvErrMsg, 'danger')
+          // eslint-disable-next-line no-console
+          console.log('herer')
+          this.showAlert(this.alertProps.csvErrMsg, 'danger')
           this.form.loading = false
         }
       } catch (err) {
-        this.showAlert(this.form.csvErrMsg, 'danger')
+        this.showAlert(this.alertProps.csvErrMsg, 'danger')
         this.form.loading = false
       }
     }

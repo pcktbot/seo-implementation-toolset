@@ -1,0 +1,102 @@
+import Papa from 'papaparse'
+import { mapState, mapMutations } from 'vuex'
+export default {
+  data () {
+    return {
+      splitRgx: /\s*(?:,|$)\s*/, // staying here
+      // staying here
+      propertiesToArr: [
+        'neighborhood_keywords',
+        'landmark_keywords',
+        'amenity_keywords',
+        'neighborhood',
+        'neighborhood_2',
+        'landmark_1_name',
+        'apartment_amenity_1',
+        'community_amenity_1'
+      ]
+    }
+  },
+  computed: {
+    ...mapState({
+      addImportProperties: state => state.addImportProperties
+    })
+  },
+  methods: {
+    ...mapMutations({
+      set: 'initSelects/SET'
+    }),
+    async postToDB(locations) {
+      await this.$axios.$post('api/locations', {
+        lpId: this.initSelects.lpId,
+        locations
+      })
+      await this.$axios.$post('api/lp-project', {
+        lpId: this.initSelects.lpId,
+        selects: this.initSelects.selects
+      })
+      window.open(`/lp-project/${this.initSelects.lpId}`, '_self')
+      this.initSelects.loading = false
+    },
+    async upload() {
+      try {
+        const lpId = this.initSelects.lpId
+        const dbResult = await this.$axios.$get(`api/locations/${lpId}`)
+        // finds LP project in DB
+        if (!dbResult.length) {
+          this.set({ 'loading': true })
+          const data = await this.parseCSV(this.initSelects.file)
+          const locations = await this.getLocationData(data)
+          if (locations.length) {
+            this.postToDB(locations)
+          } else {
+            this.showAlert(this.alertProps.csvErrMsg, 'danger')
+            this.set({ 'loading': false })
+          }
+        } else {
+          this.showAlert(this.alertProps.existingLPMsg, 'danger')
+        }
+      } catch (err) {
+        this.showAlert(this.alertProps.csvErrMsg, 'danger')
+        this.set({ 'loading': false })
+      }
+    },
+    reject(obj, keys) {
+      const vkeys = Object.keys(obj)
+        .filter(k => !keys.includes(k))
+      return this.pick(obj, vkeys)
+    },
+    pick(obj, keys) {
+      return keys.map(k => k in obj ? { [k]: obj[k] } : {})
+        .reduce((res, o) => Object.assign(res, o), {})
+    },
+    parseCSV(file) {
+      return new Promise((resolve) => {
+        Papa.parse(file, {
+          header: true,
+          complete: (results) => {
+            resolve(results.data)
+          }
+        })
+      })
+    },
+    getLocationData(data) {
+      return data[0].name ? data.map((location) => {
+        const { name } = location
+        const properties = this.reject(location, ['name'])
+        const addPropertyFields = this.addImportProperties
+        for (const prop in addPropertyFields) {
+          properties[prop] = addPropertyFields[prop]
+        } // turns keyword string into arr objects
+        this.propertiesToArr.forEach((prop) => {
+          const arr = properties[prop] ? properties[prop].split(this.splitRgx) : []
+          for (let i = 0; i < arr.length; i++) {
+            arr[i] = { name: arr[i], id: i }
+          }
+          properties[prop] = arr
+        })
+        return { name, properties }
+      }).filter(location => location.name) : []
+    }
+  }
+}

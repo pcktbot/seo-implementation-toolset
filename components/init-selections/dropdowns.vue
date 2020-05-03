@@ -1,7 +1,7 @@
 <template>
   <b-row>
     <b-col
-      v-for="(select, index) in form.selects"
+      v-for="(select, index) in selects"
       :key="select.id"
       class="mb-2 p"
       cols="12"
@@ -25,21 +25,23 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 export default {
-  props: {
-    form: {
-      type: Object,
-      default() {
-        return {}
-      }
-    }
+  computed: {
+    ...mapState({
+      selects: state => state.initSelects.selects
+    })
   },
   methods: {
-    onChange(key, val) {
-      this.$emit('field-update', key, val)
+    ...mapMutations({
+      updateSelects: 'initSelects/UPDATE_SELECTS'
+    }),
+    onChange(key, value) {
+      const i = this.selects.findIndex(select => select.id === key)
+      this.updateSelects({ val: value, index: i })
     },
     validation(id, index) {
-      return !!(this.form.selects[index].value)
+      return !!(this.selects[index].value)
     }
 
   }

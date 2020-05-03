@@ -5,7 +5,7 @@
         <b-form-group>
           <b-form-radio-group
             id="btn-radios-2"
-            v-model="toggle.selected"
+            v-model="toggleVal"
             :options="toggle.options"
             buttons
             button-variant="outline-primary"
@@ -20,25 +20,22 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
-  props: {
-    form: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    toggle: {
-      type: Object,
-      default() {
-        return {}
-      }
-    }
-  },
   computed: {
+    ...mapState({
+      toggle: state => state.initSelects.toggle
+    }),
+    toggleVal: {
+      get() { return this.$store.getters['initSelects/selectedToggle'] },
+      set(val) { this.$store.commit('initSelects/UPDATE_TOGGLE', val) }
+    },
     onLpPage() {
       return !!this.$nuxt._route.params.lpID
     }
+  },
+  methods: {
+
   }
 }
 </script>
