@@ -329,7 +329,7 @@ export default {
             formattedLoc.name = location.name
             for (const [key, val] of entries) {
               if (!filterVal.includes(key)) {
-                if (this.propertiesToString.includes(key)) {
+                if (this.propertiesToString.includes(key) && val.length > 0) {
                   formattedLoc[key] = val[0].name
                 } else {
                   formattedLoc[key] = val
