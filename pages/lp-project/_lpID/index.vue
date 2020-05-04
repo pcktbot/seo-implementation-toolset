@@ -430,12 +430,8 @@ export default {
         const data = await this.parseCSV(this.form.inputs.file)
         const locations = await this.getLocationData(data)
         if (locations[0].name) {
-          // eslint-disable-next-line no-console
-          console.log(locations[0].name)
           this.loadLocations(locations)
         } else {
-          // eslint-disable-next-line no-console
-          console.log('herer')
           this.showAlert(this.alertProps.csvErrMsg, 'danger')
           this.form.loading = false
         }

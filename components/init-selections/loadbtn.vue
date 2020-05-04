@@ -24,27 +24,17 @@
 <script>
 import { mapState } from 'vuex'
 import Upload from '~/mixins/upload'
+import Alert from '~/mixins/alert'
 export default {
-  // props: {
-  //   form: {
-  //     type: Object,
-  //     default() {
-  //       return {}
-  //     }
-  //   },
-  //   selected: {
-  //     type: String,
-  //     default() {
-  //       return {}
-  //     }
-  //   }
-  // },
-  mixins: [Upload],
+  mixins: [Upload, Alert],
   computed: {
     ...mapState({
       initSelects: state => state.initSelects,
       toggle: state => state.initSelects.toggle
     }),
+    onProjectPage() {
+      return !!this.$nuxt._route.params.lpID
+    },
     btnText() {
       let btnTxt = ''
       if (this.toggle.selected === 'upload') {

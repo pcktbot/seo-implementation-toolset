@@ -13,7 +13,7 @@
     <!-- Right aligned nav items -->
     <b-navbar-nav class="ml-auto pr-2">
       <b-navbar-nav>
-        <slot name="content" />
+        <slot name="alert" />
       </b-navbar-nav>
     </b-navbar-nav>
   </b-navbar>

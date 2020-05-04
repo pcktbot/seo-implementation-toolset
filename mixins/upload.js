@@ -1,5 +1,6 @@
 import Papa from 'papaparse'
 import { mapState, mapMutations } from 'vuex'
+
 export default {
   data () {
     return {
@@ -19,7 +20,7 @@ export default {
   },
   computed: {
     ...mapState({
-      addImportProperties: state => state.addImportProperties
+      addImportProps: state => state.addImportProps
     })
   },
   methods: {
@@ -35,26 +36,55 @@ export default {
         lpId: this.initSelects.lpId,
         selects: this.initSelects.selects
       })
-      window.open(`/lp-project/${this.initSelects.lpId}`, '_self')
-      this.initSelects.loading = false
+    },
+    async loadLocations(locations) {
+      const res = await this.$axios.$post('api/locations', {
+        lpId: this.initSelects.lpId,
+        locations
+      })
+      this.locations.push(...res) // adds locations to data
+      this.locationtbl.items.push(...[ // adds locations to loc table
+        ...res.map((location) => {
+          const { name, properties } = location
+          return {
+            select: false,
+            location: `${name} - ${properties.street_address_1}`,
+            status: properties.locationComplete,
+            prstatus: properties.prComplete,
+            value: location.id
+          }
+        })
+      ])
+      this.set({ 'loading': false })
+      this.showAlert(this.alertProps.csvSuccessMsg, 'success')
+    },
+    async processUpload() {
+      this.set({ 'loading': true })
+      const data = await this.parseCSV(this.initSelects.file)
+      const locations = await this.getLocationData(data)
+      if (locations.length && !this.onProjectPage) { // on home page
+        // eslint-disable-next-line no-console
+        console.log(locations)
+        await this.postToDB(locations)
+        // window.open(`/lp-project/${this.initSelects.lpId}`, '_self')
+        this.set({ 'loading': false })
+      } else if (locations.length && this.onProjectPage) { // on project page
+        this.loadLocations(locations)
+      } else {
+        this.showAlert(this.alertProps.csvErrMsg, 'danger') // err
+        this.set({ 'loading': false })
+      }
     },
     async upload() {
       try {
-        const lpId = this.initSelects.lpId
-        const dbResult = await this.$axios.$get(`api/locations/${lpId}`)
-        // finds LP project in DB
-        if (!dbResult.length) {
-          this.set({ 'loading': true })
-          const data = await this.parseCSV(this.initSelects.file)
-          const locations = await this.getLocationData(data)
-          if (locations.length) {
-            this.postToDB(locations)
-          } else {
-            this.showAlert(this.alertProps.csvErrMsg, 'danger')
-            this.set({ 'loading': false })
-          }
-        } else {
-          this.showAlert(this.alertProps.existingLPMsg, 'danger')
+        if (!this.onProjectPage) { // on home page
+          const lpId = this.initSelects.lpId
+          const dbResult = await this.$axios.$get(`api/locations/${lpId}`)
+          !dbResult.length // no existing project found in db
+            ? this.processUpload()
+            : this.showAlert(this.alertProps.existingLPMsg, 'danger')
+        } else { // on Project Page
+          this.processUpload()
         }
       } catch (err) {
         this.showAlert(this.alertProps.csvErrMsg, 'danger')
@@ -84,7 +114,7 @@ export default {
       return data[0].name ? data.map((location) => {
         const { name } = location
         const properties = this.reject(location, ['name'])
-        const addPropertyFields = this.addImportProperties
+        const addPropertyFields = this.addImportProps
         for (const prop in addPropertyFields) {
           properties[prop] = addPropertyFields[prop]
         } // turns keyword string into arr objects

@@ -4,7 +4,6 @@
       v-model="lpId"
       :state="validation"
       :disabled="onLpPage"
-      @input="setLpId($event)"
       placeholder="Enter 8 digit LP Id"
       required
       type="number"
@@ -32,9 +31,7 @@ export default {
       return !!(this.lpId && this.lpId.toString().length === 8)
     }
   },
-  methods: {
-    setLpId(val) { this.lpId = val }
-  }
+  methods: {}
 }
 </script>
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <g5-nav>
-      <template v-slot:content>
+      <template v-slot:alert>
         <b-alert
           :show="alertProps.dismissCountDown"
           :variant="alertProps.alertvariant"
@@ -38,14 +38,14 @@
 import g5Nav from '~/components/nav'
 import g5Footer from '~/components/footer'
 import initialSelections from '~/components/initial-selections'
-import Index from '~/mixins/index'
+import Alert from '~/mixins/alert'
 export default {
   components: {
     g5Nav,
     initialSelections,
     g5Footer
   },
-  mixins: [Index],
+  mixins: [Alert],
   data () {
     return {}
   },
