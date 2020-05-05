@@ -1,14 +1,14 @@
 export const state = () => ({
-  selectedLocation: null
+  location: null
 })
 export const getters = {
   getProperties: (state) => {
-    return state.selectedLocation
-      ? state.selectedLocation.properties
+    return state.location
+      ? state.location.properties
       : null
   },
   getLocationID: (state) => {
-    return state.selectedLocation ? state.selectedLocation.id : null
+    return state.location ? state.location.id : null
   }
 }
 export const actions = {}

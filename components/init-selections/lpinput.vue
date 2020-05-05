@@ -19,10 +19,8 @@
 export default {
   computed: {
     lpId: {
-      get() { return this.$store.getters['initSelects/lpId'] },
-      set(val) {
-        this.$store.commit('initSelects/SET', { 'lpId': val })
-      }
+      get() { return this.$store.state.initSelects.lpId },
+      set(val) { this.$store.commit('initSelects/SET', { 'lpId': val }) }
     },
     onLpPage() {
       return !!this.$nuxt._route.params.lpId

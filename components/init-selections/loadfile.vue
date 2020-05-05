@@ -19,7 +19,7 @@
 export default {
   computed: {
     file: {
-      get() { return this.$store.getters['initSelects/file'] },
+      get() { return this.$store.state.initSelects.file },
       set(val) { this.$store.commit('initSelects/SET', { 'file': val }) }
     },
     validation() {

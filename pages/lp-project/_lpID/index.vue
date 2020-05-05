@@ -20,7 +20,8 @@
           <b-icon icon="chat-fill" variant="primary" class="jello-vertical" />
         </template>
         <template v-slot:content>
-          <notes
+          <notes />
+          <!-- <notes
             :location="selectedLocation"
             :locationNotes="locationNotes"
             :projectNotes="projectNotes"
@@ -28,10 +29,10 @@
             @submit-note="updateNotes"
             @stepper-updated="onUpdate"
             @project-data-input="updateProjectData"
-          />
+          /> -->
         </template>
       </drawer>
-      <b-container fluid class="scroll-container">
+      <!-- <b-container fluid class="scroll-container">
         <b-row class="pt-4 px-5" style="background-color: Gainsboro">
           <b-col>
             <initial-selections
@@ -81,7 +82,7 @@
             />
           </b-col>
         </b-row>
-      </b-container>
+      </b-container> -->
     </div>
     <g5-footer />
   </div>
@@ -90,130 +91,112 @@
 <script>
 // import Papa from 'papaparse'
 import { mapState } from 'vuex'
-import LocationTable from '~/components/location-table'
-import FormStepper from '~/components/form-stepper'
 import g5Nav from '~/components/nav'
-import g5Footer from '~/components/footer'
-import Notes from '~/components/notes'
-import initialSelections from '~/components/initial-selections'
-import AccordionToggle from '~/components/accordion-toggle'
-import Index from '~/mixins/index'
-import CommentsMixin from '~/mixins/comments'
 import Drawer from '~/components/drawer'
+import Notes from '~/components/notes'
+// import initialSelections from '~/components/initial-selections'
+// import AccordionToggle from '~/components/accordion-toggle'
+// import LocationTable from '~/components/location-table'
+// import FormStepper from '~/components/form-stepper'
+import g5Footer from '~/components/footer'
+import Alert from '~/mixins/alert'
+import CommentsMixin from '~/mixins/comments'
 
 export default {
   components: {
-    LocationTable,
-    FormStepper,
     g5Nav,
-    g5Footer,
-    initialSelections,
-    AccordionToggle,
     Drawer,
-    Notes
+    Notes,
+    // initialSelections,
+    // AccordionToggle,
+    // LocationTable,
+    // FormStepper,
+    g5Footer
   },
-  mixins: [Index, CommentsMixin],
+  mixins: [Alert, CommentsMixin],
   // addional data shared between index files in index mixins
   data () {
     return {
-      visible: false, // in itit-selects store
-      selectedLocation: null, // in selected loc store
-      locationNotes: [], // in notes store
-      projectNotes: [], // in notes store
-      allNotes: [], // in notes store
-      projectNoteField: '', // in notes store
-      locations: [], // in locations store
-      locationtbl: { // in locationsTable store
-        fields: [
-          {
-            key: 'select',
-            label: 'Select'
-          },
-          {
-            key: 'location',
-            label: 'Location Name',
-            sortable: true
-          },
-          {
-            key: 'edit',
-            label: 'Edit'
-          },
-          {
-            key: 'status',
-            label: 'Complete',
-            sortable: true,
-            class: 'text-center'
-          },
-          {
-            key: 'prstatus',
-            label: 'PR Complete',
-            sortable: true,
-            class: 'text-center'
-          }
-        ],
-        items: [],
-        selectMode: 'multi',
-        selected: []
-      }
+    //   visible: false, // in itit-selects store
+    //   selectedLocation: null, // in selected loc store
+    //   locationNotes: [], // in notes store
+    //   projectNotes: [], // in notes store
+    //   allNotes: [], // in notes store
+    //   projectNoteField: '', // in notes store
+    //   locations: [], // in locations store
+    //   locationtbl: { // in locationsTable store
+    //     fields: [
+    //       {
+    //         key: 'select',
+    //         label: 'Select'
+    //       },
+    //       {
+    //         key: 'location',
+    //         label: 'Location Name',
+    //         sortable: true
+    //       },
+    //       {
+    //         key: 'edit',
+    //         label: 'Edit'
+    //       },
+    //       {
+    //         key: 'status',
+    //         label: 'Complete',
+    //         sortable: true,
+    //         class: 'text-center'
+    //       },
+    //       {
+    //         key: 'prstatus',
+    //         label: 'PR Complete',
+    //         sortable: true,
+    //         class: 'text-center'
+    //       }
+    //     ],
+    //     items: [],
+    //     selectMode: 'multi',
+    //     selected: []
+    //   }
     }
   },
   computed: {
     ...mapState({
-      userInfo: state => state.userInfo
-    }),
-    disabledUpload() {
-      const values = [this.form.inputs.lpId]
-      this.form.selects.forEach(select => values.push(select.value))
-      let valid = true
-      for (let i = 0; i < values.length; i++) {
-        if (!values[i]) {
-          valid = false
-          break
-        }
-      }
-      return !(valid)
-    }
+      userInfo: state => state.userInfo,
+      locationtbl: state => state.locationsTable
+    })
+    // disabledUpload() {
+    //   const values = [this.form.inputs.lpId]
+    //   this.form.selects.forEach(select => values.push(select.value))
+    //   let valid = true
+    //   for (let i = 0; i < values.length; i++) {
+    //     if (!values[i]) {
+    //       valid = false
+    //       break
+    //     }
+    //   }
+    //   return !(valid)
+    // }
   },
-  async fetch({ store }) {
-    await store.dispatch('userInfo/get')
-  },
-  async created() {
-    const { lpID } = this.$nuxt._route.params
-    // loads initial selections
+  async fetch({ store, params }) {
     try {
-      await this.$axios.$get(`api/lp-project/${lpID}`).then((res) => {
-        this.form.inputs.lpId = res[0].lpId
-        this.form.selects.forEach((select) => {
-          select.value = res[0][select.id]
-        })
-      })
-      this.allNotes = await this.getAllNotes(lpID)
-      this.projectNotes = this.getProjectNotes()
-      const res = await this.$axios.$get(`api/locations/${lpID}`)
-      // adds location data to front end and fills out location table
-      this.locations = res
-      // this.$store.commit('locations/setLocations', res) // sets locations to store
-      // adds data to locations table
-      this.locationtbl.items = [
-        ...res.map((location) => {
-          const { name, properties } = location
-          return {
-            select: false,
-            location: `${name} - ${properties.street_address_1}`,
-            status: properties.locationComplete,
-            value: location.id,
-            prstatus: properties.prComplete
-          }
-        })
-      ]
-      this.locationtbl.items.length > 0
-        ? this.showAlert(this.alertProps.successLoadMsg, 'success')
-        : this.showAlert(this.alertProps.errLoadMsg, 'danger')
+      await store.dispatch('userInfo/GET')
+      await store.dispatch('initSelects/GET', params.lpID)
+      await store.dispatch('notes/GET_AND_SET', params.lpID)
+      const res = await store.dispatch('locations/GET', params.lpID)
+      store.commit('locationsTable/SET_ITEMS', res)
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e)
-      this.showAlert(this.alertProps.errLoadMsg, 'danger')
     }
+  },
+  created() {
+    this.locationtbl.items.length > 0
+      ? this.showAlert(this.alertProps.successLoadMsg, 'success')
+      : this.showAlert(this.alertProps.errLoadMsg, 'danger')
+    // } catch (e) {
+    //   // eslint-disable-next-line no-console
+    //   console.log(e)
+    //   this.showAlert(this.alertProps.errLoadMsg, 'danger')
+    // }
   },
   methods: {
     addKeyword({ key, val, id }) {
@@ -233,36 +216,35 @@ export default {
       this.locations[locIndex].properties[key][index].name = data
     },
     updateVisibility(val) { this.visible = val },
-    async updateNotes(tabName) {
-      const onLocationTab = tabName === 'location'
-      const locID = onLocationTab ? this.selectedLocation.id : null
-      const txt = onLocationTab ? this.selectedLocation.properties.locationNote : this.projectNoteField
-      await this.postComment(
-        {
-          author: `${this.userInfo.firstName} ${this.userInfo.lastName}`,
-          lpId: this.form.inputs.lpId,
-          locationId: locID,
-          text: txt
-        }
-      )
-      await this.setNotes(onLocationTab)
-    },
-    async setNotes(onLocationTab) {
-      this.allNotes = await this.getAllNotes(this.form.inputs.lpId)
-      if (onLocationTab) {
-        this.locationNotes = this.getLocationNotes(this.selectedLocation.id)
-        this.selectedLocation.properties.locationNote = ''
-      } else {
-        this.projectNotes = this.getProjectNotes()
-        this.projectNoteField = ''
-      }
-    },
-    getLocationNotes(id) {
-      return this.allNotes.filter(note => note.locationId === id)
-    },
-    getProjectNotes() {
-      return this.allNotes.filter(note => note.locationId === null)
-    },
+    // async updateNotes(tabName) {
+    //   const onLocationTab = tabName === 'location'
+    //   const locID = onLocationTab ? this.selectedLocation.id : null
+    //   const txt = onLocationTab ? this.selectedLocation.properties.locationNote : this.projectNoteField
+    //   await this.postComment(
+    //     {
+    //       author: `${this.userInfo.firstName} ${this.userInfo.lastName}`,
+    //       lpId: this.form.inputs.lpId,
+    //       locationId: locID,
+    //       text: txt
+    //     }
+    //   )
+    //   await this.setNotes(onLocationTab)
+    // },
+    // async setNotes(onLocationTab) {
+    //   this.allNotes = await this.getAllNotes(this.lpId)
+    //   if (onLocationTab) {
+    //     this.locationNotes = this.getLocationNotes(this.location.id)
+    //     this.selectedLocation.properties.locationNote = ''
+    //   } else {
+    //     this.$store.commit('notes/SET', { 'projectNoteField': '' })
+    //   }
+    // },
+    // getLocationNotes(id) {
+    //   return this.allNotes.filter(note => note.locationId === id)
+    // },
+    // getProjectNotes() {
+    //   return this.allNotes.filter(note => note.locationId === null)
+    // },
     updateAddress(data) {
       const i = this.getLocationIndex()
       for (const prop in data) {
@@ -329,7 +311,7 @@ export default {
             formattedLoc.name = location.name
             for (const [key, val] of entries) {
               if (!filterVal.includes(key)) {
-                if (this.propertiesToString.includes(key)) {
+                if (this.propertiesToString.includes(key) && val.length > 0) {
                   formattedLoc[key] = val[0].name
                 } else {
                   formattedLoc[key] = val

@@ -66,7 +66,7 @@ export default {
         // eslint-disable-next-line no-console
         console.log(locations)
         await this.postToDB(locations)
-        // window.open(`/lp-project/${this.initSelects.lpId}`, '_self')
+        window.open(`/lp-project/${this.initSelects.lpId}`, '_self')
         this.set({ 'loading': false })
       } else if (locations.length && this.onProjectPage) { // on project page
         this.loadLocations(locations)

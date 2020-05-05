@@ -10,20 +10,12 @@
           md="4"
         >
           <loadfile />
-          <!-- :form="form" /> -->
         </b-col>
         <b-col :md="getColWidth()" cols="12">
           <lpinput />
-          <!-- :form="form"
-            @input-update="onInput"
-          /> -->
         </b-col>
         <b-col :md="getColWidth()" cols="12">
           <loadbtn />
-          <!-- :form="form"
-            :selected="toggle.selected"
-            @upload-data="onUpload"
-          /> -->
         </b-col>
       </b-row>
     </b-collapse>
@@ -53,7 +45,7 @@ export default {
       initSelects: state => state.initSelects
     }),
     visible: {
-      get() { return this.$store.getters['initSelects/visible'] },
+      get() { return this.$store.state.initSelects.visible },
       set(val) { this.$store.commit('initSelects/SET', { 'visible': val }) }
     }
   },
@@ -61,15 +53,6 @@ export default {
     getColWidth() {
       return this.initSelects.toggle.selected === 'upload' ? 4 : 6
     }
-    // onChange(key, val) {
-    //   this.$emit('field-update', { key, val })
-    // },
-    // onInput(key, val) {
-    //   this.$emit('input-update', { key, val })
-    // },
-    // onUpload() {
-    //   this.$emit('upload-data')
-    // }
   }
 }
 </script>

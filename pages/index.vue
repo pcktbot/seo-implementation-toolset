@@ -1,7 +1,7 @@
 <template>
   <div>
     <g5-nav>
-      <template v-slot:alert>
+      <template v-slot:content>
         <b-alert
           :show="alertProps.dismissCountDown"
           :variant="alertProps.alertvariant"
@@ -50,7 +50,7 @@ export default {
     return {}
   },
   async fetch({ store }) {
-    await store.dispatch('userInfo/get')
+    await store.dispatch('userInfo/GET')
   },
   methods: {}
 }

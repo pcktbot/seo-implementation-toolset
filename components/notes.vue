@@ -5,7 +5,7 @@
         <b-form-group class="my-1">
           <b-form-radio-group
             id="btn-radios-2"
-            v-model="toggle.selected"
+            v-model="selected"
             :options="getOptions"
             buttons
             button-variant="outline-primary"
@@ -21,7 +21,6 @@
         <b-form-textarea
           id="note-input"
           v-model="inputTxt"
-          @input="onInput($event)"
           :placeholder="placeholderTxt"
         />
       </b-col>
@@ -50,7 +49,7 @@
           Comment History
         </h4>
         <b-table
-          :fields="notestbl.fields"
+          :fields="fields"
           :items="getItems"
           responsive="sm"
           sticky-header="30rem"
@@ -68,65 +67,30 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import moment from 'moment'
 import CommentsMixin from '~/mixins/comments'
 export default {
   mixins: [CommentsMixin],
-  props: {
-    location: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    locationNotes: {
-      type: Array,
-      default() {
-        return []
-      }
-    },
-    projectNotes: {
-      type: Array,
-      default() {
-        return []
-      }
-    },
-    projectNoteField: {
-      type: String,
-      default() {
-        return ''
-      }
-    }
-  },
   data () {
-    return {
-      saveTxt: 'Save',
-      toggle: {
-        selected: 'project'
-      },
-      notestbl: {
-        fields: [
-          {
-            key: 'author',
-            label: 'Name'
-          },
-          {
-            key: 'updatedAt',
-            label: 'Date'
-          },
-          {
-            key: 'text',
-            label: 'Comment'
-          }
-        ]
-      }
-    }
+    return {}
   },
   computed: {
     ...mapState({
-      userInfo: state => state.userInfo
+      userInfo: state => state.userInfo,
+      location: state => state.selectedLocation.location,
+      locationNotes: state => state.notes.locationNotes,
+      projectNotes: state => state.notes.projectNotes,
+      projectNoteField: state => state.notes.projectNoteField,
+      toggle: state => state.notes.toggle,
+      saveTxt: state => state.notes.saveTxt,
+      fields: state => state.notes.fields,
+      lpId: state => state.initSelects.lpId
     }),
+    selected: {
+      get() { return this.toggle.selected },
+      set(val) { this.$store.commit('notes/SET_TOGGLE', { val }) }
+    },
     inputTxt: {
       get() {
         return this.toggle.selected === 'location'
@@ -135,8 +99,8 @@ export default {
       },
       set(val) {
         this.onLocationTab()
-          ? this.$emit('stepper-updated', { key: 'locationNote', val, id: this.location.id })
-          : this.$emit('project-data-input', { key: 'projectNoteField', val })
+          ? this.$store.commit('locations/UPDATE_PROP', { key: 'locationNote', val, id: this.location.id })
+          : this.$store.commit('notes/SET', { 'projectNoteField': val })
       }
     },
     getNotes() {
@@ -166,11 +130,12 @@ export default {
     }
   },
   methods: {
+    ...mapMutations({
+      setNotesData: 'notes/SET',
+      updateLocationProp: 'locations/UPDATE_PROP'
+    }),
     getTxt() {
       return this.onLocationTab() ? this.location.properties.locationNote : this.projectNoteField
-    },
-    onInput(val) {
-      this.inputTxt = val
     },
     formattedDate(date) {
       return moment(new Date(date)).format('MM-DD-YY')
@@ -178,8 +143,32 @@ export default {
     onLocationTab() {
       return this.toggle.selected === 'location'
     },
-    onSubmit() {
-      this.$emit('submit-note', this.toggle.selected)
+    async onSubmit() {
+      const onLocationTab = this.toggle.selected === 'location'
+      const locID = onLocationTab ? this.location.id : null
+      const txt = onLocationTab ? this.location.properties.locationNote : this.projectNoteField
+      await this.postComment(
+        {
+          author: `${this.userInfo.firstName} ${this.userInfo.lastName}`,
+          lpId: this.lpId,
+          locationId: locID,
+          text: txt
+        }
+      )
+      this.setNotes()
+    },
+    async setNotes() {
+      await this.$store.dispatch('notes/GET_AND_SET', this.lpId)
+      if (this.onLocationTab()) {
+        const locNote = this.getLocationNotes(this.location.id)
+        this.setNotesData({ 'locationNotes': locNote })
+        this.inputTxt = ''
+      } else {
+        this.inputTxt = ''
+      }
+    },
+    getLocationNotes(id) {
+      return this.allNotes.filter(note => note.locationId === id)
     }
   }
 }

@@ -16,7 +16,7 @@ export const mutations = {
 }
 
 export const actions = {
-  get({ commit }) {
+  GET({ commit }, data) {
     this.$axios
       .$get('api/auth/me')
       .then(res => commit('SET', res))

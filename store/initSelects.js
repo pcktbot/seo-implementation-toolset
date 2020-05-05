@@ -48,12 +48,19 @@ export const getters = {
   },
   visible(state) {
     return state.visible
-  },
-  file(state) {
-    return state.file
-  },
-  lpId(state) {
-    return state.lpId
+  }
+}
+
+export const actions = {
+  GET({ commit, state }, lpID) {
+    this.$axios
+      .$get(`api/lp-project/${lpID}`)
+      .then((res) => {
+        commit('SET', { 'lpId': res[0].lpId })
+        state.selects.forEach((select, i) => {
+          commit('UPDATE_SELECTS', { val: res[0][select.id], index: i })
+        })
+      })
   }
 }
 
@@ -62,8 +69,6 @@ export const mutations = {
     state.selects[index].value = val
   },
   UPDATE_TOGGLE(state, val) {
-    // eslint-disable-next-line no-console
-    console.log(val)
     state.toggle.selected = val
   },
   SET(state, obj) {
