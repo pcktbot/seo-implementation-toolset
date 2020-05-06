@@ -21,33 +21,16 @@
         </template>
         <template v-slot:content>
           <notes />
-          <!-- <notes
-            :location="selectedLocation"
-            :locationNotes="locationNotes"
-            :projectNotes="projectNotes"
-            :projectNoteField="projectNoteField"
-            @submit-note="updateNotes"
-            @stepper-updated="onUpdate"
-            @project-data-input="updateProjectData"
-          /> -->
         </template>
       </drawer>
-      <!-- <b-container fluid class="scroll-container">
+      <b-container fluid class="scroll-container">
         <b-row class="pt-4 px-5" style="background-color: Gainsboro">
           <b-col>
-            <initial-selections
-              :visible="visible"
-              :form="form"
-              @upload-data="onUpload"
-              @field-update="updateSelect"
-              @input-update="updateInput"
-            />
+            <initial-selections />
           </b-col>
         </b-row>
-        <accordion-toggle
-          :visible="visible"
-          @update-visibility="updateVisibility"
-        />
+        <accordion-toggle />
+        <!--
         <b-row class="px-5" style="background-color: white">
           <b-col>
             <location-table
@@ -81,8 +64,8 @@
               @add-keyword="addKeyword"
             />
           </b-col>
-        </b-row>
-      </b-container> -->
+        </b-row> -->
+      </b-container>
     </div>
     <g5-footer />
   </div>
@@ -94,8 +77,8 @@ import { mapState } from 'vuex'
 import g5Nav from '~/components/nav'
 import Drawer from '~/components/drawer'
 import Notes from '~/components/notes'
-// import initialSelections from '~/components/initial-selections'
-// import AccordionToggle from '~/components/accordion-toggle'
+import initialSelections from '~/components/initial-selections'
+import AccordionToggle from '~/components/accordion-toggle'
 // import LocationTable from '~/components/location-table'
 // import FormStepper from '~/components/form-stepper'
 import g5Footer from '~/components/footer'
@@ -107,8 +90,8 @@ export default {
     g5Nav,
     Drawer,
     Notes,
-    // initialSelections,
-    // AccordionToggle,
+    initialSelections,
+    AccordionToggle,
     // LocationTable,
     // FormStepper,
     g5Footer
@@ -178,9 +161,10 @@ export default {
   },
   async fetch({ store, params }) {
     try {
-      await store.dispatch('userInfo/GET')
-      await store.dispatch('initSelects/GET', params.lpID)
-      await store.dispatch('notes/GET_AND_SET', params.lpID)
+      store.dispatch('userInfo/GET')
+      store.dispatch('initSelects/GET', params.lpID)
+      store.commit('initSelects/SET', { 'visible': false })
+      store.dispatch('notes/GET_AND_SET', params.lpID)
       const res = await store.dispatch('locations/GET', params.lpID)
       store.commit('locationsTable/SET_ITEMS', res)
     } catch (e) {
@@ -192,11 +176,6 @@ export default {
     this.locationtbl.items.length > 0
       ? this.showAlert(this.alertProps.successLoadMsg, 'success')
       : this.showAlert(this.alertProps.errLoadMsg, 'danger')
-    // } catch (e) {
-    //   // eslint-disable-next-line no-console
-    //   console.log(e)
-    //   this.showAlert(this.alertProps.errLoadMsg, 'danger')
-    // }
   },
   methods: {
     addKeyword({ key, val, id }) {

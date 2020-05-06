@@ -28,5 +28,8 @@ export const mutations = {
     key === 'name'
       ? state.locations[i][key] = val
       : this.locations[i].properties[key] = val
+  },
+  ADD(state, locations) {
+    locations.forEach(loc => state.locations.push(loc))
   }
 }

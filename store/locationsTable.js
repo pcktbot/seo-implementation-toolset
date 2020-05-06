@@ -34,7 +34,7 @@ export const gettters = {}
 export const actions = {}
 export const mutations = {
   SET_ITEMS(state, res) {
-    state.items = [
+    const newItems = [
       ...res.map((location) => {
         const { name, properties } = location
         return {
@@ -46,5 +46,11 @@ export const mutations = {
         }
       })
     ]
+    state.items.length === 0
+      ? state.items = newItems
+      : state.items = state.items.concat(...newItems)
+  },
+  SET_ITEM(state, { index, field, val }) {
+    state.items[index][field] = val
   }
 }

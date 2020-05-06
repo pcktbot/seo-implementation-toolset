@@ -25,7 +25,9 @@ export default {
   },
   methods: {
     ...mapMutations({
-      set: 'initSelects/SET'
+      setSelects: 'initSelects/SET',
+      addLocations: 'locations/ADD',
+      updateLocationTbl: 'locationsTable/SET_ITEMS'
     }),
     async postToDB(locations) {
       await this.$axios.$post('api/locations', {
@@ -42,37 +44,25 @@ export default {
         lpId: this.initSelects.lpId,
         locations
       })
-      this.locations.push(...res) // adds locations to data
-      this.locationtbl.items.push(...[ // adds locations to loc table
-        ...res.map((location) => {
-          const { name, properties } = location
-          return {
-            select: false,
-            location: `${name} - ${properties.street_address_1}`,
-            status: properties.locationComplete,
-            prstatus: properties.prComplete,
-            value: location.id
-          }
-        })
-      ])
-      this.set({ 'loading': false })
+      this.addLocations(res)
+      this.updateLocationTbl(res)
+      this.setSelects({ 'loading': false })
       this.showAlert(this.alertProps.csvSuccessMsg, 'success')
+      this.setSelects({ 'file': null })
     },
     async processUpload() {
-      this.set({ 'loading': true })
+      this.setSelects({ 'loading': true })
       const data = await this.parseCSV(this.initSelects.file)
       const locations = await this.getLocationData(data)
       if (locations.length && !this.onProjectPage) { // on home page
-        // eslint-disable-next-line no-console
-        console.log(locations)
         await this.postToDB(locations)
-        window.open(`/lp-project/${this.initSelects.lpId}`, '_self')
-        this.set({ 'loading': false })
+        window.open(`/lp-project/${this.initSelects.lpId}`, '_blank')
+        this.setSelects({ 'loading': false })
       } else if (locations.length && this.onProjectPage) { // on project page
         this.loadLocations(locations)
       } else {
         this.showAlert(this.alertProps.csvErrMsg, 'danger') // err
-        this.set({ 'loading': false })
+        this.setSelects({ 'loading': false })
       }
     },
     async upload() {
@@ -88,7 +78,7 @@ export default {
         }
       } catch (err) {
         this.showAlert(this.alertProps.csvErrMsg, 'danger')
-        this.set({ 'loading': false })
+        this.setSelects({ 'loading': false })
       }
     },
     reject(obj, keys) {

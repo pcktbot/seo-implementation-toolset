@@ -22,11 +22,7 @@ export const state = () => ({
     }
   ]
 })
-export const gettters = {
-  getLocationNotes(state, id) {
-    return state.allNotes.filter(note => note.locationId === id)
-  }
-}
+
 export const actions = {
   async GET_AND_SET({ commit, state }, lpId, locationId) {
     const query = (locationId)

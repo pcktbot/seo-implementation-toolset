@@ -131,8 +131,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setNotesData: 'notes/SET',
-      updateLocationProp: 'locations/UPDATE_PROP'
+      setNotesData: 'notes/SET'
     }),
     getTxt() {
       return this.onLocationTab() ? this.location.properties.locationNote : this.projectNoteField
@@ -146,21 +145,21 @@ export default {
     async onSubmit() {
       const onLocationTab = this.toggle.selected === 'location'
       const locID = onLocationTab ? this.location.id : null
-      const txt = onLocationTab ? this.location.properties.locationNote : this.projectNoteField
-      await this.postComment(
-        {
-          author: `${this.userInfo.firstName} ${this.userInfo.lastName}`,
-          lpId: this.lpId,
-          locationId: locID,
-          text: txt
-        }
-      )
+      const txt = this.getTxt()
+      await this.postComment({
+        author: `${this.userInfo.firstName} ${this.userInfo.lastName}`,
+        lpId: this.lpId,
+        locationId: locID,
+        text: txt
+      })
       this.setNotes()
     },
     async setNotes() {
+      // hydrates notes store properties(allNotes, projectNotes)
       await this.$store.dispatch('notes/GET_AND_SET', this.lpId)
       if (this.onLocationTab()) {
         const locNote = this.getLocationNotes(this.location.id)
+        // hydrates notes store property(locationNotes)
         this.setNotesData({ 'locationNotes': locNote })
         this.inputTxt = ''
       } else {
