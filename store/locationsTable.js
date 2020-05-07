@@ -33,7 +33,7 @@ export const state = () => ({
 export const gettters = {}
 export const actions = {}
 export const mutations = {
-  SET_ITEMS(state, res) {
+  SET_MAP_ITEMS(state, res) {
     const newItems = [
       ...res.map((location) => {
         const { name, properties } = location
@@ -50,7 +50,15 @@ export const mutations = {
       ? state.items = newItems
       : state.items = state.items.concat(...newItems)
   },
+  SET(state, obj) {
+    const keys = Object.keys(obj)
+    // eslint-disable-next-line no-return-assign
+    keys.forEach(key => state[key] = obj[key])
+  },
   SET_ITEM(state, { index, field, val }) {
     state.items[index][field] = val
+  },
+  SET_SELECTED(state, val) {
+    state.selected = val
   }
 }

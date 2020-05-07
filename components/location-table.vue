@@ -6,7 +6,7 @@
         :fields="locationtbl.fields"
         :items="locationtbl.items"
         :select-mode="locationtbl.selectMode"
-        @row-selected="onRowSelected"
+        @row-selected="onRowSelected('locationtbl')"
         selectable
         sticky-header="20rem"
         responsive="true"
@@ -55,12 +55,12 @@
       </b-table>
       <b-row class="table-btns ml-0 mr-0">
         <b-col class="col-12 col-md-4 col-lg">
-          <b-button @click="selectAllRows" block>
+          <b-button @click="selectAllRows('selectableTable')" block>
             Select all
           </b-button>
         </b-col>
         <b-col class="col-12 col-md-4 col-lg">
-          <b-button @click="clearSelected" block>
+          <b-button @click="clearSelected('selectableTable')" block>
             Clear Selected
           </b-button>
         </b-col>
@@ -86,15 +86,14 @@
       <b-row class="alert-row m-0">
         <b-col class="p-0 m-0">
           <b-alert
-            :show="dismissCountDown"
-            :variant="alertvariant"
+            :show="alertProps.dismissCountDown"
+            :variant="alertProps.alertvariant"
             @dismiss-count-down="countDownChanged"
-            @dismissed="alertvariant='', alertMsg=''"
+            @dismissed="set({alertMsg: '',alertvariant: '', dismissCountDown: 0})"
             dismissible
             fade
-            class="mb-0 py-1"
           >
-            {{ alertMsg }}
+            {{ alertProps.alertMsg }}
           </b-alert>
         </b-col>
       </b-row>
@@ -113,37 +112,24 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
+import Alert from '~/mixins/alert'
+import Export from '~/mixins/export'
+import Locations from '~/mixins/locations'
+import TableMethods from '~/mixins/tableMethods'
+import Comments from '~/mixins/comments'
 import IconsSwap from '~/components/icons-swap'
 export default {
   components: {
     IconsSwap
   },
-  props: {
-    form: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    locationtbl: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    selectedLocation: {
-      type: Object,
-      default() {
-        return {}
-      }
-    }
-  },
+  mixins: [Alert, Locations, Export, TableMethods, Comments],
   data () {
     return {
-      alertMsg: '',
-      alertvariant: '',
-      dismissSecs: 4,
-      dismissCountDown: 0,
+      // alertMsg: '',
+      // alertvariant: '',
+      // dismissSecs: 4,
+      // dismissCountDown: 0,
       iconConfig: {
         width: '28',
         height: '28',
@@ -159,8 +145,14 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      initSelects: state => state.initSelects,
+      locations: state => state.locations,
+      locationtbl: state => state.locationsTable,
+      selectedLocation: state => state.selectedLocation
+    }),
     disabled() {
-      const selects = this.form.selects
+      const selects = this.initSelects.selects
       return !(selects[0].value && selects[1].value && selects[2].value)
     },
     msg() {
@@ -169,16 +161,22 @@ export default {
     }
   },
   methods: {
-    countDownChanged(dismissCountDown) {
-      this.dismissCountDown = dismissCountDown
-    },
-    showAlert(msg, variant) {
-      this.dismissCountDown = this.dismissSecs
-      this.alertMsg = msg
-      this.alertvariant = variant
-    },
+    ...mapMutations({
+      setLocation: 'selectedLocation/SET',
+      setLocations: 'locations/SET',
+      setLocationNotes: 'notes/SET',
+      setLocationTblProps: 'locationTable/SET'
+    }),
+    // countDownChanged(dismissCountDown) {
+    //   this.dismissCountDown = dismissCountDown
+    // },
+    // showAlert(msg, variant) {
+    //   this.dismissCountDown = this.dismissSecs
+    //   this.alertMsg = msg
+    //   this.alertvariant = variant
+    // },
     onSave() {
-      this.$emit('save-step')
+      this.onSave()
       this.showAlert('Saved', 'success')
     },
     selectedLocationsComplete() {
@@ -195,27 +193,45 @@ export default {
     exportSelected() {
       if (this.locationtbl.selected.length > 0) {
         if (this.selectedLocationsComplete()) {
-          this.$emit('export-locations')
+          this.exportLocations()
         } else {
           this.showAlert('Unselect incomplete locations', 'danger')
         }
       } else { this.showAlert('Select a location/s', 'danger') }
     },
-    onRowSelected(items) {
-      this.$emit('select-location', items, 'locationtbl')
-    },
-    selectAllRows() {
-      this.$refs.selectableTable.selectAllRows()
-    },
-    clearSelected() {
-      this.$refs.selectableTable.clearSelected()
-    },
-    loadLocation(id) {
-      this.$emit('load-location', id)
-    },
     onDelete() {
-      if (this.locationtbl.selected.length > 0) this.$emit('delete-location')
+      const locIDs = this.getSelectedLocationIds()
+      if (locIDs) {
+        locIDs.forEach((locID) => {
+          const filteredLocations = this.locations.filter(location => location.id !== locID || null)
+          this.setLocations(filteredLocations)
+          this.setLocation(null)
+          this.$axios.delete(`/api/lp-project/${this.initSelects.lpId}/${locID}`)
+          this.$axios.delete(`/api/comments/?locationId=${locID}`)
+          const tableLocations = this.locationtbl.items.filter(location => location.value !== locID || null)
+          this.setLocationTblProps({ 'items': tableLocations, 'selected': [] })
+        })
+      }
+    },
+    // onRowSelected(items) {
+    //   this.$emit('select-location', items, 'locationtbl')
+    // },
+    // selectAllRows() {
+    //   this.$refs.selectableTable.selectAllRows()
+    // },
+    // clearSelected() {
+    //   this.$refs.selectableTable.clearSelected()
+    // },
+    loadLocation(payload) {
+      const selectLoc = this.locations.filter(location => location.id === payload)[0]
+      this.setLocation(selectLoc)
+      const locNotes = this.getLocationNotes(this.selectedLocation.id)
+      this.setLocationNotes({ 'locationNotes': locNotes })
+      this.$store.commit('tabindex/set', 0)
     }
+    // onDelete() {
+    //   if (this.locationtbl.selected.length > 0) this.$emit('delete-location')
+    // }
   }
 }
 </script>

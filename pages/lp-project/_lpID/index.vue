@@ -30,7 +30,6 @@
           </b-col>
         </b-row>
         <accordion-toggle />
-        <!--
         <b-row class="px-5" style="background-color: white">
           <b-col>
             <location-table
@@ -45,6 +44,7 @@
             />
           </b-col>
         </b-row>
+        <!--
         <b-row v-if="selectedLocation && !disabledUpload" class="px-5 pt-3 pb-4" style="background-color: var(--secondary--lighten3)">
           <b-col class="px-0">
             <form-stepper
@@ -99,53 +99,15 @@ export default {
   mixins: [Alert, CommentsMixin],
   // addional data shared between index files in index mixins
   data () {
-    return {
-    //   visible: false, // in itit-selects store
-    //   selectedLocation: null, // in selected loc store
-    //   locationNotes: [], // in notes store
-    //   projectNotes: [], // in notes store
-    //   allNotes: [], // in notes store
-    //   projectNoteField: '', // in notes store
-    //   locations: [], // in locations store
-    //   locationtbl: { // in locationsTable store
-    //     fields: [
-    //       {
-    //         key: 'select',
-    //         label: 'Select'
-    //       },
-    //       {
-    //         key: 'location',
-    //         label: 'Location Name',
-    //         sortable: true
-    //       },
-    //       {
-    //         key: 'edit',
-    //         label: 'Edit'
-    //       },
-    //       {
-    //         key: 'status',
-    //         label: 'Complete',
-    //         sortable: true,
-    //         class: 'text-center'
-    //       },
-    //       {
-    //         key: 'prstatus',
-    //         label: 'PR Complete',
-    //         sortable: true,
-    //         class: 'text-center'
-    //       }
-    //     ],
-    //     items: [],
-    //     selectMode: 'multi',
-    //     selected: []
-    //   }
-    }
+    return {}
   },
   computed: {
     ...mapState({
       userInfo: state => state.userInfo,
       locationtbl: state => state.locationsTable
     })
+    // THIS METHOD CURRENTLY LIVES IN LOADBTN.VUE NEED TO EXTRACT
+    // TO MIXIN FILE SO ITS ACCESSIBLE HERE
     // disabledUpload() {
     //   const values = [this.form.inputs.lpId]
     //   this.form.selects.forEach(select => values.push(select.value))
@@ -166,7 +128,7 @@ export default {
       store.commit('initSelects/SET', { 'visible': false })
       store.dispatch('notes/GET_AND_SET', params.lpID)
       const res = await store.dispatch('locations/GET', params.lpID)
-      store.commit('locationsTable/SET_ITEMS', res)
+      store.commit('locationsTable/SET_MAP_ITEMS', res)
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e)
@@ -194,7 +156,7 @@ export default {
       const locIndex = this.getLocationIndex()
       this.locations[locIndex].properties[key][index].name = data
     },
-    updateVisibility(val) { this.visible = val },
+    // updateVisibility(val) { this.visible = val },
     // async updateNotes(tabName) {
     //   const onLocationTab = tabName === 'location'
     //   const locID = onLocationTab ? this.selectedLocation.id : null
@@ -363,44 +325,44 @@ export default {
     addRows(val, { id }) {
       const i = this.locations.findIndex(loc => loc.id === id)
       this.locations[i].properties.redirects.items.push(...val)
-    },
-    async loadLocations(locations) {
-      const res = await this.$axios.$post('api/locations', {
-        lpId: this.form.inputs.lpId,
-        locations
-      })
-      this.locations.push(...res)
-      this.locationtbl.items.push(...[
-        ...res.map((location) => {
-          const { name, properties } = location
-          return {
-            select: false,
-            location: `${name} - ${properties.street_address_1}`,
-            status: properties.locationComplete,
-            prstatus: properties.prComplete,
-            value: location.id
-          }
-        })
-      ])
-      this.form.loading = false
-      this.showAlert(this.alertProps.csvSuccessMsg, 'success')
-    },
-    async onUpload() {
-      try {
-        this.form.loading = true
-        const data = await this.parseCSV(this.form.inputs.file)
-        const locations = await this.getLocationData(data)
-        if (locations[0].name) {
-          this.loadLocations(locations)
-        } else {
-          this.showAlert(this.alertProps.csvErrMsg, 'danger')
-          this.form.loading = false
-        }
-      } catch (err) {
-        this.showAlert(this.alertProps.csvErrMsg, 'danger')
-        this.form.loading = false
-      }
     }
+    // async loadLocations(locations) {
+    //   const res = await this.$axios.$post('api/locations', {
+    //     lpId: this.form.inputs.lpId,
+    //     locations
+    //   })
+    //   this.locations.push(...res)
+    //   this.locationtbl.items.push(...[
+    //     ...res.map((location) => {
+    //       const { name, properties } = location
+    //       return {
+    //         select: false,
+    //         location: `${name} - ${properties.street_address_1}`,
+    //         status: properties.locationComplete,
+    //         prstatus: properties.prComplete,
+    //         value: location.id
+    //       }
+    //     })
+    //   ])
+    //   this.form.loading = false
+    //   this.showAlert(this.alertProps.csvSuccessMsg, 'success')
+    // },
+    // async onUpload() {
+    //   try {
+    //     this.form.loading = true
+    //     const data = await this.parseCSV(this.form.inputs.file)
+    //     const locations = await this.getLocationData(data)
+    //     if (locations[0].name) {
+    //       this.loadLocations(locations)
+    //     } else {
+    //       this.showAlert(this.alertProps.csvErrMsg, 'danger')
+    //       this.form.loading = false
+    //     }
+    //   } catch (err) {
+    //     this.showAlert(this.alertProps.csvErrMsg, 'danger')
+    //     this.form.loading = false
+    //   }
+    // }
   }
 }
 </script>

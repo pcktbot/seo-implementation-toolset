@@ -27,7 +27,7 @@ export default {
     ...mapMutations({
       setSelects: 'initSelects/SET',
       addLocations: 'locations/ADD',
-      updateLocationTbl: 'locationsTable/SET_ITEMS'
+      updateLocationTbl: 'locationsTable/SET_MAP_ITEMS'
     }),
     async postToDB(locations) {
       await this.$axios.$post('api/locations', {

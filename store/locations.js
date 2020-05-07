@@ -31,5 +31,8 @@ export const mutations = {
   },
   ADD(state, locations) {
     locations.forEach(loc => state.locations.push(loc))
+  },
+  UPDATE_THREE_LAYERS(state, { key1, key2, key3, key4, val }) {
+    state.locations[key1][key2][key3][key4] = val
   }
 }
