@@ -16,7 +16,7 @@ export default {
     ...mapState({
       exportData: state => state.export,
       locationtbl: state => state.locationsTable,
-      locations: state => state.locations,
+      locations: state => state.locations.locations,
       addPropFields: state => state.addImportProps
     })
   },

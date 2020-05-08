@@ -32,16 +32,7 @@
         <accordion-toggle />
         <b-row class="px-5" style="background-color: white">
           <b-col>
-            <location-table
-              :form="form"
-              :locationtbl="locationtbl"
-              :selectedLocation="selectedLocation"
-              @delete-location="onDelete"
-              @select-location="onRowSelected"
-              @load-location="loadLocation"
-              @export-locations="exportLocations"
-              @save-step="onSave"
-            />
+            <location-table />
           </b-col>
         </b-row>
         <!--
@@ -72,14 +63,13 @@
 </template>
 
 <script>
-// import Papa from 'papaparse'
 import { mapState } from 'vuex'
 import g5Nav from '~/components/nav'
 import Drawer from '~/components/drawer'
 import Notes from '~/components/notes'
 import initialSelections from '~/components/initial-selections'
 import AccordionToggle from '~/components/accordion-toggle'
-// import LocationTable from '~/components/location-table'
+import LocationTable from '~/components/location-table'
 // import FormStepper from '~/components/form-stepper'
 import g5Footer from '~/components/footer'
 import Alert from '~/mixins/alert'
@@ -92,7 +82,7 @@ export default {
     Notes,
     initialSelections,
     AccordionToggle,
-    // LocationTable,
+    LocationTable,
     // FormStepper,
     g5Footer
   },

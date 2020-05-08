@@ -149,32 +149,32 @@ export default {
       stepThreeText: 'Redirects',
       stepFourText: 'GMB / GA / Strategy',
       validation: {
-        steponefields: {
-          fields: [
-            'name',
-            'recommended_name',
-            'street_address_1',
-            'city'
-          ],
-          propertyvalue: {
-            selected: null,
-            options: [
-              { value: null, text: 'Select Property Feature' },
-              { value: 'Affordable', text: 'Affordable' },
-              { value: 'Gated', text: 'Gated' },
-              { value: 'Furnished', text: 'Furnished' },
-              { value: 'Garden Style', text: 'Garden Style' },
-              { value: 'High Rise', text: 'High Rise' },
-              { value: 'New', text: 'New' },
-              { value: 'Upgraded', text: 'Upgraded' },
-              { value: 'Modern', text: 'Modern' },
-              { value: 'Luxury', text: 'Luxury' },
-              { value: 'Townhome Style', text: 'Townhome Style' },
-              { value: 'Smart', text: 'Smart' },
-              { value: 'Upscale', text: 'Upscale' }
-            ]
-          }
-        },
+        // steponefields: {
+        //   fields: [
+        //     'name',
+        //     'recommended_name',
+        //     'street_address_1',
+        //     'city'
+        //   ],
+        //   propertyvalue: {
+        //     selected: null,
+        //     options: [
+        //       { value: null, text: 'Select Property Feature' },
+        //       { value: 'Affordable', text: 'Affordable' },
+        //       { value: 'Gated', text: 'Gated' },
+        //       { value: 'Furnished', text: 'Furnished' },
+        //       { value: 'Garden Style', text: 'Garden Style' },
+        //       { value: 'High Rise', text: 'High Rise' },
+        //       { value: 'New', text: 'New' },
+        //       { value: 'Upgraded', text: 'Upgraded' },
+        //       { value: 'Modern', text: 'Modern' },
+        //       { value: 'Luxury', text: 'Luxury' },
+        //       { value: 'Townhome Style', text: 'Townhome Style' },
+        //       { value: 'Smart', text: 'Smart' },
+        //       { value: 'Upscale', text: 'Upscale' }
+        //     ]
+        //   }
+        // },
         steptwofields: {
           neighborhood: {
             inputs: ['neighborhood', 'neighborhood_2'],

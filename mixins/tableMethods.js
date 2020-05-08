@@ -4,13 +4,13 @@ export default {
     ...mapState({
       locations: state => state.locations,
       locationsTable: state => state.locationsTable,
-      selectedLocation: state => state.selectedLocation
+      selectedLocation: state => state.selectedLocation.location
     })
   },
   methods: {
     ...mapMutations({
       setSelected: 'locationsTable/SET_SELECTED',
-      selectRedirectsTbl: 'locationsTable/UPDATE_THREE_LAYERS'
+      selectRedirectsTbl: 'locations/UPDATE_THREE_LAYERS'
     }),
     onRowSelected(items, tblname) {
       if (tblname === 'locationtbl') {

@@ -73,14 +73,10 @@
 </template>
 
 <script>
+import Locations from '~/mixins/locations'
 export default {
+  mixins: [Locations],
   props: {
-    form: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
     res: {
       type: Object,
       default() {
@@ -107,8 +103,14 @@ export default {
     }
   },
   computed: {
+    form: {
+      get() { return this.$getters['selectLocation/formFields'] },
+      set(val) {}
+    },
     getUSPSProps() {
-      return this.res !== null ? this.res.data.elements[0].elements[0].elements : []
+      return this.res !== null
+        ? this.res.data.elements[0].elements[0].elements
+        : []
     }
   },
   methods: {
@@ -131,7 +133,8 @@ export default {
           data[this.uspsprops[prop.name]] = value
         }
       })
-      this.$emit('update-address', data)
+      this.updateAddress(data)
+      // this.$emit('update-address', data)
       this.hide()
     }
   }

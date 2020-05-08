@@ -6,7 +6,7 @@
         :fields="locationtbl.fields"
         :items="locationtbl.items"
         :select-mode="locationtbl.selectMode"
-        @row-selected="onRowSelected('locationtbl')"
+        @row-selected="onRowSelected($event, 'locationtbl')"
         selectable
         sticky-header="20rem"
         responsive="true"
@@ -83,20 +83,6 @@
           </b-button>
         </b-col>
       </b-row>
-      <b-row class="alert-row m-0">
-        <b-col class="p-0 m-0">
-          <b-alert
-            :show="alertProps.dismissCountDown"
-            :variant="alertProps.alertvariant"
-            @dismiss-count-down="countDownChanged"
-            @dismissed="set({alertMsg: '',alertvariant: '', dismissCountDown: 0})"
-            dismissible
-            fade
-          >
-            {{ alertProps.alertMsg }}
-          </b-alert>
-        </b-col>
-      </b-row>
       <b-modal
         id="modal-1"
         @ok="onDelete"
@@ -126,10 +112,6 @@ export default {
   mixins: [Alert, Locations, Export, TableMethods, Comments],
   data () {
     return {
-      // alertMsg: '',
-      // alertvariant: '',
-      // dismissSecs: 4,
-      // dismissCountDown: 0,
       iconConfig: {
         width: '28',
         height: '28',
@@ -147,9 +129,9 @@ export default {
   computed: {
     ...mapState({
       initSelects: state => state.initSelects,
-      locations: state => state.locations,
+      locations: state => state.locations.locations,
       locationtbl: state => state.locationsTable,
-      selectedLocation: state => state.selectedLocation
+      selectedLocation: state => state.selectedLocation.location
     }),
     disabled() {
       const selects = this.initSelects.selects
@@ -157,7 +139,8 @@ export default {
     },
     msg() {
       return this.locationtbl.selected.length > 0
-        ? 'Are you sure you want to delete these locations? This is permanent..' : 'Please select location/s to delete'
+        ? 'Are you sure you want to delete these locations? This is permanent..'
+        : 'Please select location/s to delete'
     }
   },
   methods: {
@@ -165,20 +148,8 @@ export default {
       setLocation: 'selectedLocation/SET',
       setLocations: 'locations/SET',
       setLocationNotes: 'notes/SET',
-      setLocationTblProps: 'locationTable/SET'
+      setLocationTblProps: 'locationsTable/SET'
     }),
-    // countDownChanged(dismissCountDown) {
-    //   this.dismissCountDown = dismissCountDown
-    // },
-    // showAlert(msg, variant) {
-    //   this.dismissCountDown = this.dismissSecs
-    //   this.alertMsg = msg
-    //   this.alertvariant = variant
-    // },
-    onSave() {
-      this.onSave()
-      this.showAlert('Saved', 'success')
-    },
     selectedLocationsComplete() {
       let val = true
       const selected = this.locationtbl.selected
@@ -204,24 +175,15 @@ export default {
       if (locIDs) {
         locIDs.forEach((locID) => {
           const filteredLocations = this.locations.filter(location => location.id !== locID || null)
-          this.setLocations(filteredLocations)
-          this.setLocation(null)
+          this.setLocations(filteredLocations) // update store locations
+          this.setLocation(null) // update selectedLoc in store
           this.$axios.delete(`/api/lp-project/${this.initSelects.lpId}/${locID}`)
           this.$axios.delete(`/api/comments/?locationId=${locID}`)
           const tableLocations = this.locationtbl.items.filter(location => location.value !== locID || null)
-          this.setLocationTblProps({ 'items': tableLocations, 'selected': [] })
+          this.setLocationTblProps({ 'items': tableLocations, 'selected': [] }) // update locTable in store
         })
       }
     },
-    // onRowSelected(items) {
-    //   this.$emit('select-location', items, 'locationtbl')
-    // },
-    // selectAllRows() {
-    //   this.$refs.selectableTable.selectAllRows()
-    // },
-    // clearSelected() {
-    //   this.$refs.selectableTable.clearSelected()
-    // },
     loadLocation(payload) {
       const selectLoc = this.locations.filter(location => location.id === payload)[0]
       this.setLocation(selectLoc)
@@ -229,9 +191,6 @@ export default {
       this.setLocationNotes({ 'locationNotes': locNotes })
       this.$store.commit('tabindex/set', 0)
     }
-    // onDelete() {
-    //   if (this.locationtbl.selected.length > 0) this.$emit('delete-location')
-    // }
   }
 }
 </script>

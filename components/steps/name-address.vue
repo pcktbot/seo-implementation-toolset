@@ -1,7 +1,6 @@
 <template>
   <b-container fluid>
     <usps-modal
-      :form="form"
       :res="res"
       @update-address="updateAddress"
     />
@@ -181,9 +180,11 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 import UspsModal from '~/components/modals/usps-modal'
 import SaveStep from '~/components/save-step'
 import States from '~/mixins/states'
+
 export default {
   components: {
     UspsModal,
@@ -211,44 +212,16 @@ export default {
     }
   },
   data () {
-    return {
-      saveData: {
-        tooltipTargetID: 'step-one-tip',
-        stepUpdateTxt: 'stepOneComplete'
-      },
-      res: null,
-      uspsLink: 'https://tools.usps.com/zip-code-lookup.htm?byaddress',
-      country: {
-        selected: null,
-        options: [
-          { value: null, text: 'Select Country' },
-          { value: 'US', text: 'United States' },
-          { value: 'CA', text: 'Canada' }
-        ]
-      },
-      uspsvalid: {
-        selected: null,
-        options: [
-          { value: null, text: 'Is Location Address USPS Verified?' },
-          { value: true, text: 'Yes - USPS Verified' },
-          { value: false, text: 'No - Not USPS Verified' }
-        ]
-      },
-      removeFields: {
-        multi: {
-          mf: ['custom_slug'],
-          ss: ['floor_plans', 'property_feature_1', 'custom_slug'],
-          sl: ['floor_plans', 'property_feature_1', 'custom_slug']
-        },
-        single: {
-          mf: [],
-          ss: ['floor_plans', 'property_feature_1'],
-          sl: ['floor_plans', 'property_feature_1']
-        }
-      }
-    }
+    return {}
   },
   computed: {
+    ...mapState({
+      initSelects: state => state.initSelects,
+      locations: state => state.locations.locations,
+      location: state => state.selectedLocation.location,
+      removeFields: state => state.nameAddress.removeFields,
+      states: state => state.states
+    }),
     disabledAddress() {
       return !this.validateAddFields()
     },
@@ -273,26 +246,13 @@ export default {
       return !valid
     },
     form: {
-      get() {
-        return {
-          name: this.location.name,
-          recommendedname: this.location.properties.recommendedname,
-          street_address_1: this.location.properties.street_address_1,
-          city: this.location.properties.city,
-          state: this.location.properties.state,
-          postal_code: this.location.properties.postal_code,
-          country: this.location.properties.country,
-          population: this.location.properties.population,
-          uspsvalid: this.location.properties.uspsvalid,
-          floor_plans: this.location.properties.floor_plans,
-          property_feature_1: this.location.properties.property_feature_1,
-          custom_slug: this.location.properties.custom_slug
-        }
-      },
+      get() { return this.$getters['selectLocation/formFields'] },
       set(val) {}
     }
   },
   methods: {
+    ...mapMutations({
+    }),
     validateAddFields() {
       return (this.location.properties.street_address_1 &&
         this.location.properties.city &&

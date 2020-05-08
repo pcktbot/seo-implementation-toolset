@@ -23,6 +23,15 @@ export default {
       this.updateLocationStatus(locIndex, id)
       this.updatePRLocationStatus(locIndex, id)
     },
+    updateAddress(data) {
+      for (const prop in data) {
+        this.updateLocProp({
+          key: prop,
+          val: data[prop],
+          id: this.selectedLocation.id
+        })
+      }
+    },
     getLocationIndex(id) {
       return this.locations.findIndex(loc => loc.id === id)
     },
@@ -61,6 +70,7 @@ export default {
       this.$axios.$put(`api/lp-project/${this.initSelects.lpId}`, {
         selects: this.initSelects.selects
       })
+      this.showAlert('Saved', 'success')
     }
   }
 }

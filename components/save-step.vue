@@ -17,7 +17,10 @@
 </template>
 
 <script>
+import Locations from '~/mixins/locations'
+import Alert from '~/mixins/alert'
 export default {
+  mixins: [Locations, Alert],
   props: {
     isDisabled: {
       type: Boolean,
@@ -40,16 +43,14 @@ export default {
   },
   data () {
     return {
-      saveTxt: 'Save'
     }
   },
   methods: {
     onSave(key) {
-      this.saveTxt = 'Saved!'
-      this.$emit('step-save')
-      // eslint-disable-next-line no-return-assign
-      setTimeout(() => this.saveTxt = 'Save', 3000)
-      this.$emit('step-update', key, true)
+      this.showAlert('Saved!', 'success')
+      this.onSave()
+      this.onUpdate({ key, val: true, id: this.selectedLocation.id })
+      // this.$emit('step-update', key, true) // needs updating
     }
   }
 

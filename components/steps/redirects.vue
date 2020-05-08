@@ -62,7 +62,7 @@
           ref="redirectsTable"
           :fields="location.properties.redirects.fields"
           :items="location.properties.redirects.items"
-          @row-selected="onRowSelected"
+          @row-selected="onRowSelected($event, 'locationtbl', 'redirecttbl')"
           selectable
           sticky-header="20rem"
           responsive
