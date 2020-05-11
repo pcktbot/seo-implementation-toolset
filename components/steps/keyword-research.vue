@@ -394,6 +394,7 @@ export default {
     validApiProps() {
       let val = true
       const obj = this.getApiProps()
+      delete obj.class
       for (const key in obj) {
         if (!obj[key]) {
           val = false
