@@ -25,16 +25,6 @@ export default {
         return false
       }
     }
-  },
-  data () {
-    return {
-    }
-  },
-  computed: {
-
-  },
-  methods: {
-
   }
 }
 </script>

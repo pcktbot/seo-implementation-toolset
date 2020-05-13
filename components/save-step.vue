@@ -3,11 +3,11 @@
     <span :id="tooltipID" class="d-inline-block" tabindex="0">
       <b-btn
         :disabled="isDisabled"
-        @click="onSave(saveData.stepUpdateTxt)"
+        @click="save(saveData.stepUpdateTxt)"
         variant="outline-secondary--darken3"
         class="px-5"
       >
-        {{ saveTxt }}
+        Save
       </b-btn>
       <b-tooltip :target="saveData.tooltipTargetID" placement="left" variant="secondary">
         complete step to save
@@ -46,10 +46,10 @@ export default {
     }
   },
   methods: {
-    onSave(key) {
-      this.showAlert('Saved!', 'success')
+    save(key) {
       this.onSave()
       this.onUpdate({ key, val: true, id: this.selectedLocation.id })
+      this.updateLocationStatus()
       // this.$emit('step-update', key, true) // needs updating
     }
   }

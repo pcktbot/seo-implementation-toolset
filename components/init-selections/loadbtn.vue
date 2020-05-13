@@ -22,16 +22,11 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 import Upload from '~/mixins/upload'
 import Alert from '~/mixins/alert'
 export default {
   mixins: [Upload, Alert],
   computed: {
-    ...mapState({
-      initSelects: state => state.initSelects,
-      toggle: state => state.initSelects.toggle
-    }),
     onProjectPage() {
       return !!this.$nuxt._route.params.lpID
     },
@@ -43,22 +38,6 @@ export default {
         btnTxt = 'Load LP Project'
       }
       return btnTxt
-    },
-    disabledUpload() {
-      let valid
-      if (this.toggle.selected === 'upload') {
-        valid = !this.validateIntitialSelections()
-      } else {
-        valid = !(this.validateLPID())
-      }
-      return valid
-    },
-    uploadTip() {
-      let val = 'not-disabled'
-      if ((this.toggle.selected === 'upload' && !this.validateIntitialSelections()) || (this.toggle.selected === 'import' && !this.validateLPID())) {
-        val = 'upload-tip'
-      }
-      return val
     }
   },
   methods: {
@@ -66,23 +45,7 @@ export default {
       this.toggle.selected === 'upload'
         ? this.upload()
         : window.open(`/lp-project/${this.initSelects.lpId}`, '_self')
-    },
-    validateIntitialSelections() {
-      const values = [this.initSelects.lpId]
-      this.initSelects.selects.forEach(select => values.push(select.value))
-      let valid = true
-      for (let i = 0; i < values.length; i++) {
-        if (!values[i]) {
-          valid = false
-          break
-        }
-      }
-      return (valid && this.initSelects.file && this.initSelects.lpId.toString().length === 8)
-    },
-    validateLPID() {
-      return this.initSelects.lpId && this.initSelects.lpId.toString().length === 8
     }
-
   }
 }
 </script>

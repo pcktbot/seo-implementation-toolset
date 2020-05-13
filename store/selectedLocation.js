@@ -2,20 +2,12 @@ export const state = () => ({
   location: null
 })
 export const getters = {
-  getProperties: (state) => {
-    return state.location
-      ? state.location.properties
-      : null
-  },
-  getLocationID: (state) => {
-    return state.location ? state.location.id : null
-  },
-  formFields(state) {
+  stepOneData: (state) => {
     let val = null
     if (state.location) {
       val = {
         name: state.location.name,
-        recommendedname: state.location.properties.recommendedname,
+        recommended_name: state.location.properties.recommended_name,
         street_address_1: state.location.properties.street_address_1,
         city: state.location.properties.city,
         state: state.location.properties.state,

@@ -35,12 +35,10 @@
             <location-table />
           </b-col>
         </b-row>
-        <!--
-        <b-row v-if="selectedLocation && !disabledUpload" class="px-5 pt-3 pb-4" style="background-color: var(--secondary--lighten3)">
+        <b-row v-if="selectedLocation && completedDropDowns" class="px-5 pt-3 pb-4" style="background-color: var(--secondary--lighten3)">
           <b-col class="px-0">
-            <form-stepper
-              v-if="selectedLocation && !disabledUpload"
-              :location="selectedLocation"
+            <form-stepper />
+            <!-- :location="selectedLocation"
               :form="form"
               @stepper-updated="onUpdate"
               @save-step="onSave"
@@ -53,9 +51,9 @@
               @remove-keyword="removeKeyword"
               @update-keyword="updateKeyword"
               @add-keyword="addKeyword"
-            />
+            /> -->
           </b-col>
-        </b-row> -->
+        </b-row>
       </b-container>
     </div>
     <g5-footer />
@@ -70,7 +68,7 @@ import Notes from '~/components/notes'
 import initialSelections from '~/components/initial-selections'
 import AccordionToggle from '~/components/accordion-toggle'
 import LocationTable from '~/components/location-table'
-// import FormStepper from '~/components/form-stepper'
+import FormStepper from '~/components/form-stepper'
 import g5Footer from '~/components/footer'
 import Alert from '~/mixins/alert'
 import CommentsMixin from '~/mixins/comments'
@@ -83,7 +81,7 @@ export default {
     initialSelections,
     AccordionToggle,
     LocationTable,
-    // FormStepper,
+    FormStepper,
     g5Footer
   },
   mixins: [Alert, CommentsMixin],
@@ -94,22 +92,20 @@ export default {
   computed: {
     ...mapState({
       userInfo: state => state.userInfo,
-      locationtbl: state => state.locationsTable
-    })
-    // THIS METHOD CURRENTLY LIVES IN LOADBTN.VUE NEED TO EXTRACT
-    // TO MIXIN FILE SO ITS ACCESSIBLE HERE
-    // disabledUpload() {
-    //   const values = [this.form.inputs.lpId]
-    //   this.form.selects.forEach(select => values.push(select.value))
-    //   let valid = true
-    //   for (let i = 0; i < values.length; i++) {
-    //     if (!values[i]) {
-    //       valid = false
-    //       break
-    //     }
-    //   }
-    //   return !(valid)
-    // }
+      locationtbl: state => state.locationsTable,
+      selectedLocation: state => state.selectedLocation.location,
+      initSelects: state => state.initSelects.selects
+    }),
+    completedDropDowns() {
+      let valid = true
+      for (let i = 0; i < this.initSelects.length; i++) {
+        if (!this.initSelects[i].value) {
+          valid = false
+          break
+        }
+      }
+      return valid
+    }
   },
   async fetch({ store, params }) {
     try {

@@ -9,27 +9,27 @@
         </b-col>
         <b-col class="text-center align-items-center" cols="12" md="4">
           <h5 class="mb-0">
-            <b-link id="fb-link" :href="getFBLink" target="_blank">
-              <b-img src="/facebook.svg" width="20" height="20" class="maps-icon jello-vertical" style="position: relative; bottom: 3px;" />
+            <b-link :href="getFBLink" target="_blank">
+              <b-img src="/facebook.svg" class="maps-icon jello-vertical social-link" />
             </b-link>
-            <b-link id="yelp-link" :href="getYelpLink" target="_blank">
-              <b-img src="/yelp.svg" width="20" height="20" class="maps-icon jello-vertical" style="position: relative; bottom: 3px;" />
+            <b-link :href="getYelpLink" target="_blank">
+              <b-img src="/yelp.svg" class="maps-icon jello-vertical social-link" />
             </b-link>
-            <b-link id="search-link" :href="getSearchLink" target="_blank">
-              <b-img src="/google-icon.svg" width="20" height="20" class="maps-icon jello-vertical" style="position: relative; bottom: 3px;" />
+            <b-link :href="getSearchLink" target="_blank">
+              <b-img src="/google-icon.svg" class="maps-icon jello-vertical social-link" />
             </b-link>
-            <b-link id="maps-link" :href="getMapsLink" target="_blank">
-              <b-img src="/maps-icon.svg" width="21" height="21" class="maps-icon jello-vertical" style="position: relative; bottom: 3px;" />
+            <b-link :href="getMapsLink" target="_blank">
+              <b-img src="/maps-icon.svg" class="maps-icon jello-vertical social-link" />
             </b-link>
-            <strong>Address: </strong>{{ `${location.properties.street_address_1} ${location.properties.city} ${location.properties.state} ${location.properties.postal_code}` }}
+            <strong>Address: </strong>
+            {{ `${street_address_1} ${city} ${state} ${postal_code}` }}
           </h5>
         </b-col>
         <b-col class="text-center" cols="12" md="4">
           <b-form-checkbox
             id="checkbox-1"
-            :state="location.properties.prComplete"
-            v-model="location.properties.prComplete"
-            @change="updatePR('prComplete', $event)"
+            :state="prComplete"
+            v-model="prComplete"
             name="check-button"
             height="1.2em"
             width="1.2em"
@@ -49,14 +49,14 @@
             :complete="stepOneComplete"
           />
         </template>
-        <name-address
-          :inputs="validation.steponefields"
+        <name-address />
+        <!--  :inputs="validation.steponefields"
           :location="location"
           :initData="form"
           @step-update="onUpdate"
           @step-save="onSave"
           @update-address="updateAddress"
-        />
+        /> -->
       </b-tab>
       <b-tab>
         <template v-slot:title>
@@ -65,7 +65,7 @@
             :complete="stepTwoComplete"
           />
         </template>
-        <keyword-research
+        <!-- <keyword-research
           :inputs="validation.steptwofields"
           :location="location"
           :form="form"
@@ -74,7 +74,7 @@
           @step-update="onUpdate"
           @update-keyword="updateKeyword"
           @add-keyword="addKeyword"
-        />
+        /> -->
       </b-tab>
       <b-tab>
         <template v-slot:title>
@@ -83,7 +83,7 @@
             :complete="stepThreeComplete"
           />
         </template>
-        <redirects
+        <!-- <redirects
           :location="location"
           :validation="validation"
           @add-rows="addRows"
@@ -93,7 +93,7 @@
           @select-location="onRowSelected"
           @delete-redirects="onDelete"
           @toggle-wildcard="toggleWildcard"
-        />
+        /> -->
       </b-tab>
       <b-tab>
         <template v-slot:title>
@@ -102,44 +102,47 @@
             :complete="stepFourComplete"
           />
         </template>
-        <gmb
+        <!-- <gmb
           :location="location"
           :form="form"
           @step-update="onUpdate"
           @step-save="onSave"
-        />
+        /> -->
       </b-tab>
     </b-tabs>
   </b-card>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import Locations from '~/mixins/locations'
 import NameAddress from '~/components/steps/name-address'
-import KeywordResearch from '~/components/steps/keyword-research'
-import Redirects from '~/components/steps/redirects'
-import Gmb from '~/components/steps/gmb'
+// import KeywordResearch from '~/components/steps/keyword-research'
+// import Redirects from '~/components/steps/redirects'
+// import Gmb from '~/components/steps/gmb'
 import Tabs from '~/components/tabs'
 export default {
   components: {
     NameAddress,
-    KeywordResearch,
-    Redirects,
-    Gmb,
+    // KeywordResearch,
+    // Redirects,
+    // Gmb,
     Tabs
   },
+  mixins: [Locations],
   props: {
-    location: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    form: {
-      type: Object,
-      default() {
-        return {}
-      }
-    }
+    // location: {
+    //   type: Object,
+    //   default() {
+    //     return {}
+    //   }
+    // },
+    // form: {
+    //   type: Object,
+    //   default() {
+    //     return {}
+    //   }
+    // }
   },
   data () {
     return {
@@ -149,32 +152,32 @@ export default {
       stepThreeText: 'Redirects',
       stepFourText: 'GMB / GA / Strategy',
       validation: {
-        // steponefields: {
-        //   fields: [
-        //     'name',
-        //     'recommended_name',
-        //     'street_address_1',
-        //     'city'
-        //   ],
-        //   propertyvalue: {
-        //     selected: null,
-        //     options: [
-        //       { value: null, text: 'Select Property Feature' },
-        //       { value: 'Affordable', text: 'Affordable' },
-        //       { value: 'Gated', text: 'Gated' },
-        //       { value: 'Furnished', text: 'Furnished' },
-        //       { value: 'Garden Style', text: 'Garden Style' },
-        //       { value: 'High Rise', text: 'High Rise' },
-        //       { value: 'New', text: 'New' },
-        //       { value: 'Upgraded', text: 'Upgraded' },
-        //       { value: 'Modern', text: 'Modern' },
-        //       { value: 'Luxury', text: 'Luxury' },
-        //       { value: 'Townhome Style', text: 'Townhome Style' },
-        //       { value: 'Smart', text: 'Smart' },
-        //       { value: 'Upscale', text: 'Upscale' }
-        //     ]
-        //   }
-        // },
+        steponefields: {
+          fields: [
+            'name',
+            'recommended_name',
+            'street_address_1',
+            'city'
+          ],
+          propertyvalue: {
+            selected: null,
+            options: [
+              { value: null, text: 'Select Property Feature' },
+              { value: 'Affordable', text: 'Affordable' },
+              { value: 'Gated', text: 'Gated' },
+              { value: 'Furnished', text: 'Furnished' },
+              { value: 'Garden Style', text: 'Garden Style' },
+              { value: 'High Rise', text: 'High Rise' },
+              { value: 'New', text: 'New' },
+              { value: 'Upgraded', text: 'Upgraded' },
+              { value: 'Modern', text: 'Modern' },
+              { value: 'Luxury', text: 'Luxury' },
+              { value: 'Townhome Style', text: 'Townhome Style' },
+              { value: 'Smart', text: 'Smart' },
+              { value: 'Upscale', text: 'Upscale' }
+            ]
+          }
+        },
         steptwofields: {
           neighborhood: {
             inputs: ['neighborhood', 'neighborhood_2'],
@@ -206,44 +209,43 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      location: state => state.selectedLocation.location,
+      stepOneComplete: state => state.selectedLocation.location.properties.stepOneComplete,
+      stepTwoComplete: state => state.selectedLocation.location.properties.stepTwoComplete,
+      stepThreeComplete: state => state.selectedLocation.location.properties.stepThreeComplete,
+      stepFourComplete: state => state.selectedLocation.location.properties.stepFourComplete,
+      street_address_1: state => state.selectedLocation.location.properties.street_address_1,
+      city: state => state.selectedLocation.location.properties.city,
+      state: state => state.selectedLocation.location.properties.state,
+      postal_code: state => state.selectedLocation.location.properties.postal_code
+    }),
     tabIndex: {
-      get() {
-        return this.$store.state.tabindex.index
-      },
-      set(index) {
-        this.$store.commit('tabindex/set', index)
+      get() { return this.$store.state.tabindex.index },
+      set(index) { this.$store.commit('tabindex/set', index) }
+    },
+    prComplete: {
+      get() { return this.location.properties.prComplete },
+      set(value) {
+        this.onUpdate({ key: 'prComplete', val: value, id: this.location.id })
+        this.updatePRStatus()
       }
     },
     getFBLink() {
-      const prop = this.location.properties
-      return `https://www.facebook.com/search/top/?q=${this.location.name} ${prop.city}, ${prop.state}`
+      return `https://www.facebook.com/search/top/?q=${this.location.name} ${this.city}, ${this.state}`
     },
     getYelpLink() {
-      const prop = this.location.properties
-      return `https://www.yelp.com/search?find_desc=${this.location.name}&find_loc=${prop.city}, ${prop.state}`
+      return `https://www.yelp.com/search?find_desc=${this.location.name}&find_loc=${this.city}, ${this.state}`
     },
     getSearchLink() {
-      const prop = this.location.properties
-      return `https://www.google.com/search?q=${this.location.name} ${prop.street_address_1} ${prop.city} ${prop.state} ${prop.postal_code}`
+      return `https://www.google.com/search?q=${this.location.name} ${this.street_address_1} ${this.city} ${this.state} ${this.postal_code}`
     },
     getMapsLink() {
-      const prop = this.location.properties
-      return `https://www.google.com/maps/search/${prop.street_address_1} ${prop.city} ${prop.state} ${prop.postal_code}`
-    },
-    stepOneComplete() {
-      return this.location.properties.stepOneComplete
-    },
-    stepTwoComplete() {
-      return this.location.properties.stepTwoComplete
-    },
-    stepThreeComplete() {
-      return this.location.properties.stepThreeComplete
-    },
-    stepFourComplete() {
-      return this.location.properties.stepFourComplete
+      return `https://www.google.com/maps/search/${this.street_address_1} ${this.city} ${this.state} ${this.postal_code}`
     },
     getPRText() {
-      return this.location.properties.prComplete ? 'Peer Review Complete' : 'Peer Review Incomplete'
+      return this.location.properties.prComplete
+        ? 'Peer Review Complete' : 'Peer Review Incomplete'
     }
   },
   methods: {
@@ -253,17 +255,17 @@ export default {
     removeKeyword(data) {
       this.$emit('remove-keyword', data)
     },
-    updatePR(prop, value) {
-      this.onUpdate({ key: prop, val: value, id: this.location.id })
-    },
-    selectedPropertyValue() {
-      return this.form.selects[0].value === 'mf' && this.location.properties.property_feature_1
-        ? this.location.properties.property_feature_1
-        : null
-    },
-    onUpdate(data) {
-      this.$emit('stepper-updated', data)
-    },
+    // updatePR(prop, value) {
+    //   this.onUpdate({ key: prop, val: value, id: this.location.id })
+    // },
+    // selectedPropertyValue() {
+    //   return this.form.selects[0].value === 'mf' && this.location.properties.property_feature_1
+    //     ? this.location.properties.property_feature_1
+    //     : null
+    // },
+    // onUpdate(data) {
+    //   this.$emit('stepper-updated', data)
+    // },
     onSave(prop, value) {
       this.$emit('save-step')
     },
@@ -295,6 +297,12 @@ export default {
 <style scoped>
   .tab-pane.card-body {
     padding-top: 1rem;
+  }
+  .social-link {
+     width: 20px;
+     height: 20px;
+     position: relative;
+     bottom: 3px;
   }
   /* .maps-icon {
     vertical-align: top;

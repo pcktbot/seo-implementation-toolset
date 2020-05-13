@@ -5,22 +5,24 @@ export const state = () => ({
     'street_address_1',
     'city'
   ],
-  selected: null,
-  options: [
-    { value: null, text: 'Select Property Feature' },
-    { value: 'Affordable', text: 'Affordable' },
-    { value: 'Gated', text: 'Gated' },
-    { value: 'Furnished', text: 'Furnished' },
-    { value: 'Garden Style', text: 'Garden Style' },
-    { value: 'High Rise', text: 'High Rise' },
-    { value: 'New', text: 'New' },
-    { value: 'Upgraded', text: 'Upgraded' },
-    { value: 'Modern', text: 'Modern' },
-    { value: 'Luxury', text: 'Luxury' },
-    { value: 'Townhome Style', text: 'Townhome Style' },
-    { value: 'Smart', text: 'Smart' },
-    { value: 'Upscale', text: 'Upscale' }
-  ],
+  propertyvalue: {
+    selected: null,
+    options: [
+      { value: null, text: 'Select Property Feature' },
+      { value: 'Affordable', text: 'Affordable' },
+      { value: 'Gated', text: 'Gated' },
+      { value: 'Furnished', text: 'Furnished' },
+      { value: 'Garden Style', text: 'Garden Style' },
+      { value: 'High Rise', text: 'High Rise' },
+      { value: 'New', text: 'New' },
+      { value: 'Upgraded', text: 'Upgraded' },
+      { value: 'Modern', text: 'Modern' },
+      { value: 'Luxury', text: 'Luxury' },
+      { value: 'Townhome Style', text: 'Townhome Style' },
+      { value: 'Smart', text: 'Smart' },
+      { value: 'Upscale', text: 'Upscale' }
+    ]
+  },
   saveData: {
     tooltipTargetID: 'step-one-tip',
     stepUpdateTxt: 'stepOneComplete'
@@ -43,20 +45,26 @@ export const state = () => ({
       { value: false, text: 'No - Not USPS Verified' }
     ]
   },
-  removeFields: {
+  excludedRequiredFields: {
     multi: {
-      mf: ['custom_slug'],
-      ss: ['floor_plans', 'property_feature_1', 'custom_slug'],
-      sl: ['floor_plans', 'property_feature_1', 'custom_slug']
+      mf: ['custom_slug', 'recommended_name'],
+      ss: ['floor_plans', 'property_feature_1', 'custom_slug', 'recommended_name'],
+      sl: ['floor_plans', 'property_feature_1', 'custom_slug', 'recommended_name']
     },
     single: {
-      mf: [],
-      ss: ['floor_plans', 'property_feature_1'],
-      sl: ['floor_plans', 'property_feature_1']
+      mf: ['recommended_name'],
+      ss: ['floor_plans', 'property_feature_1', 'recommended_name'],
+      sl: ['floor_plans', 'property_feature_1', 'recommended_name']
     }
   }
 })
 
 export const actions = {}
 
-export const mutations = {}
+export const mutations = {
+  SET(state, obj) {
+    const keys = Object.keys(obj)
+    // eslint-disable-next-line no-return-assign
+    keys.forEach(key => state[key] = obj[key])
+  }
+}

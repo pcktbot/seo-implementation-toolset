@@ -73,6 +73,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import Locations from '~/mixins/locations'
 export default {
   mixins: [Locations],
@@ -103,10 +104,9 @@ export default {
     }
   },
   computed: {
-    form: {
-      get() { return this.$getters['selectLocation/formFields'] },
-      set(val) {}
-    },
+    ...mapGetters({
+      form: 'selectedLocation/stepOneData'
+    }),
     getUSPSProps() {
       return this.res !== null
         ? this.res.data.elements[0].elements[0].elements

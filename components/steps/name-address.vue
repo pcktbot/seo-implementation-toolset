@@ -1,12 +1,11 @@
 <template>
   <b-container fluid>
     <usps-modal
-      :res="res"
-      @update-address="updateAddress"
+      :res="uspsApiRes"
     />
     <b-row>
       <b-col
-        v-for="input in inputs.fields"
+        v-for="input in iterableInputs"
         :key="input"
         cols="12"
         md="4"
@@ -65,7 +64,7 @@
           id="country"
           :value="form.country"
           :state="form.country !== null"
-          :options="country.options"
+          :options="countryList.options"
           @change="onInput('country', $event)"
         />
       </b-col>
@@ -93,12 +92,12 @@
           id="uspsvalid"
           :value="form.uspsvalid"
           :state="form.uspsvalid !== null"
-          :options="uspsvalid.options"
+          :options="uspsValidList.options"
           @change="onInput('uspsvalid', $event)"
         />
       </b-col>
       <b-col
-        v-if="initData.selects[0].value === 'mf'"
+        v-if="initSelects.selects[0].value === 'mf'"
         cols="12"
         md="4"
         class="align-self-center mb-2"
@@ -113,7 +112,7 @@
         />
       </b-col>
       <b-col
-        v-if="initData.selects[1].value === 'single'"
+        v-if="initSelects.selects[1].value === 'single'"
         cols="12"
         md="4"
         class="align-self-center mb-2"
@@ -128,7 +127,7 @@
         />
       </b-col>
       <b-col
-        v-if="initData.selects[0].value === 'mf'"
+        v-if="initSelects.selects[0].value === 'mf'"
         cols="12"
         md="4"
         class="align-self-center mb-2"
@@ -137,7 +136,7 @@
         <b-form-select
           id="property_feature_1"
           :value="pickPropertyVal"
-          :options="inputs.propertyvalue.options"
+          :options="propertyValueList.options"
           :state="pickPropertyVal !== null"
           @change="onInput('property_feature_1', $event)"
           class="pb-1"
@@ -148,7 +147,7 @@
         md="4"
         class="align-self-center address-col"
       >
-        <span :id="verifyAddTip" class="block" tabindex="0">
+        <span :id="addressTip" class="block" tabindex="0">
           <b-btn
             v-b-modal.usps-modal
             :disabled="disabledAddress"
@@ -159,7 +158,7 @@
           >
             Verify Address
           </b-btn>
-          <b-tooltip target="address-tip" variant="secondary" placement="auto">
+          <b-tooltip target="address-tip" variant="secondary" placement="topleft">
             complete address fields
           </b-tooltip>
         </span>
@@ -168,11 +167,9 @@
     <b-row class="align-items-center">
       <b-col class="text-right py-0">
         <save-step
-          :isDisabled="validateStepOne1"
+          :isDisabled="disabled"
           :saveData="saveData"
-          :tooltipID="displaySaveTip"
-          @step-save="onSave"
-          @step-update="onInput"
+          :tooltipID="saveTip"
         />
       </b-col>
     </b-row>
@@ -180,87 +177,68 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapGetters } from 'vuex'
 import UspsModal from '~/components/modals/usps-modal'
 import SaveStep from '~/components/save-step'
-import States from '~/mixins/states'
+import Locations from '~/mixins/locations'
 
 export default {
   components: {
     UspsModal,
     SaveStep
   },
-  mixins: [States],
-  props: {
-    inputs: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    location: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    initData: {
-      type: Object,
-      default() {
-        return {}
-      }
-    }
-  },
-  data () {
-    return {}
-  },
+  mixins: [Locations],
+  props: {},
+  data () { return {} },
   computed: {
     ...mapState({
+      iterableInputs: state => state.nameAddress.fields,
+      uspsApiRes: state => state.nameAddress.res,
+      saveData: state => state.nameAddress.saveData,
       initSelects: state => state.initSelects,
       locations: state => state.locations.locations,
       location: state => state.selectedLocation.location,
-      removeFields: state => state.nameAddress.removeFields,
+      excludedFields: state => state.nameAddress.excludedRequiredFields,
+      uspsValidList: state => state.nameAddress.uspsvalid,
+      propertyValueList: state => state.nameAddress.propertyvalue,
+      countryList: state => state.nameAddress.country,
       states: state => state.states
+    }),
+    ...mapGetters({
+      form: 'selectedLocation/stepOneData'
     }),
     disabledAddress() {
       return !this.validateAddFields()
     },
     pickPropertyVal() {
-      const propertyFeatureVal = this.location.properties.property_feature_1
-      return propertyFeatureVal || null
+      return this.form.property_feature_1 || null
     },
     getStates() {
       const country = this.location.properties.country
-      return this.location.properties.country
+      return country
         ? this.states[country].options
         : [{ value: null, text: 'Select Country for States' }]
     },
-    verifyAddTip() {
+    addressTip() {
       return !this.validateAddFields() ? 'address-tip' : 'not-disabled'
     },
-    displaySaveTip() {
+    saveTip() {
       return !this.validateStepOne() ? 'step-one-tip' : 'not-disabled'
     },
-    validateStepOne1() {
+    disabled() {
       const valid = this.validateStepOne()
       return !valid
-    },
-    form: {
-      get() { return this.$getters['selectLocation/formFields'] },
-      set(val) {}
     }
   },
   methods: {
     ...mapMutations({
+      set: 'nameAddress/SET'
     }),
     validateAddFields() {
       return (this.location.properties.street_address_1 &&
         this.location.properties.city &&
         this.location.properties.state &&
         this.location.properties.postal_code)
-    },
-    onSave() {
-      this.$emit('step-save')
     },
     validation(field) {
       let valid = true
@@ -282,7 +260,7 @@ export default {
       return valid
     },
     getRequiredFields() {
-      const fieldsToExclude = this.removeFields[this.initData.selects[1].value][this.initData.selects[0].value]
+      const fieldsToExclude = this.excludedFields[this.initSelects.selects[1].value][this.initSelects.selects[0].value]
       const filtered = Object.keys(this.form)
         .filter(key => !fieldsToExclude.includes(key))
         .reduce((obj, key) => {
@@ -292,25 +270,22 @@ export default {
       return filtered
     },
     onInput(key, val) {
-      this.$emit('step-update', { key, val, id: this.location.id })
+      this.onUpdate({ key, val, id: this.location.id })
+      this.onUpdate({ key: this.saveData.stepUpdateTxt, val: !this.disabled, id: this.location.id })
     },
     async verifyAddress() {
       try {
-        const res = await this.$axios.post('/routes/uspsapi/verify-address', { form: this.form })
-        this.res = res
+        const result = await this.$axios.post('/routes/uspsapi/verify-address', { form: this.form })
+        this.set({ 'res': result })
       } catch (e) {
         // eslint-disable-next-line no-console
         console.log(e)
-        this.res = null
+        this.set({ 'res': null })
       }
-    },
-    updateAddress(data) {
-      this.$emit('update-address', data)
     }
   }
 }
 </script>
-
 <style>
   .address-col {
     padding-top: 1.75rem!important;

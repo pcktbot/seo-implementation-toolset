@@ -1,7 +1,9 @@
 import Papa from 'papaparse'
 import { mapState, mapMutations } from 'vuex'
+import Alert from '~/mixins/alert'
 
 export default {
+  mixins: [Alert],
   data () {
     return {
       splitRgx: /\s*(?:,|$)\s*/, // staying here
@@ -20,8 +22,26 @@ export default {
   },
   computed: {
     ...mapState({
-      addImportProps: state => state.addImportProps
-    })
+      addImportProps: state => state.addImportProps,
+      initSelects: state => state.initSelects,
+      toggle: state => state.initSelects.toggle
+    }),
+    disabledUpload() {
+      let valid
+      if (this.toggle.selected === 'upload') {
+        valid = !this.validateIntitialSelections()
+      } else {
+        valid = !(this.validateLPID())
+      }
+      return valid
+    },
+    uploadTip() {
+      let val = 'not-disabled'
+      if ((this.toggle.selected === 'upload' && !this.validateIntitialSelections()) || (this.toggle.selected === 'import' && !this.validateLPID())) {
+        val = 'upload-tip'
+      }
+      return val
+    }
   },
   methods: {
     ...mapMutations({
@@ -29,6 +49,21 @@ export default {
       addLocations: 'locations/ADD',
       updateLocationTbl: 'locationsTable/SET_MAP_ITEMS'
     }),
+    validateIntitialSelections() {
+      const values = [this.initSelects.lpId]
+      this.initSelects.selects.forEach(select => values.push(select.value))
+      let valid = true
+      for (let i = 0; i < values.length; i++) {
+        if (!values[i]) {
+          valid = false
+          break
+        }
+      }
+      return (valid && this.initSelects.file && this.initSelects.lpId.toString().length === 8)
+    },
+    validateLPID() {
+      return this.initSelects.lpId && this.initSelects.lpId.toString().length === 8
+    },
     async postToDB(locations) {
       await this.$axios.$post('api/locations', {
         lpId: this.initSelects.lpId,

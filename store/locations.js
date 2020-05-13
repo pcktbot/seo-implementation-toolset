@@ -19,10 +19,18 @@ export const mutations = {
     state.locations = val
   },
   UPDATE_PROP(state, { key, val, id }) {
+    // eslint-disable-next-line no-console
+    console.log(key)
+    // eslint-disable-next-line no-console
+    console.log(val)
+    // eslint-disable-next-line no-console
+    console.log(id)
     const i = state.locations.findIndex(loc => loc.id === id)
+    // eslint-disable-next-line no-console
+    console.log(i)
     key === 'name'
       ? state.locations[i][key] = val
-      : this.locations[i].properties[key] = val
+      : state.locations[i].properties[key] = val
   },
   ADD(state, locations) {
     locations.forEach(loc => state.locations.push(loc))
