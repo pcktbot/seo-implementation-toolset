@@ -35,7 +35,7 @@
             >
               <div class="d-flex justify-content-center">
                 Get Keywords
-                <b-spinner v-if="loading" class="mt-1 ml-1" small label="Loading..." />
+                <b-spinner v-if="keywordStore.loading" class="mt-1 ml-1" small label="Loading..." />
               </div>
             </b-btn>
             <b-tooltip target="get-keywords" variant="secondary" placement="topleft">
@@ -54,15 +54,6 @@
           </b-btn>
         </b-col>
       </b-row>
-      <b-alert
-        :show="dismissCountDown"
-        @dismissed="dismissCountDown=0"
-        @dismiss-count-down="countDownChanged"
-        variant="warning"
-        dismissible
-      >
-        {{ alertMsg }}
-      </b-alert>
       <b-row>
         <b-col
           v-for="(input, index) in getInputs"
@@ -89,8 +80,8 @@
                   <b-input
                     :key="`${element.id}`"
                     v-autowidth="{maxWidth: '960px', minWidth: '20px', comfortZone: 0}"
-                    v-model="element.name"
-                    @input="updateKeyword(input, element.id, $event)"
+                    :value="element.name"
+                    @input="updateKeywordVal(input, element.id, $event)"
                     style="background-color: var(--quaternary); border: none; height: 1.25em; .form-control:focus "
                     type="text"
                     class="p-0"
@@ -123,7 +114,8 @@
                 <b-icon icon="plus" />
               </b-button>
               <b-form-input
-                v-model="keywordInput[keyword]"
+                :value="keywordStore.keywordInput[keyword]"
+                @input="setKeywordInput({ key: keyword, val: $event })"
                 size="sm"
                 style="height: 1.7em; margin-bottom: 4px;"
                 placeholder="add keywords here"
@@ -132,7 +124,7 @@
           </div>
           <b-container class="p-2 mr-0 ml-0 keywords" style="border: 1.5px solid #ccc; width: 100%; height: 250px; overflow-y: scroll; scroll-behavior: smooth">
             <draggable
-              :list="compform[keyword]"
+              v-model="compform[keyword]"
               :group="{ name: keyword, pull: 'clone', put: false }"
               :clone="cloneItem"
               @change="log"
@@ -147,8 +139,8 @@
                   <b-input
                     :key="`${element.id}`"
                     v-autowidth="{maxWidth: '960px', minWidth: '20px', comfortZone: 0}"
-                    v-model="element.name"
-                    @input="updateKeyword(keyword, element.id, $event)"
+                    :value="element.name"
+                    @input="updateKeywordVal(keyword, element.id, $event)"
                     style="background-color: var(--quaternary); border: none; height: 1.25em;"
                     type="text"
                     class="p-0"
@@ -183,7 +175,7 @@
                 />
               </b-button>
               <span style="font-weight:normal;">
-                {{ text }}
+                {{ keywordStore.text }}
               </span>
             </label>
             <b-form-textarea
@@ -203,10 +195,8 @@
       <b-col class="text-right py-0">
         <save-step
           :isDisabled="!validateStepTwo1"
-          :saveData="saveData"
+          :saveData="keywordStore.saveData"
           :tooltipID="displaySaveTip"
-          @step-save="onSave"
-          @step-update="onInput"
         />
       </b-col>
     </b-row>
@@ -214,84 +204,53 @@
 </template>
 
 <script>
+import { mapState, mapGetters, mapMutations } from 'vuex'
 import draggable from 'vuedraggable'
 import SaveStep from '~/components/save-step'
+import Locations from '~/mixins/locations'
 import PhraseGenerator from '~/mixins/phrases'
 import Diacritics from '~/mixins/diacritics'
+import Alert from '~/mixins/alert'
 let idGlobal = 1000
 export default {
   components: {
     SaveStep,
     draggable
   },
-  mixins: [PhraseGenerator, Diacritics],
+  mixins: [PhraseGenerator, Diacritics, Alert, Locations],
   props: {
-    inputs: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    location: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    form: {
-      type: Object,
-      default() {
-        return {}
-      }
-    }
   },
   data () {
     return {
-      list2: [],
-      keywordInput: {
-        neighborhood_keywords: '',
-        landmark_keywords: '',
-        amenity_keywords: '',
-        api_neighborhood_keywords: '',
-        api_landmark_keywords: ''
-      },
-      splitRgx: /\s*(?:,|$)\s*/,
-      text: '',
-      alertMsg: 'Get Keywords Failed. Check the address for this location',
-      dismissSecs: 5,
-      dismissCountDown: 0,
-      showDismissibleAlert: false,
-      saveData: {
-        tooltipTargetID: 'step-two-tip',
-        stepUpdateTxt: 'stepTwoComplete'
-      },
-      loading: false,
-      saveTxt: 'Save',
-      mfRequiredFields: [
-        'landmark_1_name',
-        'apartment_amenity_1',
-        'community_amenity_1'
-      ],
-      selected: 'neighborhood',
-      options: [
-        { text: 'Neighborhood', value: 'neighborhood' },
-        { text: 'Landmark', value: 'landmark' },
-        { text: 'Amenity', value: 'amenity' }
-      ]
     }
   },
   computed: {
+    ...mapState({
+      keywordStore: state => state.keywordResearch,
+      locations: state => state.locations.locations,
+      location: state => state.selectedLocation.location,
+      initSelects: state => state.initSelects
+    }),
+    ...mapGetters({
+      compform: 'selectedLocation/stepTwoData'
+    }),
+    selected: {
+      get() { return this.$store.state.keywordResearch.selected },
+      set(val) { this.$store.commit('keywordResearch/SET', { 'selected': val }) }
+    },
     getInputs() {
-      return this.inputs[this.selected].inputs
+      return this.keywordStore[this.selected].inputs
     },
     getKeywordInputs() {
-      return this.inputs[this.selected].keywords
+      return this.keywordStore[this.selected].keywords
     },
     getPhraseInputs() {
-      return this.inputs[this.selected].phrases
+      return this.keywordStore[this.selected].phrases
     },
     radioOptions() {
-      return this.form.selects[0].value === 'mf' ? this.options : this.options.slice(0, -1)
+      return this.initSelects.selects[0].value === 'mf'
+        ? this.keywordStore.options
+        : this.keywordStore.options.slice(0, -1)
     },
     apiProps() {
       return this.getApiProps()
@@ -312,27 +271,14 @@ export default {
     pickPropertyVal() {
       const propertyFeatureVal = this.location.properties.property_feature_1
       return propertyFeatureVal || null
-    },
-    compform: {
-      get() {
-        return {
-          neighborhood: this.location.properties.neighborhood,
-          neighborhood_2: this.location.properties.neighborhood_2,
-          landmark_1_name: this.location.properties.landmark_1_name,
-          apartment_amenity_1: this.location.properties.apartment_amenity_1,
-          community_amenity_1: this.location.properties.community_amenity_1,
-          neighborhood_keywords: this.location.properties.neighborhood_keywords,
-          landmark_keywords: this.location.properties.landmark_keywords,
-          amenity_keywords: this.location.properties.amenity_keywords,
-          api_neighborhood_keywords: this.location.properties.api_neighborhood_keywords,
-          api_landmark_keywords: this.location.properties.api_landmark_keywords,
-          negative_keywords: this.location.properties.negative_keywords
-        }
-      },
-      set(val) {}
     }
   },
   methods: {
+    ...mapMutations({
+      setProperty: 'keywordResearch/SET',
+      setKeywordInput: 'keywordResearch/SET_KEYWORD_INPUT',
+      moveKeyword: 'selectedLocation/SET_PROPERTY'
+    }),
     log(evt) {
       window.console.log(evt)
     },
@@ -350,40 +296,36 @@ export default {
     },
     removeAt(list, id) {
       const idx = this.compform[list].findIndex(item => item.id === id)
-      this.$emit('remove-keyword', { key: list, index: idx, id: this.location.id })
+      this.deleteKeyword({ locIndex: this.locIdx, key: list, index: idx })
     },
-    updateKeyword(property, id, event) {
+    updateKeywordVal(property, id, event) {
       const idx = this.compform[property].findIndex(item => item.id === id)
-      this.$emit('update-keyword', { key: property, index: idx, data: event, locId: this.location.id })
+      this.updateKeyword({ locIndex: this.locIdx, key: property, index: idx, data: event })
     },
     addKeyword(property) {
-      const value = this.keywordInput[property]
-      this.keywordInput[property] = ''
-      this.$emit('add-keyword', { key: property, val: value, id: this.location.id })
+      const value = this.keywordStore.keywordInput[property] // value user typed in
+      const keywords = this.locations[this.locIdx].properties[property]
+      const largestId = keywords.length > 0
+        ? Math.max.apply(Math, keywords.map(function(o) { return o.id }))
+        : 0
+      const data = { name: value, id: largestId + 1 }
+      this.addKywrd({ data, locIndex: this.locIdx, key: property }) // updates location state
+      this.setKeywordInput({ key: property, val: '' }) // updates input state
     },
     copyPhrases(id) {
       this.$copyText(this.location.properties[id])
-      this.text = 'Copied!'
+      this.setProperty({ 'text': 'Copied!' })
       // eslint-disable-next-line no-return-assign
-      setTimeout(() => this.text = '', 3000)
-    },
-    countDownChanged(dismissCountDown) {
-      this.dismissCountDown = dismissCountDown
-    },
-    showAlert() {
-      this.dismissCountDown = this.dismissSecs
-    },
-    onSave() {
-      this.$emit('step-save')
+      setTimeout(() => this.setProperty({ 'text': '' }), 3000)
     },
     getFields() {
-      return this.form.selects[0].value === 'mf'
-        ? this.mfRequiredFields
+      return this.initSelects.selects[0].value === 'mf'
+        ? this.keywordStore.mfRequiredFields
         : []
     },
     getApiProps() {
       return {
-        vertical: this.form.selects[0].value,
+        vertical: this.initSelects.selects[0].value,
         address: this.location.properties.street_address_1,
         class: this.location.properties.class,
         city: this.location.properties.city,
@@ -437,7 +379,7 @@ export default {
       return arr
     },
     getKeywords(props) {
-      this.loading = true
+      this.setProperty({ 'loading': true })
       const neighborhoodKeywords = []
       const landmarkKeywords = []
       this.$axios.$put('/placesapi/placesRequest', { props })
@@ -449,18 +391,18 @@ export default {
           for (const type in type2) {
             type2[type].forEach(place => landmarkKeywords.push(this.formatName(place)))
           }
-          this.$emit('step-update', { key: 'api_neighborhood_keywords', val: this.makeObject(neighborhoodKeywords), id: this.location.id })
-          this.$emit('step-update', { key: 'api_landmark_keywords', val: this.makeObject(landmarkKeywords), id: this.location.id })
-          this.loading = false
+          this.onUpdate({ key: 'api_neighborhood_keywords', val: this.makeObject(neighborhoodKeywords), id: this.location.id })
+          this.onUpdate({ key: 'api_landmark_keywords', val: this.makeObject(landmarkKeywords), id: this.location.id })
+          this.setProperty({ 'loading': false })
         }).catch((err) => {
           // eslint-disable-next-line no-console
           console.log(err)
-          this.showAlert()
-          this.loading = false
+          this.showAlert('Get Keywords Failed. Check the address for this location', 'danger')
+          this.setProperty({ 'loading': false })
         })
     },
     onInput(key, val) {
-      this.$emit('step-update', { key, val, id: this.location.id })
+      this.onUpdate({ key, val, id: this.location.id })
     },
     splitMapFilterTrim(data1, data2) {
       return data1.concat(data2)
@@ -473,7 +415,7 @@ export default {
       return {
         neighborhood_phrases: this.splitMapFilterTrim(api_neighborhood_keywords, neighborhood_keywords),
         landmark_phrases: this.splitMapFilterTrim(api_landmark_keywords, landmark_keywords),
-        amenity_phrases: this.form.selects[0].value === 'mf' ? this.compform.amenity_keywords.map(item => item.name.trim()).filter(item => item) : []
+        amenity_phrases: this.initSelects.selects[0].value === 'mf' ? this.compform.amenity_keywords.map(item => item.name.trim()).filter(item => item) : []
       }
     },
     getPhrases() {
@@ -485,10 +427,11 @@ export default {
           phrases[key].push(this.getPhrase(key, keyword))
         })
       }
-      if (this.form.selects[0].value !== 'mf') delete phrases.amenity_phrases
+      if (this.initSelects.selects[0].value !== 'mf') delete phrases.amenity_phrases
       const phraseKeyVal = Object.entries(phrases)
       for (const [prop, phrase] of phraseKeyVal) {
-        this.$emit('step-update', { key: prop, val: phrase.toString().replace(/\s\s+/g, ' ').trim(), id: this.location.id })
+        this.onUpdate({ key: prop, val: phrase.toString().replace(/\s\s+/g, ' ').trim(), id: this.location.id })
+        // this.$emit('step-update', { key: prop, val: phrase.toString().replace(/\s\s+/g, ' ').trim(), id: this.location.id })
       }
     },
     formatName(name) {

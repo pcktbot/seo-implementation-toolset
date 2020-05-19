@@ -1,7 +1,7 @@
 export default {
   methods: {
     getPhrase(type, value) {
-      const vertical = this.form.selects[0].value
+      const vertical = this.initSelects.selects[0].value
       const city = this.location.properties.city
       const state = this.location.properties.state
       const phrases = {

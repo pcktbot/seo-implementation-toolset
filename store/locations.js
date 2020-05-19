@@ -19,15 +19,7 @@ export const mutations = {
     state.locations = val
   },
   UPDATE_PROP(state, { key, val, id }) {
-    // eslint-disable-next-line no-console
-    console.log(key)
-    // eslint-disable-next-line no-console
-    console.log(val)
-    // eslint-disable-next-line no-console
-    console.log(id)
     const i = state.locations.findIndex(loc => loc.id === id)
-    // eslint-disable-next-line no-console
-    console.log(i)
     key === 'name'
       ? state.locations[i][key] = val
       : state.locations[i].properties[key] = val
@@ -35,7 +27,19 @@ export const mutations = {
   ADD(state, locations) {
     locations.forEach(loc => state.locations.push(loc))
   },
+  DELETE_KEYWORD(state, { locIndex, key, index }) {
+    state.locations[locIndex].properties[key].splice(index, 1)
+  },
+  UPDATE_KEYWORD(state, { locIndex, key, index, data }) {
+    state.locations[locIndex].properties[key][index].name = data
+  },
+  ADD_KEYWORD(state, { data, locIndex, key }) {
+    state.locations[locIndex].properties[key].push(data)
+  },
   UPDATE_THREE_LAYERS(state, { key1, key2, key3, key4, val }) {
     state.locations[key1][key2][key3][key4] = val
+  },
+  MOVE_KEYWORD(state, { locIndex, key, val }) {
+    state.locations[locIndex].properties[key] = val
   }
 }

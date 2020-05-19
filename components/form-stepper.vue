@@ -50,13 +50,6 @@
           />
         </template>
         <name-address />
-        <!--  :inputs="validation.steponefields"
-          :location="location"
-          :initData="form"
-          @step-update="onUpdate"
-          @step-save="onSave"
-          @update-address="updateAddress"
-        /> -->
       </b-tab>
       <b-tab>
         <template v-slot:title>
@@ -65,6 +58,7 @@
             :complete="stepTwoComplete"
           />
         </template>
+        <keyword-research />
         <!-- <keyword-research
           :inputs="validation.steptwofields"
           :location="location"
@@ -117,14 +111,14 @@
 import { mapState } from 'vuex'
 import Locations from '~/mixins/locations'
 import NameAddress from '~/components/steps/name-address'
-// import KeywordResearch from '~/components/steps/keyword-research'
+import KeywordResearch from '~/components/steps/keyword-research'
 // import Redirects from '~/components/steps/redirects'
 // import Gmb from '~/components/steps/gmb'
 import Tabs from '~/components/tabs'
 export default {
   components: {
     NameAddress,
-    // KeywordResearch,
+    KeywordResearch,
     // Redirects,
     // Gmb,
     Tabs
@@ -150,62 +144,62 @@ export default {
       stepOneText: 'Location Info Validation',
       stepTwoText: 'Keyword Research',
       stepThreeText: 'Redirects',
-      stepFourText: 'GMB / GA / Strategy',
-      validation: {
-        steponefields: {
-          fields: [
-            'name',
-            'recommended_name',
-            'street_address_1',
-            'city'
-          ],
-          propertyvalue: {
-            selected: null,
-            options: [
-              { value: null, text: 'Select Property Feature' },
-              { value: 'Affordable', text: 'Affordable' },
-              { value: 'Gated', text: 'Gated' },
-              { value: 'Furnished', text: 'Furnished' },
-              { value: 'Garden Style', text: 'Garden Style' },
-              { value: 'High Rise', text: 'High Rise' },
-              { value: 'New', text: 'New' },
-              { value: 'Upgraded', text: 'Upgraded' },
-              { value: 'Modern', text: 'Modern' },
-              { value: 'Luxury', text: 'Luxury' },
-              { value: 'Townhome Style', text: 'Townhome Style' },
-              { value: 'Smart', text: 'Smart' },
-              { value: 'Upscale', text: 'Upscale' }
-            ]
-          }
-        },
-        steptwofields: {
-          neighborhood: {
-            inputs: ['neighborhood', 'neighborhood_2'],
-            keywords: ['neighborhood_keywords', 'api_neighborhood_keywords'],
-            phrases: ['neighborhood_phrases']
-          },
-          landmark: {
-            inputs: ['landmark_1_name'],
-            keywords: ['landmark_keywords', 'api_landmark_keywords'],
-            phrases: ['landmark_phrases']
-          },
-          amenity: {
-            inputs: ['apartment_amenity_1', 'community_amenity_1'],
-            keywords: ['amenity_keywords'],
-            phrases: ['amenity_phrases']
-          }
-        },
-        stepthreefields: {
-          options: [
-            { value: null, text: 'Select Strategy' },
-            { value: 'Same Domain', text: 'Same Domain' },
-            { value: 'Cross Domain', text: 'Cross Domain' },
-            { value: 'Secure Cross Domain', text: 'Secure Cross Domain' },
-            { value: 'Secure Naked Same Domain', text: 'Secure Naked Same Domain' },
-            { value: 'No Redirects', text: 'No Redirects' }
-          ]
-        }
-      }
+      stepFourText: 'GMB / GA / Strategy'
+      // validation: {
+      //   steponefields: {
+      //     fields: [
+      //       'name',
+      //       'recommended_name',
+      //       'street_address_1',
+      //       'city'
+      //     ],
+      //     propertyvalue: {
+      //       selected: null,
+      //       options: [
+      //         { value: null, text: 'Select Property Feature' },
+      //         { value: 'Affordable', text: 'Affordable' },
+      //         { value: 'Gated', text: 'Gated' },
+      //         { value: 'Furnished', text: 'Furnished' },
+      //         { value: 'Garden Style', text: 'Garden Style' },
+      //         { value: 'High Rise', text: 'High Rise' },
+      //         { value: 'New', text: 'New' },
+      //         { value: 'Upgraded', text: 'Upgraded' },
+      //         { value: 'Modern', text: 'Modern' },
+      //         { value: 'Luxury', text: 'Luxury' },
+      //         { value: 'Townhome Style', text: 'Townhome Style' },
+      //         { value: 'Smart', text: 'Smart' },
+      //         { value: 'Upscale', text: 'Upscale' }
+      //       ]
+      //     }
+      //   },
+      //   steptwofields: {
+      //     neighborhood: {
+      //       inputs: ['neighborhood', 'neighborhood_2'],
+      //       keywords: ['neighborhood_keywords', 'api_neighborhood_keywords'],
+      //       phrases: ['neighborhood_phrases']
+      //     },
+      //     landmark: {
+      //       inputs: ['landmark_1_name'],
+      //       keywords: ['landmark_keywords', 'api_landmark_keywords'],
+      //       phrases: ['landmark_phrases']
+      //     },
+      //     amenity: {
+      //       inputs: ['apartment_amenity_1', 'community_amenity_1'],
+      //       keywords: ['amenity_keywords'],
+      //       phrases: ['amenity_phrases']
+      //     }
+      //   },
+      //   stepthreefields: {
+      //     options: [
+      //       { value: null, text: 'Select Strategy' },
+      //       { value: 'Same Domain', text: 'Same Domain' },
+      //       { value: 'Cross Domain', text: 'Cross Domain' },
+      //       { value: 'Secure Cross Domain', text: 'Secure Cross Domain' },
+      //       { value: 'Secure Naked Same Domain', text: 'Secure Naked Same Domain' },
+      //       { value: 'No Redirects', text: 'No Redirects' }
+      //     ]
+      //   }
+      // }
     }
   },
   computed: {

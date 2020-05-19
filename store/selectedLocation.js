@@ -21,11 +21,33 @@ export const getters = {
       }
     }
     return val
+  },
+  stepTwoData: (state) => {
+    let val = null
+    if (state.location) {
+      val = {
+        neighborhood: state.location.properties.neighborhood,
+        neighborhood_2: state.location.properties.neighborhood_2,
+        landmark_1_name: state.location.properties.landmark_1_name,
+        apartment_amenity_1: state.location.properties.apartment_amenity_1,
+        community_amenity_1: state.location.properties.community_amenity_1,
+        neighborhood_keywords: state.location.properties.neighborhood_keywords,
+        landmark_keywords: state.location.properties.landmark_keywords,
+        amenity_keywords: state.location.properties.amenity_keywords,
+        api_neighborhood_keywords: state.location.properties.api_neighborhood_keywords,
+        api_landmark_keywords: state.location.properties.api_landmark_keywords,
+        negative_keywords: state.location.properties.negative_keywords
+      }
+    }
+    return val
   }
 }
 export const actions = {}
 export const mutations = {
   SET(state, val) {
     state.location = val
+  },
+  SET_PROPERTY(state, { key, val }) {
+    state.location.properties[key] = val
   }
 }

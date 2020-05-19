@@ -18,7 +18,10 @@ export default {
   methods: {
     ...mapMutations({
       updateLocProp: 'locations/UPDATE_PROP',
-      updateLocTable: 'locationsTable/SET_ITEM'
+      updateLocTable: 'locationsTable/SET_ITEM',
+      deleteKeyword: 'locations/DELETE_KEYWORD',
+      updateKeyword: 'locations/UPDATE_KEYWORD',
+      addKywrd: 'locations/ADD_KEYWORD'
     }),
     onUpdate(obj) {
       this.updateLocProp(obj)
