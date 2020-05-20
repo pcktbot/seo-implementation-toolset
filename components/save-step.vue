@@ -48,9 +48,8 @@ export default {
   methods: {
     save(key) {
       this.onSave()
-      this.onUpdate({ key, val: true, id: this.selectedLocation.id })
+      this.onUpdate({ key, val: true })
       this.updateLocationStatus()
-      // this.$emit('step-update', key, true) // needs updating
     }
   }
 

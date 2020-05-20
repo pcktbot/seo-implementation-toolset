@@ -99,7 +99,7 @@ export default {
       },
       set(val) {
         this.onLocationTab()
-          ? this.$store.commit('locations/UPDATE_PROP', { key: 'locationNote', val, id: this.location.id })
+          ? this.$store.commit('selectedLocation/UPDATE_PROP', { key: 'locationNote', val })
           : this.$store.commit('notes/SET', { 'projectNoteField': val })
       }
     },

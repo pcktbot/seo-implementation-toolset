@@ -43,11 +43,35 @@ export const getters = {
   }
 }
 export const actions = {}
+
 export const mutations = {
+  UPDATE_PROP(state, { key, val }) {
+    key === 'name'
+      ? state.location[key] = val
+      : state.location.properties[key] = val
+  },
   SET(state, val) {
     state.location = val
   },
   SET_PROPERTY(state, { key, val }) {
     state.location.properties[key] = val
+  },
+  SET_KEYWORD_LIST(state, { key, val }) {
+    state.location.properties[key] = val
+  },
+  DELETE_KEYWORD(state, { key, index }) {
+    state.location.properties[key].splice(index, 1)
+  },
+  UPDATE_KEYWORD(state, { key, index, data }) {
+    state.location.properties[key][index].name = data
+  },
+  ADD_KEYWORD(state, { data, key }) {
+    state.location.properties[key].push(data)
+  },
+  UPDATE_KEYWORD_LIST(state, { key, val }) {
+    state.location.properties[key] = val
+  },
+  SET_SELECTED(state, { val }) {
+    state.location.properties.redirects.selected = val
   }
 }

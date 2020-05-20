@@ -8,7 +8,6 @@ export default {
       locations: state => state.locations.locations,
       selectedLocation: state => state.selectedLocation.location,
       locID: state => state.selectedLocation.location.id,
-      locationtbl: state => state.locationsTable,
       initSelects: state => state.initSelects
     }),
     locIdx() {
@@ -17,25 +16,17 @@ export default {
   },
   methods: {
     ...mapMutations({
-      updateLocProp: 'locations/UPDATE_PROP',
-      updateLocTable: 'locationsTable/SET_ITEM',
-      deleteKeyword: 'locations/DELETE_KEYWORD',
-      updateKeyword: 'locations/UPDATE_KEYWORD',
-      addKywrd: 'locations/ADD_KEYWORD'
+      updateLocProp: 'selectedLocation/UPDATE_PROP',
+      updateLocTable: 'locationsTable/SET_ITEM'
     }),
     onUpdate(obj) {
       this.updateLocProp(obj)
-      // const { id } = obj
-      // const locIndex = this.getLocationIndex(id)
-      // this.updateLocationStatus(locIndex, id)
-      // this.updatePRLocationStatus(locIndex, id)
     },
     updateAddress(data) {
       for (const prop in data) {
         this.updateLocProp({
           key: prop,
-          val: data[prop],
-          id: this.locID
+          val: data[prop]
         })
       }
     },
@@ -43,10 +34,10 @@ export default {
       const locProp = this.selectedLocation.properties
       const stepsComplete = this.allStepsComple(locProp)
       if (stepsComplete) {
-        this.updateLocProp({ key: 'locationComplete', val: true, id: this.locID })
+        this.updateLocProp({ key: 'locationComplete', val: true })
         this.updateLocTable({ index: this.locIdx, field: 'status', val: true })
       } else {
-        this.updateLocProp({ key: 'locationComplete', val: false, id: this.locID })
+        this.updateLocProp({ key: 'locationComplete', val: false })
         this.updateLocTable({ index: this.locIdx, field: 'status', val: false })
       }
     },

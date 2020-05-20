@@ -1,11 +1,11 @@
 <template>
   <b-container fluid>
     <usps-modal
-      :res="uspsApiRes"
+      :res="nameAddress.res"
     />
     <b-row>
       <b-col
-        v-for="input in iterableInputs"
+        v-for="input in nameAddress.fields"
         :key="input"
         cols="12"
         md="4"
@@ -64,7 +64,7 @@
           id="country"
           :value="form.country"
           :state="form.country !== null"
-          :options="countryList.options"
+          :options="nameAddress.country.options"
           @change="onInput('country', $event)"
         />
       </b-col>
@@ -92,7 +92,7 @@
           id="uspsvalid"
           :value="form.uspsvalid"
           :state="form.uspsvalid !== null"
-          :options="uspsValidList.options"
+          :options="nameAddress.uspsvalid.options"
           @change="onInput('uspsvalid', $event)"
         />
       </b-col>
@@ -136,7 +136,7 @@
         <b-form-select
           id="property_feature_1"
           :value="pickPropertyVal"
-          :options="propertyValueList.options"
+          :options="nameAddress.propertyvalue.options"
           :state="pickPropertyVal !== null"
           @change="onInput('property_feature_1', $event)"
           class="pb-1"
@@ -168,7 +168,7 @@
       <b-col class="text-right py-0">
         <save-step
           :isDisabled="disabled"
-          :saveData="saveData"
+          :saveData="nameAddress.saveData"
           :tooltipID="saveTip"
         />
       </b-col>
@@ -192,16 +192,9 @@ export default {
   data () { return {} },
   computed: {
     ...mapState({
-      iterableInputs: state => state.nameAddress.fields,
-      uspsApiRes: state => state.nameAddress.res,
-      saveData: state => state.nameAddress.saveData,
+      nameAddress: state => state.nameAddress,
       initSelects: state => state.initSelects,
-      locations: state => state.locations.locations,
       location: state => state.selectedLocation.location,
-      excludedFields: state => state.nameAddress.excludedRequiredFields,
-      uspsValidList: state => state.nameAddress.uspsvalid,
-      propertyValueList: state => state.nameAddress.propertyvalue,
-      countryList: state => state.nameAddress.country,
       states: state => state.states
     }),
     ...mapGetters({
@@ -260,7 +253,7 @@ export default {
       return valid
     },
     getRequiredFields() {
-      const fieldsToExclude = this.excludedFields[this.initSelects.selects[1].value][this.initSelects.selects[0].value]
+      const fieldsToExclude = this.nameAddress.excludedRequiredFields[this.initSelects.selects[1].value][this.initSelects.selects[0].value]
       const filtered = Object.keys(this.form)
         .filter(key => !fieldsToExclude.includes(key))
         .reduce((obj, key) => {
@@ -270,8 +263,8 @@ export default {
       return filtered
     },
     onInput(key, val) {
-      this.onUpdate({ key, val, id: this.location.id })
-      this.onUpdate({ key: this.saveData.stepUpdateTxt, val: !this.disabled, id: this.location.id })
+      this.onUpdate({ key, val })
+      this.onUpdate({ key: this.nameAddress.saveData.stepUpdateTxt, val: !this.disabled })
     },
     async verifyAddress() {
       try {

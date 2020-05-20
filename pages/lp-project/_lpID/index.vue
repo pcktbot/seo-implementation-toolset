@@ -126,22 +126,22 @@ export default {
       : this.showAlert(this.alertProps.errLoadMsg, 'danger')
   },
   methods: {
-    addKeyword({ key, val, id }) {
-      const locIndex = this.getLocationIndex()
-      const keywords = this.locations[locIndex].properties[key]
-      const largestId = keywords.length > 0
-        ? Math.max.apply(Math, keywords.map(function(o) { return o.id }))
-        : 0
-      keywords.push({ name: val, id: largestId + 1 })
-    },
-    removeKeyword({ key, index, id }) {
-      const locIndex = this.getLocationIndex()
-      this.locations[locIndex].properties[key].splice(index, 1)
-    },
-    updateKeyword({ key, index, data, locId }) {
-      const locIndex = this.getLocationIndex()
-      this.locations[locIndex].properties[key][index].name = data
-    },
+    // addKeyword({ key, val, id }) {
+    //   const locIndex = this.getLocationIndex()
+    //   const keywords = this.locations[locIndex].properties[key]
+    //   const largestId = keywords.length > 0
+    //     ? Math.max.apply(Math, keywords.map(function(o) { return o.id }))
+    //     : 0
+    //   keywords.push({ name: val, id: largestId + 1 })
+    // },
+    // removeKeyword({ key, index, id }) {
+    //   const locIndex = this.getLocationIndex()
+    //   this.locations[locIndex].properties[key].splice(index, 1)
+    // },
+    // updateKeyword({ key, index, data, locId }) {
+    //   const locIndex = this.getLocationIndex()
+    //   this.locations[locIndex].properties[key][index].name = data
+    // },
     // updateVisibility(val) { this.visible = val },
     // async updateNotes(tabName) {
     //   const onLocationTab = tabName === 'location'

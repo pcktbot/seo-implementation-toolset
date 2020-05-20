@@ -33,7 +33,7 @@
         </span>
         <b-container class="p-3" style="border: 1.5px solid #ccc;">
           <draggable
-            :list="list1"
+            v-model="list1"
             :group="{ name: 'people', pull: 'clone', put: false }"
             :clone="cloneItem"
             @change="log"
@@ -88,19 +88,17 @@ export default {
   data() {
     return {
       keyword: '',
-      list1: [
-        { name: 'dog 1', id: 1 },
-        { name: 'dog 2', id: 2 },
-        { name: 'dog 3', id: 3 },
-        { name: 'dog 4', id: 4 }
-      ],
       list2: []
     }
   },
   computed: {
     ...mapState({
       selects: state => state.initSelects.selects
-    })
+    }),
+    list1: {
+      get() { return this.$store.state.testdraggable.list1 },
+      set(val) { this.$store.commit('testdraggable/SET', val) }
+    }
   },
   methods: {
     ...mapMutations({

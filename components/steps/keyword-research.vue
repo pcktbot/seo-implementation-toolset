@@ -64,34 +64,11 @@
             {{ `${input.replace(/_/g,' ').toUpperCase()}` }}
           </label>
           <b-container :style="getStateStyle(input)" class="p-1 mr-0 ml-0 keywords">
-            <draggable
-              :list="compform[input]"
-              :group="{ name: input, put: true }"
-              @change="onAdd(input, $event)"
-              class="dragArea list-group pill-box"
-            >
-              <b-list-group-item
-                v-for="element in compform[input]"
-                :key="`${input}-${element.id}`"
-                :state="validateField(input)"
-                class="list-group-item pillz"
-              >
-                <div class="form-inline">
-                  <b-input
-                    :key="`${element.id}`"
-                    v-autowidth="{maxWidth: '960px', minWidth: '20px', comfortZone: 0}"
-                    :value="element.name"
-                    @input="updateKeywordVal(input, element.id, $event)"
-                    style="background-color: var(--quaternary); border: none; height: 1.25em; .form-control:focus "
-                    type="text"
-                    class="p-0"
-                  />
-                  <span @click="removeAt(input, element.id)" class="m-0 p-0" onmouseover="" style="cursor: pointer;">
-                    <b-img width="17" height="17" src="/red-x.svg" />
-                  </span>
-                </div>
-              </b-list-group-item>
-            </draggable>
+            <drag
+              :listName="input"
+              :groupObj="{ name: input, pull: 'clone', put: true }"
+              :needsChangeEvnt="true"
+            />
           </b-container>
         </b-col>
       </b-row>
@@ -123,34 +100,11 @@
             </label>
           </div>
           <b-container class="p-2 mr-0 ml-0 keywords" style="border: 1.5px solid #ccc; width: 100%; height: 250px; overflow-y: scroll; scroll-behavior: smooth">
-            <draggable
-              v-model="compform[keyword]"
-              :group="{ name: keyword, pull: 'clone', put: false }"
-              :clone="cloneItem"
-              @change="log"
-              class="dragArea list-group pill-box"
-            >
-              <b-list-group-item
-                v-for="element in compform[keyword]"
-                :key="`${keyword}-${element.id}`"
-                class="list-group-item pillz"
-              >
-                <div class="form-inline">
-                  <b-input
-                    :key="`${element.id}`"
-                    v-autowidth="{maxWidth: '960px', minWidth: '20px', comfortZone: 0}"
-                    :value="element.name"
-                    @input="updateKeywordVal(keyword, element.id, $event)"
-                    style="background-color: var(--quaternary); border: none; height: 1.25em;"
-                    type="text"
-                    class="p-0"
-                  />
-                  <span @click="removeAt(keyword, element.id)" class="m-0 p-0" onmouseover="" style="cursor: pointer;">
-                    <b-img width="17" height="17" src="/red-x.svg" style="position: relative; bottom: .5px;" />
-                  </span>
-                </div>
-              </b-list-group-item>
-            </draggable>
+            <drag
+              :listName="keyword"
+              :groupObj="{ name: keyword, pull: 'clone', put: false }"
+              :needsChangeEvnt="false"
+            />
           </b-container>
         </b-col>
       </b-row>
@@ -194,7 +148,7 @@
     <b-row class="align-items-center">
       <b-col class="text-right py-0">
         <save-step
-          :isDisabled="!validateStepTwo1"
+          :isDisabled="disabledSave"
           :saveData="keywordStore.saveData"
           :tooltipID="displaySaveTip"
         />
@@ -205,17 +159,16 @@
 
 <script>
 import { mapState, mapGetters, mapMutations } from 'vuex'
-import draggable from 'vuedraggable'
 import SaveStep from '~/components/save-step'
+import Drag from '~/components/drag'
 import Locations from '~/mixins/locations'
 import PhraseGenerator from '~/mixins/phrases'
 import Diacritics from '~/mixins/diacritics'
 import Alert from '~/mixins/alert'
-let idGlobal = 1000
 export default {
   components: {
     SaveStep,
-    draggable
+    Drag
   },
   mixins: [PhraseGenerator, Diacritics, Alert, Locations],
   props: {
@@ -264,44 +217,20 @@ export default {
     disabledKeywordsToolTip() {
       return !this.validApiProps() ? 'get-keywords' : 'not-disabled'
     },
-    validateStepTwo1() {
+    disabledSave() {
       const valid = this.validateStepTwo()
-      return valid
-    },
-    pickPropertyVal() {
-      const propertyFeatureVal = this.location.properties.property_feature_1
-      return propertyFeatureVal || null
+      return !valid
     }
   },
   methods: {
     ...mapMutations({
       setProperty: 'keywordResearch/SET',
       setKeywordInput: 'keywordResearch/SET_KEYWORD_INPUT',
-      moveKeyword: 'selectedLocation/SET_PROPERTY'
+      moveKeyword: 'selectedLocation/SET_PROPERTY',
+      deleteKeyword: 'selectedLocation/DELETE_KEYWORD',
+      updateKeyword: 'selectedLocation/UPDATE_KEYWORD',
+      addKywrd: 'selectedLocation/ADD_KEYWORD'
     }),
-    log(evt) {
-      window.console.log(evt)
-    },
-    onAdd(input, payload) {
-      const { id } = payload.added.element
-      if (this.compform[input].length === 2) {
-        const itemIndex = this.compform[input].findIndex(item => item.id !== id)
-        const removeID = this.compform[input][itemIndex].id
-        this.removeAt(input, removeID)
-      }
-    },
-    cloneItem(payload) {
-      const { name } = payload
-      return { id: idGlobal++, name: `${name}` }
-    },
-    removeAt(list, id) {
-      const idx = this.compform[list].findIndex(item => item.id === id)
-      this.deleteKeyword({ locIndex: this.locIdx, key: list, index: idx })
-    },
-    updateKeywordVal(property, id, event) {
-      const idx = this.compform[property].findIndex(item => item.id === id)
-      this.updateKeyword({ locIndex: this.locIdx, key: property, index: idx, data: event })
-    },
     addKeyword(property) {
       const value = this.keywordStore.keywordInput[property] // value user typed in
       const keywords = this.locations[this.locIdx].properties[property]
@@ -309,7 +238,7 @@ export default {
         ? Math.max.apply(Math, keywords.map(function(o) { return o.id }))
         : 0
       const data = { name: value, id: largestId + 1 }
-      this.addKywrd({ data, locIndex: this.locIdx, key: property }) // updates location state
+      this.addKywrd({ data, key: property }) // updates location state
       this.setKeywordInput({ key: property, val: '' }) // updates input state
     },
     copyPhrases(id) {
@@ -346,8 +275,17 @@ export default {
       return val
     },
     getStateStyle(field) {
-      const val = this.validateField(field)
-      return (val) ? 'border: 1px solid #ced4da; height:42px; border-radius: 0.25rem' : 'border: 1px solid red; height:42px; border-radius: 0.25rem'
+      let style = 'border: 1px solid #ced4da; height:42px; border-radius: 0.25rem'
+      const reqFields = this.getFields()
+      if (reqFields.includes(field)) {
+        const val = this.location.properties[field]
+        if (val === '' || val === null || val.length === 0) {
+          style = 'border: 1px solid #e94f3d; height:42px; border-radius: 0.25rem'
+        } else {
+          style = 'border: 1px solid #28a745; height:42px; border-radius: 0.25rem'
+        }
+      }
+      return style
     },
     validateField(field) {
       let valid = true
@@ -391,8 +329,8 @@ export default {
           for (const type in type2) {
             type2[type].forEach(place => landmarkKeywords.push(this.formatName(place)))
           }
-          this.onUpdate({ key: 'api_neighborhood_keywords', val: this.makeObject(neighborhoodKeywords), id: this.location.id })
-          this.onUpdate({ key: 'api_landmark_keywords', val: this.makeObject(landmarkKeywords), id: this.location.id })
+          this.onUpdate({ key: 'api_neighborhood_keywords', val: this.makeObject(neighborhoodKeywords) })
+          this.onUpdate({ key: 'api_landmark_keywords', val: this.makeObject(landmarkKeywords) })
           this.setProperty({ 'loading': false })
         }).catch((err) => {
           // eslint-disable-next-line no-console
@@ -402,7 +340,9 @@ export default {
         })
     },
     onInput(key, val) {
-      this.onUpdate({ key, val, id: this.location.id })
+      // eslint-disable-next-line no-console
+      console.log('hi')
+      this.onUpdate({ key, val })
     },
     splitMapFilterTrim(data1, data2) {
       return data1.concat(data2)
@@ -430,7 +370,7 @@ export default {
       if (this.initSelects.selects[0].value !== 'mf') delete phrases.amenity_phrases
       const phraseKeyVal = Object.entries(phrases)
       for (const [prop, phrase] of phraseKeyVal) {
-        this.onUpdate({ key: prop, val: phrase.toString().replace(/\s\s+/g, ' ').trim(), id: this.location.id })
+        this.onUpdate({ key: prop, val: phrase.toString().replace(/\s\s+/g, ' ').trim() })
         // this.$emit('step-update', { key: prop, val: phrase.toString().replace(/\s\s+/g, ' ').trim(), id: this.location.id })
       }
     },

@@ -59,16 +59,6 @@
           />
         </template>
         <keyword-research />
-        <!-- <keyword-research
-          :inputs="validation.steptwofields"
-          :location="location"
-          :form="form"
-          @step-save="onSave"
-          @remove-keyword="removeKeyword"
-          @step-update="onUpdate"
-          @update-keyword="updateKeyword"
-          @add-keyword="addKeyword"
-        /> -->
       </b-tab>
       <b-tab>
         <template v-slot:title>
@@ -221,7 +211,7 @@ export default {
     prComplete: {
       get() { return this.location.properties.prComplete },
       set(value) {
-        this.onUpdate({ key: 'prComplete', val: value, id: this.location.id })
+        this.onUpdate({ key: 'prComplete', val: value })
         this.updatePRStatus()
       }
     },
