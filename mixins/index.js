@@ -8,6 +8,7 @@ export default {
         'neighborhood_keywords',
         'landmark_keywords',
         'amenity_keywords',
+        'comm_amenity_keywords',
         'neighborhood',
         'neighborhood_2',
         'landmark_1_name',
@@ -137,7 +138,7 @@ export default {
       return URL.createObjectURL(file)
     },
     excludedExportProp() {
-      const addProp = ['neighborhood_keywords', 'landmark_keywords', 'amenity_keywords', 'class', 'primary_type', 'current_website', 'negative_keywords']
+      const addProp = ['neighborhood_keywords', 'landmark_keywords', 'amenity_keywords', 'comm_amenity_keywords', 'class', 'primary_type', 'current_website', 'negative_keywords']
       return Object.keys(this.getAddPropFields()).concat(addProp)
     },
     updateSelect({ key, val }) {

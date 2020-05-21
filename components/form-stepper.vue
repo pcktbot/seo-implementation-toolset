@@ -188,7 +188,7 @@ export default {
           },
           amenity: {
             inputs: ['apartment_amenity_1', 'community_amenity_1'],
-            keywords: ['amenity_keywords'],
+            keywords: ['amenity_keywords', 'comm_amenity_keywords'],
             phrases: ['amenity_phrases']
           }
         },

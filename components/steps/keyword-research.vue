@@ -252,6 +252,7 @@ export default {
         neighborhood_keywords: '',
         landmark_keywords: '',
         amenity_keywords: '',
+        comm_amenity_keywords: '',
         api_neighborhood_keywords: '',
         api_landmark_keywords: ''
       },
@@ -324,6 +325,7 @@ export default {
           neighborhood_keywords: this.location.properties.neighborhood_keywords,
           landmark_keywords: this.location.properties.landmark_keywords,
           amenity_keywords: this.location.properties.amenity_keywords,
+          comm_amenity_keywords: this.location.properties.comm_amenity_keywords,
           api_neighborhood_keywords: this.location.properties.api_neighborhood_keywords,
           api_landmark_keywords: this.location.properties.api_landmark_keywords,
           negative_keywords: this.location.properties.negative_keywords
@@ -473,7 +475,11 @@ export default {
       return {
         neighborhood_phrases: this.splitMapFilterTrim(api_neighborhood_keywords, neighborhood_keywords),
         landmark_phrases: this.splitMapFilterTrim(api_landmark_keywords, landmark_keywords),
-        amenity_phrases: this.form.selects[0].value === 'mf' ? this.compform.amenity_keywords.map(item => item.name.trim()).filter(item => item) : []
+        amenity_phrases: this.form.selects[0].value === 'mf'
+          ? this.compform.amenity_keywords
+            .concat(this.compform.comm_amenity_keywords)
+            .map(item => item.name.trim()).filter(item => item)
+          : []
       }
     },
     getPhrases() {
