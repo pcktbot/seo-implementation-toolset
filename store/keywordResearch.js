@@ -10,7 +10,14 @@ export const state = () => ({
     phrases: ['landmark_phrases']
   },
   amenity: {
-    inputs: ['apartment_amenity_1', 'community_amenity_1'],
+    inputs: [
+      'apartment_amenity_1',
+      'apartment_amenity_2',
+      'apartment_amenity_3',
+      'community_amenity_1',
+      'community_amenity_2',
+      'community_amenity_3'
+    ],
     keywords: ['amenity_keywords'],
     phrases: ['amenity_phrases']
   },

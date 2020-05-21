@@ -11,7 +11,7 @@
       :key="`${listName}-${element.id}`"
       class="list-group-item pillz"
     >
-      <div class="form-inline">
+      <div class="form-inline" style="display: inline-block;">
         <b-input
           :key="`${element.id}`"
           v-autowidth="{maxWidth: '960px', minWidth: '20px', comfortZone: 0}"
@@ -22,7 +22,7 @@
           class="p-0"
         />
         <span @click="removeAt(listName, element.id)" class="m-0 p-0" onmouseover="" style="cursor: pointer;">
-          <b-img width="17" height="17" src="/red-x.svg" style="position: relative; bottom: .5px;" />
+          <b-img width="15" height="15" src="/red-x.svg" style="vertical-align: middle" />
         </span>
       </div>
     </b-list-group-item>

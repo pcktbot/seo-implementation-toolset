@@ -16,7 +16,11 @@ export default {
         'neighborhood_2',
         'landmark_1_name',
         'apartment_amenity_1',
-        'community_amenity_1'
+        'apartment_amenity_2',
+        'apartment_amenity_3',
+        'community_amenity_1',
+        'community_amenity_2',
+        'community_amenity_3'
       ]
     }
   },

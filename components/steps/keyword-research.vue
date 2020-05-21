@@ -16,7 +16,7 @@
         </b-form-group>
       </b-col>
     </b-row>
-    <b-card class="py-0 mb-2">
+    <b-card class="py-0 mb-2 ">
       <b-row class="align-items-center">
         <b-col cols="12" lg="12" xl="6">
           <h5 class="text-left mb-0">
@@ -27,7 +27,7 @@
         <b-col class="text-right pr-1 pl-2" cols="12" lg="4" xl="3">
           <span :id="disabledKeywordsToolTip" class="block" tabindex="0" block>
             <b-btn
-              @click="getKeywords(apiProps)"
+              @click="getKeywords()"
               :disabled="disabledGetKeywords"
               variant="secondary"
               class="mb-1"
@@ -61,7 +61,7 @@
           class="col-12 col-md"
         >
           <label :for="input">
-            {{ `${input.replace(/_/g,' ').toUpperCase()}` }}
+            {{ `${input.replace(/_/g,' ').replace('apartment','apt').toUpperCase()}` }}
           </label>
           <b-container :style="getStateStyle(input)" class="p-1 mr-0 ml-0 keywords">
             <drag
@@ -99,7 +99,7 @@
               />
             </label>
           </div>
-          <b-container class="p-2 mr-0 ml-0 keywords" style="border: 1.5px solid #ccc; width: 100%; height: 250px; overflow-y: scroll; scroll-behavior: smooth">
+          <b-container class="p-2 mr-0 ml-0 keywords keywords-container">
             <drag
               :listName="keyword"
               :groupObj="{ name: keyword, pull: 'clone', put: false }"
@@ -134,7 +134,7 @@
             </label>
             <b-form-textarea
               :id="`textarea-${phrase}`"
-              :placeholder="`${phrase.replace(/_/g,' ')} will auto-populate here after running generate phrases`"
+              :placeholder="`${phrase.replace(/_/g,' ')} will populate after running generate phrases`"
               :value="location.properties[phrase]"
               @input="onInput(phrase, $event)"
               rows="4"
@@ -204,9 +204,6 @@ export default {
       return this.initSelects.selects[0].value === 'mf'
         ? this.keywordStore.options
         : this.keywordStore.options.slice(0, -1)
-    },
-    apiProps() {
-      return this.getApiProps()
     },
     disabledGetKeywords() {
       return !this.validApiProps()
@@ -316,7 +313,8 @@ export default {
       }
       return arr
     },
-    getKeywords(props) {
+    getKeywords() {
+      const props = this.getApiProps()
       this.setProperty({ 'loading': true })
       const neighborhoodKeywords = []
       const landmarkKeywords = []
@@ -390,6 +388,13 @@ export default {
     max-width: 2500px;
   }
 }
+.keywords-container {
+  border: 1.5px solid #ccc;
+  width: 100%;
+  height: 250px;
+  overflow-y: scroll;
+  scroll-behavior: smooth
+}
 .keywords .form-control:focus {
   box-shadow: none;
 }
@@ -400,7 +405,7 @@ export default {
     border-radius: 4px;
     cursor: default;
     float: left;
-    padding: 4px 15px;
+    padding: 4px 8px;
     min-width: 70px;
     min-height: 32px;
 }
