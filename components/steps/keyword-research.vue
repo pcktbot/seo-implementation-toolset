@@ -353,7 +353,11 @@ export default {
       return {
         neighborhood_phrases: this.splitMapFilterTrim(api_neighborhood_keywords, neighborhood_keywords),
         landmark_phrases: this.splitMapFilterTrim(api_landmark_keywords, landmark_keywords),
-        amenity_phrases: this.initSelects.selects[0].value === 'mf' ? this.compform.amenity_keywords.map(item => item.name.trim()).filter(item => item) : []
+        amenity_phrases: this.initSelects.selects[0].value === 'mf'
+          ? this.compform.amenity_keywords
+            .concat(this.compform.comm_amenity_keywords)
+            .map(item => item.name.trim()).filter(item => item)
+          : []
       }
     },
     getPhrases() {

@@ -38,6 +38,7 @@ export const getters = {
         neighborhood_keywords: state.location.properties.neighborhood_keywords,
         landmark_keywords: state.location.properties.landmark_keywords,
         amenity_keywords: state.location.properties.amenity_keywords,
+        comm_amenity_keywords: state.location.properties.comm_amenity_keywords,
         api_neighborhood_keywords: state.location.properties.api_neighborhood_keywords,
         api_landmark_keywords: state.location.properties.api_landmark_keywords,
         negative_keywords: state.location.properties.negative_keywords
