@@ -45,6 +45,17 @@ export const getters = {
       }
     }
     return val
+  },
+  stepThreeData: (state) => {
+    let val = null
+    if (state.location) {
+      val = {
+        redirecttext: state.location.properties.redirecttext,
+        redirectstrat: state.location.properties.redirectstrat,
+        redirects: state.location.properties.redirects
+      }
+    }
+    return val
   }
 }
 export const actions = {}
@@ -78,5 +89,11 @@ export const mutations = {
   },
   SET_SELECTED(state, { val }) {
     state.location.properties.redirects.selected = val
+  },
+  ADD_REDIRECTS(state, val) {
+    state.locations.properties.redirects.items.push(...val)
+  },
+  UPDATE_CELL(state, { val, index, col }) {
+    state.location.properties.redirects.items[index][col] = val
   }
 }

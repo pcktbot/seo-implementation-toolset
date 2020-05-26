@@ -13,7 +13,7 @@
           id="strategy-selection"
           :state="validDropDown"
           :value="location.properties.redirectstrat"
-          :options="validation.stepthreefields.options"
+          :options="redirectsStore.options"
           @change="onInput('redirectstrat', $event)"
           class="w-50"
         />
@@ -35,11 +35,9 @@
       </b-col>
       <b-col class="top-3 text-right px-0 pb-3 col-12 col-md">
         <save-step
-          :isDisabled="!validateStep"
+          :isDisabled="disableSave"
           :saveData="saveData"
           :tooltipID="displaySaveTip"
-          @step-save="onSave"
-          @step-update="onInput"
         />
       </b-col>
     </b-row>
@@ -62,7 +60,7 @@
           ref="redirectsTable"
           :fields="location.properties.redirects.fields"
           :items="location.properties.redirects.items"
-          @row-selected="onRowSelected($event, 'locationtbl', 'redirecttbl')"
+          @row-selected="onRowSelected($event, 'redirecttbl')"
           selectable
           sticky-header="20rem"
           responsive
@@ -105,21 +103,21 @@
               <b-form-select
                 id="strat-selection"
                 :value="data.value"
-                :options="validation.stepthreefields.options"
-                @change="onChangeCell('redirects', $event, data.index, 'strategy')"
+                :options="redirectsStore.options"
+                @change="onChangeCell($event, data.index, 'strategy')"
               />
             </b-col>
           </template>
           <template v-slot:cell(current_url)="data">
             <b-form-input
               v-model="data.value"
-              @input="onChangeCell('redirects', $event, data.index, 'current_url')"
+              @input="onChangeCell($event, data.index, 'current_url')"
             />
           </template>
           <template v-slot:cell(formatted_url)="data">
             <b-form-input
               v-model="data.value"
-              @input="onChangeCell('redirects', $event, data.index, 'formatted_url')"
+              @input="onChangeCell($event, data.index, 'formatted_url')"
             />
           </template>
           <template v-slot:cell(select)="{ rowSelected }">
@@ -162,27 +160,31 @@
 </template>
 
 <script>
+import { mapState, mapGetters, mapMutations } from 'vuex'
 import IconsSwap from '~/components/icons-swap'
 import SaveStep from '~/components/save-step'
+import Alert from '~/mixins/alert'
+import TableMethods from '~/mixins/tableMethods'
 export default {
   components: {
     SaveStep,
     IconsSwap
   },
-  props: {
-    location: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    validation: {
-      type: Object,
-      default() {
-        return {}
-      }
-    }
-  },
+  mixins: [Alert, TableMethods],
+  // props: {
+  //   location: {
+  //     type: Object,
+  //     default() {
+  //       return {}
+  //     }
+  //   },
+  //   validation: {
+  //     type: Object,
+  //     default() {
+  //       return {}
+  //     }
+  //   }
+  // },
   data () {
     return {
       iconConfig: {
@@ -204,6 +206,13 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      location: state => state.selectedLocation.location,
+      redirectsStore: state => state.redirectsStore
+    }),
+    ...mapGetters({
+      form: 'selectedLocation/stepThreeData'
+    }),
     formatTip() {
       return this.location.properties.redirectstrat === null ||
         (this.location.properties.redirecttext === '' &&
@@ -213,8 +222,8 @@ export default {
     displaySaveTip() {
       return !this.validateStepThree() ? 'step-three-tip' : 'not-disabled'
     },
-    validateStep() {
-      return this.location.properties.redirects.items.length > 0
+    disableSave() {
+      return !this.location.properties.redirects.items.length > 0
     },
     validDropDown() {
       return !!this.location.properties.redirectstrat
@@ -226,22 +235,17 @@ export default {
     },
     isDisabled() {
       return this.location.properties.redirects.selected
-    },
-    form: {
-      get() {
-        return {
-          redirecttext: this.location.properties.redirecttext,
-          redirectstrat: this.location.properties.redirectstrat,
-          redirects: this.location.properties.redirects
-        }
-      },
-      set(val) {}
     }
   },
   methods: {
-    onSave() {
-      this.$emit('step-save')
-    },
+    ...mapMutations({
+      addRedirects: 'selectedLocation/ADD_REDIRECTS',
+      updateProp: 'selectedLocation/UPDATE_PROP',
+      updateCell: 'selectedLocation/UPDATE_CELL'
+    }),
+    // onSave() {
+    //   this.$emit('step-save')
+    // },
     copyUrls(type) {
       let str = ''
       this.form.redirects.items.forEach((obj) => {
@@ -254,11 +258,6 @@ export default {
     },
     validateStepThree() {
       return this.location.properties.redirects.items.length > 0
-    },
-    showMsg(msg, variant) {
-      this.msg = msg
-      this.alertvariant = variant
-      this.hasMsg = true
     },
     getRedirectsArr() {
       // removes duplicates, non urls, urls already in table, bad file types
@@ -315,25 +314,26 @@ export default {
         const cloudFormatted = this.formatRedirect(redirect, currentStrat)
         table.push({ isActive: true, strategy: currentStrat, current_url: redirect, formatted_url: cloudFormatted })
       })
-      this.$emit('add-rows', table, { id: this.location.id })
+      this.addRedirects(table)
+      // this.$emit('add-rows', table, { id: this.location.id })
       this.updateTxtField(table)
-      this.showMsg(`${table.length} Row/s Added`, `${table.length ? 'success' : 'danger'}`)
+      this.showAlert(`${table.length} Row/s Added`, `${table.length ? 'success' : 'danger'}`)
+      // this.showMsg(`${table.length} Row/s Added`, `${table.length ? 'success' : 'danger'}`)
     },
     updateTxtField(table) {
       const newTxt = this.form.redirecttext.split(/\n|,/g).filter((item) => {
         const arr = table.map(obj => obj.current_url)
         return !arr.includes(item)
       }).toString().replace(/,+/g, '\n')
-      this.onInput('redirecttext', newTxt)
+      this.updateProp({ key: 'redirecttext', val: newTxt })
     },
-    onChangeCell(key, val, index, col) {
-      this.$emit('cell-update', { key, val, index, col, id: this.location.id })
+    onChangeCell(val, index, col) {
+      this.updateCell({ val, index, col })
+      // this.$emit('cell-update', { val, index, col })
     },
     onInput(key, val) {
-      this.$emit('step-update', { key, val, id: this.location.id })
-    },
-    onRowSelected(items) {
-      this.$emit('select-location', items, 'redirecttbl')
+      this.updateProp({ key, val })
+      // this.$emit('step-update', { key, val, id: this.location.id })
     },
     selectAllRows() {
       this.$refs.redirectsTable.selectAllRows()
