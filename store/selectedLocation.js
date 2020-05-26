@@ -95,5 +95,25 @@ export const mutations = {
   },
   UPDATE_CELL(state, { val, index, col }) {
     state.location.properties.redirects.items[index][col] = val
+  },
+  DELETE_REDIRECTS(state) {
+    const redirects = state.location.properties.redirects
+    redirects.selected.forEach((selection) => {
+      const url = selection.current_url
+      redirects.items = redirects.items.filter(item => item.current_url !== url)
+    })
+    redirects.selected = []
+  },
+  TOGGLE_WILDCARD(state) {
+    const redirects = state.location.properties.redirects
+    redirects.selected.forEach((selection) => {
+      if (selection.strategy === 'Same Domain') {
+        const url = selection.formatted_url
+        const rowIndex = redirects.items.findIndex(item => item.formatted_url === url)
+        url[url.length - 1] === '$'
+          ? redirects.items[rowIndex].formatted_url = url.slice(0, -1)
+          : redirects.items[rowIndex].formatted_url = `${url}$`
+      }
+    })
   }
 }

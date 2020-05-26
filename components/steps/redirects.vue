@@ -241,7 +241,9 @@ export default {
     ...mapMutations({
       addRedirects: 'selectedLocation/ADD_REDIRECTS',
       updateProp: 'selectedLocation/UPDATE_PROP',
-      updateCell: 'selectedLocation/UPDATE_CELL'
+      updateCell: 'selectedLocation/UPDATE_CELL',
+      deleteSelected: 'selectedLocation/DELETE_REDIRECTS',
+      toggle: 'selectedLocation/TOGGLE_WILDCARD'
     }),
     // onSave() {
     //   this.$emit('step-save')
@@ -343,11 +345,11 @@ export default {
     },
     onTblDelete() {
       if (this.location.properties.redirects.selected.length > 0) {
-        this.$emit('delete-redirects')
+        this.deleteSelected()
       }
     },
     toggleWildcard() {
-      this.$emit('toggle-wildcard')
+      this.toggle()
       this.$refs.redirectsTable.clearSelected()
     }
   }
