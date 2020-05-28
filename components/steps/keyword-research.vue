@@ -58,7 +58,7 @@
         <b-col
           v-for="(input, index) in getInputs"
           :key="`${input}-${index}`"
-          class="col-12 col-md"
+          :class="numInputCol"
         >
           <label :for="input">
             {{ `${input.replace(/_/g,' ').replace('apartment','apt').toUpperCase()}` }}
@@ -195,6 +195,10 @@ export default {
     },
     getInputs() {
       return this.keywordStore[this.selected].inputs
+    },
+    numInputCol() {
+      return this.keywordStore[this.selected].inputs.length === 6
+        ? 'col-12 col-md-4' : 'col-12 col-md'
     },
     getKeywordInputs() {
       return this.keywordStore[this.selected].keywords

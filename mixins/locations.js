@@ -60,7 +60,6 @@ export default {
       this.$axios.$put(`api/lp-project/${this.initSelects.lpId}`, {
         selects: this.initSelects.selects
       })
-      this.showAlert('Saved', 'success')
     }
   }
 }

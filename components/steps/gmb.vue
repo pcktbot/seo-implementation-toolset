@@ -16,7 +16,7 @@
     </b-row>
     <b-row>
       <b-col
-        v-for="(select, index) in selects"
+        v-for="(select, index) in gmbStore.selects"
         :key="select.id"
         cols="12"
         md="4"
@@ -41,10 +41,8 @@
       <b-col class="text-right pt-0" cols="12">
         <save-step
           :isDisabled="disabledSave"
-          :saveData="saveData"
+          :saveData="gmbStore.saveData"
           :tooltipID="displaySaveTip"
-          @step-save="onSave"
-          @step-update="onInput"
         />
       </b-col>
     </b-row>
@@ -52,106 +50,26 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 import Strategies from '~/server/config/strategies'
 import SaveStep from '~/components/save-step'
 export default {
   components: {
     SaveStep
   },
-  props: {
-    location: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    form: {
-      type: Object,
-      default() {
-        return {}
-      }
-    }
-  },
   data () {
     return {
-      strategies: Strategies,
-      saveData: {
-        tooltipTargetID: 'step-four-tip',
-        stepUpdateTxt: 'stepFourComplete'
-      },
-      saveTxt: 'Save',
-      options: [
-        { value: null, text: 'Select Status' },
-        { value: 'req', text: 'Requested' },
-        { value: 'acc', text: 'Accessed' },
-        { value: 'new', text: 'Create New' },
-        { value: 'unverified', text: 'Unverified' },
-        { value: 'basic', text: 'N/A Basic Package' },
-        { value: 'clientmanaged', text: 'N/A - Client Managed' }
-      ],
-      selects: [
-        {
-          id: 'gmb',
-          value: null
-
-        },
-        {
-          id: 'ga',
-          value: null
-        },
-        {
-          id: 'strategy',
-          value: null,
-          mfoptions: {
-            options: [
-              { value: null, text: 'Select Strategy' },
-              { value: 'mfa', text: 'MF A' },
-              { value: 'mfb', text: 'MF B' },
-              { value: 'mfc', text: 'MF C' },
-              { value: 'townhomes', text: 'Townhomes' },
-              { value: 'apartmentstownhomes', text: 'Apartments & Townhomes' },
-              { value: 'mobile', text: 'Mobile Homes' },
-              { value: 'fiftyfiveplus', text: '55+ Apartments' },
-              { value: 'senior', text: 'Senior Apartments' },
-              { value: 'student', text: 'Student Apartments' },
-              { value: 'mfa1', text: 'MF A-1' },
-              { value: 'mfb1', text: 'MF B-1' },
-              { value: 'mfc1', text: 'MF C-1' },
-              { value: 'mfa2', text: 'MF A-2' },
-              { value: 'mfb2', text: 'MF B-2' },
-              { value: 'mfc2', text: 'MF C-2' },
-              { value: 'mfa3', text: 'MF A-3' },
-              { value: 'mfb3', text: 'MF B-3' },
-              { value: 'mfc3', text: 'MF C-3' },
-              { value: 'mfa4', text: 'MF A-4' },
-              { value: 'mfb4', text: 'MF B-4' },
-              { value: 'mfc4', text: 'MF C-4' },
-              { value: 'mfy', text: 'MF-Y' },
-              { value: 'mfz', text: 'MF-Z' }
-
-            ]
-          },
-          ssoptions: {
-            options: [
-              { value: null, text: 'Select Strategy' },
-              { value: 'ssa', text: 'SS A' },
-              { value: 'ssalandmark', text: 'SS A - Landmark' },
-              { value: 'ssb', text: 'SS B' }
-            ]
-          },
-          sloptions: {
-            options: [
-              { value: null, text: 'Select Strategy' },
-              { value: 'sla', text: 'SL A' },
-              { value: 'slb', text: 'SL B' },
-              { value: 'slc', text: 'SL C' }
-            ]
-          }
-        }
-      ]
+      strategies: Strategies
     }
   },
   computed: {
+    ...mapState({
+      location: state => state.selectedLocation.location,
+      gmbStore: state => state.gmb,
+      initSelects: state => state.initSelects,
+      vertical: state => state.initSelects.selects[0].value,
+      strategy: state => state.selectedLocation.location.properties.strategy
+    }),
     disabledSave() {
       return !this.validateStepFour()
     },
@@ -159,32 +77,35 @@ export default {
       return !this.validateStepFour() ? 'step-four-tip' : 'not-disabled'
     },
     getStrategyLink() {
-      const vertical = this.form.selects[0].value
-      const verticalStrategies = Object.keys(this.strategies[vertical])
-      const strategy = this.location.properties.strategy
-      return strategy && verticalStrategies.includes(strategy) ? this.strategies[vertical][strategy].link : ''
+      const verticalStrategies = Object.keys(this.strategies[this.vertical])
+      return this.strategy && verticalStrategies.includes(this.strategy)
+        ? this.strategies[this.vertical][this.strategy].link : ''
     },
     getStrategyText() {
-      const vertical = this.form.selects[0].value
-      const verticalStrategies = Object.keys(this.strategies[vertical])
-      const strategy = this.location.properties.strategy
-      return strategy && verticalStrategies.includes(strategy) ? this.strategies[vertical][strategy].description : ''
+      const verticalStrategies = Object.keys(this.strategies[this.vertical])
+      return this.strategy && verticalStrategies.includes(this.strategy)
+        ? this.strategies[this.vertical][this.strategy].description : ''
     }
   },
   methods: {
-    onSave() {
-      this.$emit('step-save')
-    },
+    ...mapMutations({
+      updateProp: 'selectedLocation/UPDATE_PROP'
+    }),
     validateStepFour() {
       const properties = this.location.properties
-      return properties.gmb && properties.ga && properties.strategy
+      return properties.gmb && properties.ga && this.strategy
     },
     pickOptions(index) {
-      const vertical = this.form.selects[0].value
-      return index === 2 ? this.selects[2][`${vertical}options`].options : this.options
+      return index === 2
+        ? this.gmbStore.selects[2][`${this.vertical}options`]
+        : this.gmbStore.options
     },
     onInput(key, val) {
-      this.$emit('step-update', { key, val, id: this.location.id })
+      this.updateProp({ key, val })
+      this.updateProp({
+        key: this.gmbStore.saveData.stepUpdateTxt,
+        val: !this.disabledSave
+      })
     }
   }
 }

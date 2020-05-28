@@ -68,17 +68,6 @@
           />
         </template>
         <redirects />
-        <!-- <redirects
-          :location="location"
-          :validation="validation"
-          @add-rows="addRows"
-          @step-save="onSave"
-          @step-update="onUpdate"
-          @cell-update="updateCell"
-          @select-location="onRowSelected"
-          @delete-redirects="onDelete"
-          @toggle-wildcard="toggleWildcard"
-        /> -->
       </b-tab>
       <b-tab>
         <template v-slot:title>
@@ -87,12 +76,7 @@
             :complete="stepFourComplete"
           />
         </template>
-        <!-- <gmb
-          :location="location"
-          :form="form"
-          @step-update="onUpdate"
-          @step-save="onSave"
-        /> -->
+        <gmb />
       </b-tab>
     </b-tabs>
   </b-card>
@@ -100,97 +84,28 @@
 
 <script>
 import { mapState } from 'vuex'
+import Alert from '~/mixins/alert'
 import Locations from '~/mixins/locations'
 import NameAddress from '~/components/steps/name-address'
 import KeywordResearch from '~/components/steps/keyword-research'
 import Redirects from '~/components/steps/redirects'
-// import Gmb from '~/components/steps/gmb'
+import Gmb from '~/components/steps/gmb'
 import Tabs from '~/components/tabs'
 export default {
   components: {
     NameAddress,
     KeywordResearch,
     Redirects,
-    // Gmb,
+    Gmb,
     Tabs
   },
-  mixins: [Locations],
-  props: {
-    // location: {
-    //   type: Object,
-    //   default() {
-    //     return {}
-    //   }
-    // },
-    // form: {
-    //   type: Object,
-    //   default() {
-    //     return {}
-    //   }
-    // }
-  },
+  mixins: [Locations, Alert],
   data () {
     return {
-      // tabIndex: 0,
       stepOneText: 'Location Info Validation',
       stepTwoText: 'Keyword Research',
       stepThreeText: 'Redirects',
       stepFourText: 'GMB / GA / Strategy'
-      // validation: {
-      //   steponefields: {
-      //     fields: [
-      //       'name',
-      //       'recommended_name',
-      //       'street_address_1',
-      //       'city'
-      //     ],
-      //     propertyvalue: {
-      //       selected: null,
-      //       options: [
-      //         { value: null, text: 'Select Property Feature' },
-      //         { value: 'Affordable', text: 'Affordable' },
-      //         { value: 'Gated', text: 'Gated' },
-      //         { value: 'Furnished', text: 'Furnished' },
-      //         { value: 'Garden Style', text: 'Garden Style' },
-      //         { value: 'High Rise', text: 'High Rise' },
-      //         { value: 'New', text: 'New' },
-      //         { value: 'Upgraded', text: 'Upgraded' },
-      //         { value: 'Modern', text: 'Modern' },
-      //         { value: 'Luxury', text: 'Luxury' },
-      //         { value: 'Townhome Style', text: 'Townhome Style' },
-      //         { value: 'Smart', text: 'Smart' },
-      //         { value: 'Upscale', text: 'Upscale' }
-      //       ]
-      //     }
-      //   },
-      //   steptwofields: {
-      //     neighborhood: {
-      //       inputs: ['neighborhood', 'neighborhood_2'],
-      //       keywords: ['neighborhood_keywords', 'api_neighborhood_keywords'],
-      //       phrases: ['neighborhood_phrases']
-      //     },
-      //     landmark: {
-      //       inputs: ['landmark_1_name'],
-      //       keywords: ['landmark_keywords', 'api_landmark_keywords'],
-      //       phrases: ['landmark_phrases']
-      //     },
-      //     amenity: {
-      //       inputs: ['apartment_amenity_1', 'community_amenity_1'],
-      //       keywords: ['amenity_keywords'],
-      //       phrases: ['amenity_phrases']
-      //     }
-      //   },
-      //   stepthreefields: {
-      //     options: [
-      //       { value: null, text: 'Select Strategy' },
-      //       { value: 'Same Domain', text: 'Same Domain' },
-      //       { value: 'Cross Domain', text: 'Cross Domain' },
-      //       { value: 'Secure Cross Domain', text: 'Secure Cross Domain' },
-      //       { value: 'Secure Naked Same Domain', text: 'Secure Naked Same Domain' },
-      //       { value: 'No Redirects', text: 'No Redirects' }
-      //     ]
-      //   }
-      // }
     }
   },
   computed: {
@@ -231,49 +146,6 @@ export default {
     getPRText() {
       return this.location.properties.prComplete
         ? 'Peer Review Complete' : 'Peer Review Incomplete'
-    }
-  },
-  methods: {
-    addKeyword(data) {
-      this.$emit('add-keyword', data)
-    },
-    removeKeyword(data) {
-      this.$emit('remove-keyword', data)
-    },
-    // updatePR(prop, value) {
-    //   this.onUpdate({ key: prop, val: value, id: this.location.id })
-    // },
-    // selectedPropertyValue() {
-    //   return this.form.selects[0].value === 'mf' && this.location.properties.property_feature_1
-    //     ? this.location.properties.property_feature_1
-    //     : null
-    // },
-    // onUpdate(data) {
-    //   this.$emit('stepper-updated', data)
-    // },
-    onSave(prop, value) {
-      this.$emit('save-step')
-    },
-    addRows(rows, id) {
-      this.$emit('add-rows', rows, id)
-    },
-    updateCell(key, val, index, col, id) {
-      this.$emit('cell-update', key, val, index, col, id)
-    },
-    onRowSelected(items, tblname) {
-      this.$emit('select-location', items, tblname)
-    },
-    onDelete() {
-      this.$emit('delete-redirects')
-    },
-    toggleWildcard() {
-      this.$emit('toggle-wildcard')
-    },
-    updateAddress(data) {
-      this.$emit('update-address', data)
-    },
-    updateKeyword(data) {
-      this.$emit('update-keyword', data)
     }
   }
 }

@@ -71,7 +71,7 @@
           </b-button>
         </b-col>
         <b-col class="col-12 col-md-6 col-lg">
-          <b-button @click="onSave" block>
+          <b-button @click="save" block>
             Save All
             <b-img src="/save-icon.svg" width="18" height="18" style="position: relative; bottom: 2px;" />
           </b-button>
@@ -150,6 +150,11 @@ export default {
       setLocationNotes: 'notes/SET',
       setLocationTblProps: 'locationsTable/SET'
     }),
+    save() {
+      this.onSave()
+      if (this.selectedLocation) { this.updateLocationStatus() }
+      this.showAlert('Saved', 'success')
+    },
     selectedLocationsComplete() {
       let val = true
       const selected = this.locationtbl.selected

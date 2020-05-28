@@ -50,6 +50,7 @@ export default {
       this.onSave()
       this.onUpdate({ key, val: true })
       this.updateLocationStatus()
+      this.showAlert('Saved', 'success')
     }
   }
 

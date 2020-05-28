@@ -8,7 +8,11 @@ export default {
         'neighborhood_2',
         'landmark_1_name',
         'apartment_amenity_1',
-        'community_amenity_1'
+        'apartment_amenity_2',
+        'apartment_amenity_3',
+        'community_amenity_1',
+        'community_amenity_2',
+        'community_amenity_3'
       ]
     }
   },
@@ -35,7 +39,7 @@ export default {
     },
     excludedExportProp() {
       const addProp = ['neighborhood_keywords', 'landmark_keywords', 'amenity_keywords', 'comm_amenity_keywords', 'class', 'primary_type', 'current_website', 'negative_keywords']
-      return Object.keys(this.addPropFields.concat(addProp))
+      return Object.keys(this.addPropFields).concat(addProp)
     },
     getSelectedLocationIds() {
       return this.locationtbl.selected
