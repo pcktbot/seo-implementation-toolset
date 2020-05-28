@@ -36,7 +36,7 @@
       <b-col class="top-3 text-right px-0 pb-3 col-12 col-md">
         <save-step
           :isDisabled="disableSave"
-          :saveData="saveData"
+          :saveData="redirectsStore.saveData"
           :tooltipID="displaySaveTip"
         />
       </b-col>
@@ -73,27 +73,17 @@
           <template v-slot:head(current_url)="data">
             {{ data.field.label }}
             <b-button @click="copyUrls('current_url')" class="p-0 m-0" variant="light">
-              <b-img
-                src="/copy-icon.png"
-                width="20"
-                height="20"
-                class="jello-vertical"
-              />
+              <b-img src="/copy-icon.png" width="20" height="20" class="jello-vertical" />
             </b-button>
-            <span style="font-weight:normal;">{{ current_url_msg }}</span>
+            <span style="font-weight:normal;">{{ redirectsStore.current_url_msg }}</span>
           </template>
           <!-- A custom formatted header cell for field 'formatted_url' -->
           <template v-slot:head(formatted_url)="data">
             {{ data.field.label }}
             <b-button @click="copyUrls('formatted_url')" class="p-0 m-0" variant="light">
-              <b-img
-                src="/copy-icon.png"
-                width="20"
-                height="20"
-                class="jello-vertical"
-              />
+              <b-img src="/copy-icon.png" width="20" height="20" class="jello-vertical" />
             </b-button>
-            <span style="font-weight:normal;">{{ formatted_url_msg }}</span>
+            <span style="font-weight:normal;">{{ redirectsStore.formatted_url_msg }}</span>
           </template>
           <template v-slot:cell(strategy)="data" class="align-self-center">
             <b-col
@@ -142,17 +132,6 @@
               Delete Selected
             </b-button>
           </b-col>
-          <b-col class="text-left">
-            <b-alert
-              :show="hasMsg"
-              :variant="alertvariant"
-              @dismissed="hasMsg=false, alertvariant='', msg=''"
-              dismissible
-              class="redirect-alert m-0 px-1 py-1"
-            >
-              {{ msg }}
-            </b-alert>
-          </b-col>
         </b-row>
       </b-col>
     </b-row>
@@ -171,44 +150,15 @@ export default {
     IconsSwap
   },
   mixins: [Alert, TableMethods],
-  // props: {
-  //   location: {
-  //     type: Object,
-  //     default() {
-  //       return {}
-  //     }
-  //   },
-  //   validation: {
-  //     type: Object,
-  //     default() {
-  //       return {}
-  //     }
-  //   }
-  // },
   data () {
     return {
-      iconConfig: {
-        width: '30',
-        height: '30',
-        true: '/check-box.svg',
-        false: '/square.svg'
-      },
-      saveData: {
-        tooltipTargetID: 'step-three-tip',
-        stepUpdateTxt: 'stepThreeComplete'
-      },
-      hasMsg: false,
-      msg: '',
-      current_url_msg: '',
-      formatted_url_msg: '',
-      alertvariant: '',
-      saveTxt: 'Save'
     }
   },
   computed: {
     ...mapState({
       location: state => state.selectedLocation.location,
-      redirectsStore: state => state.redirectsStore
+      redirectsStore: state => state.redirectStore,
+      iconConfig: state => state.iconConfig
     }),
     ...mapGetters({
       form: 'selectedLocation/stepThreeData'
@@ -232,31 +182,26 @@ export default {
       return this.location.properties.redirectstrat === null ||
         (this.location.properties.redirecttext === '' &&
         this.location.properties.redirectstrat !== 'No Redirects')
-    },
-    isDisabled() {
-      return this.location.properties.redirects.selected
     }
   },
   methods: {
     ...mapMutations({
+      setRedirectProp: 'redirectStore/SET',
       addRedirects: 'selectedLocation/ADD_REDIRECTS',
       updateProp: 'selectedLocation/UPDATE_PROP',
       updateCell: 'selectedLocation/UPDATE_CELL',
       deleteSelected: 'selectedLocation/DELETE_REDIRECTS',
       toggle: 'selectedLocation/TOGGLE_WILDCARD'
     }),
-    // onSave() {
-    //   this.$emit('step-save')
-    // },
     copyUrls(type) {
       let str = ''
       this.form.redirects.items.forEach((obj) => {
         str = str ? `${str}\n${obj[type]}` : obj[type]
       })
       this.$copyText(str)
-      this[`${type}_msg`] = 'Copied!'
+      this.setRedirectProp({ [`${type}_msg`]: 'Copied!' })
       // eslint-disable-next-line no-return-assign
-      setTimeout(() => this[`${type}_msg`] = '', 3000)
+      setTimeout(() => this.setRedirectProp({ [`${type}_msg`]: '' }), 3000)
     },
     validateStepThree() {
       return this.location.properties.redirects.items.length > 0
@@ -317,10 +262,9 @@ export default {
         table.push({ isActive: true, strategy: currentStrat, current_url: redirect, formatted_url: cloudFormatted })
       })
       this.addRedirects(table)
-      // this.$emit('add-rows', table, { id: this.location.id })
+      this.updateProp({ key: this.redirectsStore.saveData.stepUpdateTxt, val: !this.disableSave })
       this.updateTxtField(table)
       this.showAlert(`${table.length} Row/s Added`, `${table.length ? 'success' : 'danger'}`)
-      // this.showMsg(`${table.length} Row/s Added`, `${table.length ? 'success' : 'danger'}`)
     },
     updateTxtField(table) {
       const newTxt = this.form.redirecttext.split(/\n|,/g).filter((item) => {
@@ -331,11 +275,9 @@ export default {
     },
     onChangeCell(val, index, col) {
       this.updateCell({ val, index, col })
-      // this.$emit('cell-update', { val, index, col })
     },
     onInput(key, val) {
       this.updateProp({ key, val })
-      // this.$emit('step-update', { key, val, id: this.location.id })
     },
     selectAllRows() {
       this.$refs.redirectsTable.selectAllRows()
@@ -346,6 +288,7 @@ export default {
     onTblDelete() {
       if (this.location.properties.redirects.selected.length > 0) {
         this.deleteSelected()
+        this.updateProp({ key: this.redirectsStore.saveData.stepUpdateTxt, val: !this.disableSave })
       }
     },
     toggleWildcard() {

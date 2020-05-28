@@ -91,7 +91,7 @@ export const mutations = {
     state.location.properties.redirects.selected = val
   },
   ADD_REDIRECTS(state, val) {
-    state.locations.properties.redirects.items.push(...val)
+    state.location.properties.redirects.items.push(...val)
   },
   UPDATE_CELL(state, { val, index, col }) {
     state.location.properties.redirects.items[index][col] = val

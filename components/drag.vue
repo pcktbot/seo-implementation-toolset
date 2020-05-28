@@ -32,7 +32,6 @@
 <script>
 import draggable from 'vuedraggable'
 import { mapGetters, mapMutations } from 'vuex'
-let idGlobal = 1000
 export default {
   components: {
     draggable
@@ -55,10 +54,17 @@ export default {
       default() {
         return false
       }
+    },
+    stepComplete: {
+      type: Boolean,
+      default() {
+        return false
+      }
     }
   },
   data () {
     return {
+      idGlobal: 1000
     }
   },
   computed: {
@@ -67,22 +73,26 @@ export default {
     }),
     list: {
       get() { return this.compform[this.listName] },
-      set(value) { this.$store.commit('selectedLocation/UPDATE_KEYWORD_LIST', { key: this.listName, val: value }) }
+      async set(value) {
+        await this.$store.commit('selectedLocation/UPDATE_KEYWORD_LIST', { key: this.listName, val: value })
+        this.updateProp({ key: 'stepTwoComplete', val: this.stepComplete })
+      }
     }
-
   },
   methods: {
     ...mapMutations({
       deleteKeyword: 'selectedLocation/DELETE_KEYWORD',
-      updateKeyword: 'selectedLocation/UPDATE_KEYWORD'
+      updateKeyword: 'selectedLocation/UPDATE_KEYWORD',
+      updateProp: 'selectedLocation/UPDATE_PROP'
     }),
     cloneItem(payload) {
       const { name } = payload
-      return { id: idGlobal++, name: `${name}` }
+      return { id: this.idGlobal++, name: `${name}` }
     },
-    removeAt(list, id) {
+    async removeAt(list, id) {
       const idx = this.compform[list].findIndex(item => item.id === id)
-      this.deleteKeyword({ key: list, index: idx })
+      await this.deleteKeyword({ key: list, index: idx })
+      this.updateProp({ key: 'stepTwoComplete', val: this.stepComplete })
     },
     updateKeywordVal(property, id, event) {
       const idx = this.compform[property].findIndex(item => item.id === id)
@@ -90,9 +100,9 @@ export default {
     },
     onAdd(payload) {
       if (this.needsChangeEvnt) {
-        const { id } = payload.added.element
+        const { newIndex } = payload.added
         if (this.compform[this.listName].length === 2) {
-          const itemIndex = this.compform[this.listName].findIndex(item => item.id !== id)
+          const itemIndex = newIndex === 1 ? 0 : 1
           const removeID = this.compform[this.listName][itemIndex].id
           this.removeAt(this.listName, removeID)
         }

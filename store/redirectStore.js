@@ -7,10 +7,18 @@ export const state = () => ({
     { value: 'Secure Naked Same Domain', text: 'Secure Naked Same Domain' },
     { value: 'No Redirects', text: 'No Redirects' }
   ],
+  iconConfig: {
+    width: '30',
+    height: '30',
+    true: '/check-box.svg',
+    false: '/square.svg'
+  },
   saveData: {
     tooltipTargetID: 'step-three-tip',
     stepUpdateTxt: 'stepThreeComplete'
-  }
+  },
+  current_url_msg: '',
+  formatted_url_msg: ''
 })
 
 export const actions = {}

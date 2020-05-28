@@ -68,6 +68,7 @@
               :listName="input"
               :groupObj="{ name: input, pull: 'clone', put: true }"
               :needsChangeEvnt="true"
+              :stepComplete="!disabledSave"
             />
           </b-container>
         </b-col>
@@ -104,6 +105,7 @@
               :listName="keyword"
               :groupObj="{ name: keyword, pull: 'clone', put: false }"
               :needsChangeEvnt="false"
+              :stepComplete="!disabledSave"
             />
           </b-container>
         </b-col>

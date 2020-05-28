@@ -43,11 +43,13 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "nodemon": "^1.18.9",
     "@nuxtjs/eslint-config": "^1.0.1",
     "@nuxtjs/eslint-module": "^1.0.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^6.1.0",
-    "eslint-plugin-nuxt": ">=0.4.2"
+    "eslint-plugin-nuxt": ">=0.4.2",
+    "eslint-plugin-vue": "^5.2.3",
+    "nodemon": "^1.18.9",
+    "vue-eslint-parser": "^5.0.0"
   }
 }

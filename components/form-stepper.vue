@@ -67,6 +67,7 @@
             :complete="stepThreeComplete"
           />
         </template>
+        <redirects />
         <!-- <redirects
           :location="location"
           :validation="validation"
@@ -102,14 +103,14 @@ import { mapState } from 'vuex'
 import Locations from '~/mixins/locations'
 import NameAddress from '~/components/steps/name-address'
 import KeywordResearch from '~/components/steps/keyword-research'
-// import Redirects from '~/components/steps/redirects'
+import Redirects from '~/components/steps/redirects'
 // import Gmb from '~/components/steps/gmb'
 import Tabs from '~/components/tabs'
 export default {
   components: {
     NameAddress,
     KeywordResearch,
-    // Redirects,
+    Redirects,
     // Gmb,
     Tabs
   },
