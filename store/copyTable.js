@@ -1,6 +1,6 @@
 export const state = () => ({
-  mfHeaders: ['status', 'address', 'neighborhood', 'neighborhood_2', 'floor_plans', 'landmark', 'property_feature_1', 'apartment_amenity_1', 'community_amenity_1', 'strategy'],
-  otherHeaders: ['status', 'address', 'neighborhood', 'neighborhood_2', 'landmark', 'strategy'],
+  mfHeaders: ['status', 'name', 'address', 'neighborhood', 'neighborhood_2', 'floor_plans', 'landmark', 'property_feature_1', 'apartment_amenity_1', 'community_amenity_1', 'strategy'],
+  otherHeaders: ['status', 'name', 'address', 'neighborhood', 'neighborhood_2', 'landmark', 'strategy'],
   items: []
 })
 export const gettters = {}
