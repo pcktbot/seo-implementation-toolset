@@ -13,6 +13,16 @@ export default {
         'community_amenity_1',
         'community_amenity_2',
         'community_amenity_3'
+      ],
+      addProp: [
+        'neighborhood_keywords',
+        'landmark_keywords',
+        'amenity_keywords',
+        'comm_amenity_keywords',
+        'class',
+        'primary_type',
+        'current_website',
+        'negative_keywords'
       ]
     }
   },
@@ -38,8 +48,7 @@ export default {
       return URL.createObjectURL(file)
     },
     excludedExportProp() {
-      const addProp = ['neighborhood_keywords', 'landmark_keywords', 'amenity_keywords', 'comm_amenity_keywords', 'class', 'primary_type', 'current_website', 'negative_keywords']
-      return Object.keys(this.addPropFields).concat(addProp)
+      return Object.keys(this.addPropFields).concat(this.addProp)
     },
     getSelectedLocationIds() {
       return this.locationtbl.selected

@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import Locations from '~/mixins/locations'
 import Alert from '~/mixins/alert'
 export default {
@@ -46,11 +47,14 @@ export default {
     }
   },
   methods: {
+    ...mapMutations({
+      updateLocProp: 'selectedLocation/UPDATE_PROP'
+    }),
     save(key) {
-      this.onSave()
-      this.onUpdate({ key, val: true })
-      this.updateLocationStatus()
-      this.showAlert('Saved', 'success')
+      this.onSave() // in Locations Mixin
+      this.updateLocProp({ key, val: true })
+      this.updateLocationStatus() // in Locations Mixin
+      this.showAlert('Saved', 'success') // in Alert Mixin
     }
   }
 

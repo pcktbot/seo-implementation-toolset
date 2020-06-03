@@ -43,7 +43,6 @@ export default {
     validation(id, index) {
       return !!(this.selects[index].value)
     }
-
   }
 }
 </script>

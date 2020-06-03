@@ -134,7 +134,6 @@ export default {
         }
       })
       this.updateAddress(data)
-      // this.$emit('update-address', data)
       this.hide()
     }
   }

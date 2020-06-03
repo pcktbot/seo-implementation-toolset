@@ -54,6 +54,7 @@
           </b-btn>
         </b-col>
       </b-row>
+      <!-- Keyword Section -->
       <b-row>
         <b-col
           v-for="(input, index) in getInputs"
@@ -379,7 +380,6 @@ export default {
       const phraseKeyVal = Object.entries(phrases)
       for (const [prop, phrase] of phraseKeyVal) {
         this.onUpdate({ key: prop, val: phrase.toString().replace(/\s\s+/g, ' ').trim() })
-        // this.$emit('step-update', { key: prop, val: phrase.toString().replace(/\s\s+/g, ' ').trim(), id: this.location.id })
       }
     },
     formatName(name) {

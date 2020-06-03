@@ -80,7 +80,6 @@ export default {
   },
   computed: {
     ...mapState({
-      userInfo: state => state.userInfo,
       copyTable: state => state.copyTable,
       locations: state => state.locations,
       vertical: state => state.initSelects.selects[0].value
@@ -93,7 +92,6 @@ export default {
   },
   async fetch({ store, params }) {
     try {
-      store.dispatch('userInfo/GET')
       await store.dispatch('initSelects/GET', params.lpID)
       const res = await store.dispatch('locations/GET', params.lpID)
       store.commit('copyTable/SET_MAP_ITEMS', res)

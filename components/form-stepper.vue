@@ -161,7 +161,4 @@ export default {
      position: relative;
      bottom: 3px;
   }
-  /* .maps-icon {
-    vertical-align: top;
-  } */
 </style>

@@ -30,13 +30,21 @@ const authConfig = {
   },
   sucessRedirectPath: '/'
 }
-const regexWhitelist = []
+const regexWhitelist = [
+  /\/copy\/\d*$/,
+  /\/api\/lp-project\/\d*$/,
+  /\/api\/locations\/\d*$/,
+  /\/_nuxt\/\S*\.js$/,
+  /\/g5-logo-2\.png/,
+  /\/green-check\.svg/,
+  /\/red-x\.svg/
+]
 g5Auth.init(app, authConfig)
 
 app.use(bodyParser.json({ limit: '10000kb' }))
 app.use(checkWhiteList)
 function checkWhiteList(req, res, next) {
-  if (/^(\/_nuxt\/manifest\.[0-9a-z]*\.json).*$/.test(req.path) || dynamicWhitelist(req.path)) {
+  if (dynamicWhitelist(req.path)) {
     next()
   } else {
     g5Auth.isAuthenticated(req, res, next)

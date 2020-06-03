@@ -34,9 +34,7 @@ export default {
       return !!this.$nuxt._route.params.lpID
     }
   },
-  methods: {
-
-  }
+  methods: {}
 }
 </script>
 
