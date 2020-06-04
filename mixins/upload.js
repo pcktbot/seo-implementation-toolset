@@ -96,7 +96,7 @@ export default {
       const locations = await this.getLocationData(data)
       if (locations.length && !this.onProjectPage) { // on home page
         await this.postToDB(locations)
-        window.open(`/lp-project/${this.initSelects.lpId}`, '_blank')
+        window.open(`/lp-project/${this.initSelects.lpId}`, '_self')
         this.setSelects({ 'loading': false })
       } else if (locations.length && this.onProjectPage) { // on project page
         this.loadLocations(locations)
