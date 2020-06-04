@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span :id="tooltipID" class="d-inline-block" tabindex="0">
+    <span :id="currentTipID" class="d-inline-block" tabindex="0">
       <b-btn
         :disabled="isDisabled"
         @click="save(saveData.stepUpdateTxt)"
@@ -45,6 +45,9 @@ export default {
   data () {
     return {
     }
+  },
+  computed: {
+    currentTipID() { return this.tooltipID }
   },
   methods: {
     ...mapMutations({
