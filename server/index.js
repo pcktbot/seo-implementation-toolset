@@ -30,10 +30,30 @@ const authConfig = {
   },
   sucessRedirectPath: '/'
 }
+const regexWhitelist = [
+  /\/copy\/\d*$/,
+  /\/api\/lp-project\/\d*$/,
+  /\/api\/locations\/\d*$/,
+  /\/_nuxt\/\S*\.js$/,
+  /\/g5-logo-2\.png/,
+  /\/green-check\.svg/,
+  /\/red-x\.svg/
+]
 g5Auth.init(app, authConfig)
 
 app.use(bodyParser.json({ limit: '10000kb' }))
-app.use(g5Auth.isAuthenticated)
+app.use(checkWhiteList)
+function checkWhiteList(req, res, next) {
+  if (dynamicWhitelist(req.path)) {
+    next()
+  } else {
+    g5Auth.isAuthenticated(req, res, next)
+  }
+}
+
+function dynamicWhitelist(path) {
+  return regexWhitelist.some(url => url.test(path))
+}
 require('./routes/api')(app)
 require('./routes/placesapi')(app)
 require('./routes/uspsapi')(app)

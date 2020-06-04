@@ -1,14 +1,24 @@
 export const state = () => ({
   locations: []
 })
-export const getters = {
-  getLocationIndex(state, id) {
-    return state.locations.findIndex(loc => loc.id === id)
+
+export const actions = {
+  async GET({ commit }, lpId) {
+    const val = await this.$axios
+      .$get(`api/locations/${lpId}`)
+      .then((res) => {
+        commit('SET', res)
+        return res
+      })
+    return val
   }
 }
-export const actions = {}
+
 export const mutations = {
-  setLocations(state, data) {
-    state.locations = data
+  SET(state, val) {
+    state.locations = val
+  },
+  ADD(state, locations) {
+    locations.forEach(loc => state.locations.push(loc))
   }
 }

@@ -16,7 +16,7 @@
         </b-form-group>
       </b-col>
     </b-row>
-    <b-card class="py-0 mb-2">
+    <b-card class="py-0 mb-2 ">
       <b-row class="align-items-center">
         <b-col cols="12" lg="12" xl="6">
           <h5 class="text-left mb-0">
@@ -27,7 +27,7 @@
         <b-col class="text-right pr-1 pl-2" cols="12" lg="4" xl="3">
           <span :id="disabledKeywordsToolTip" class="block" tabindex="0" block>
             <b-btn
-              @click="getKeywords(apiProps)"
+              @click="getKeywords()"
               :disabled="disabledGetKeywords"
               variant="secondary"
               class="mb-1"
@@ -35,7 +35,7 @@
             >
               <div class="d-flex justify-content-center">
                 Get Keywords
-                <b-spinner v-if="loading" class="mt-1 ml-1" small label="Loading..." />
+                <b-spinner v-if="keywordStore.loading" class="mt-1 ml-1" small label="Loading..." />
               </div>
             </b-btn>
             <b-tooltip target="get-keywords" variant="secondary" placement="topleft">
@@ -54,53 +54,23 @@
           </b-btn>
         </b-col>
       </b-row>
-      <b-alert
-        :show="dismissCountDown"
-        @dismissed="dismissCountDown=0"
-        @dismiss-count-down="countDownChanged"
-        variant="warning"
-        dismissible
-      >
-        {{ alertMsg }}
-      </b-alert>
+      <!-- Keyword Section -->
       <b-row>
         <b-col
           v-for="(input, index) in getInputs"
           :key="`${input}-${index}`"
-          class="col-12 col-md"
+          :class="numInputCol"
         >
           <label :for="input">
-            {{ `${input.replace(/_/g,' ').toUpperCase()}` }}
+            {{ `${input.replace(/_/g,' ').replace('apartment','apt').toUpperCase()}` }}
           </label>
           <b-container :style="getStateStyle(input)" class="p-1 mr-0 ml-0 keywords">
-            <draggable
-              :list="compform[input]"
-              :group="{ name: input, put: true }"
-              @change="onAdd(input, $event)"
-              class="dragArea list-group pill-box"
-            >
-              <b-list-group-item
-                v-for="element in compform[input]"
-                :key="`${input}-${element.id}`"
-                :state="validateField(input)"
-                class="list-group-item pillz"
-              >
-                <div class="form-inline">
-                  <b-input
-                    :key="`${element.id}`"
-                    v-autowidth="{maxWidth: '960px', minWidth: '20px', comfortZone: 0}"
-                    v-model="element.name"
-                    @input="updateKeyword(input, element.id, $event)"
-                    style="background-color: var(--quaternary); border: none; height: 1.25em; .form-control:focus "
-                    type="text"
-                    class="p-0"
-                  />
-                  <span @click="removeAt(input, element.id)" class="m-0 p-0" onmouseover="" style="cursor: pointer;">
-                    <b-img width="17" height="17" src="/red-x.svg" />
-                  </span>
-                </div>
-              </b-list-group-item>
-            </draggable>
+            <drag
+              :listName="input"
+              :groupObj="{ name: input, pull: 'clone', put: true }"
+              :needsChangeEvnt="true"
+              :stepComplete="!disabledSave"
+            />
           </b-container>
         </b-col>
       </b-row>
@@ -123,42 +93,21 @@
                 <b-icon icon="plus" />
               </b-button>
               <b-form-input
-                v-model="keywordInput[keyword]"
+                :value="keywordStore.keywordInput[keyword]"
+                @input="setKeywordInput({ key: keyword, val: $event })"
                 size="sm"
                 style="height: 1.7em; margin-bottom: 4px;"
                 placeholder="add keywords here"
               />
             </label>
           </div>
-          <b-container class="p-2 mr-0 ml-0 keywords" style="border: 1.5px solid #ccc; width: 100%; height: 250px; overflow-y: scroll; scroll-behavior: smooth">
-            <draggable
-              :list="compform[keyword]"
-              :group="{ name: keyword, pull: 'clone', put: false }"
-              :clone="cloneItem"
-              @change="log"
-              class="dragArea list-group pill-box"
-            >
-              <b-list-group-item
-                v-for="element in compform[keyword]"
-                :key="`${keyword}-${element.id}`"
-                class="list-group-item pillz"
-              >
-                <div class="form-inline">
-                  <b-input
-                    :key="`${element.id}`"
-                    v-autowidth="{maxWidth: '960px', minWidth: '20px', comfortZone: 0}"
-                    v-model="element.name"
-                    @input="updateKeyword(keyword, element.id, $event)"
-                    style="background-color: var(--quaternary); border: none; height: 1.25em;"
-                    type="text"
-                    class="p-0"
-                  />
-                  <span @click="removeAt(keyword, element.id)" class="m-0 p-0" onmouseover="" style="cursor: pointer;">
-                    <b-img width="17" height="17" src="/red-x.svg" style="position: relative; bottom: .5px;" />
-                  </span>
-                </div>
-              </b-list-group-item>
-            </draggable>
+          <b-container class="p-2 mr-0 ml-0 keywords keywords-container">
+            <drag
+              :listName="keyword"
+              :groupObj="{ name: keyword, pull: 'clone', put: false }"
+              :needsChangeEvnt="false"
+              :stepComplete="!disabledSave"
+            />
           </b-container>
         </b-col>
       </b-row>
@@ -183,12 +132,12 @@
                 />
               </b-button>
               <span style="font-weight:normal;">
-                {{ text }}
+                {{ keywordStore.text }}
               </span>
             </label>
             <b-form-textarea
               :id="`textarea-${phrase}`"
-              :placeholder="`${phrase.replace(/_/g,' ')} will auto-populate here after running generate phrases`"
+              :placeholder="`${phrase.replace(/_/g,' ')} will populate after running generate phrases`"
               :value="location.properties[phrase]"
               @input="onInput(phrase, $event)"
               rows="4"
@@ -202,11 +151,9 @@
     <b-row class="align-items-center">
       <b-col class="text-right py-0">
         <save-step
-          :isDisabled="!validateStepTwo1"
-          :saveData="saveData"
+          :isDisabled="disabledSave"
+          :saveData="keywordStore.saveData"
           :tooltipID="displaySaveTip"
-          @step-save="onSave"
-          @step-update="onInput"
         />
       </b-col>
     </b-row>
@@ -214,88 +161,56 @@
 </template>
 
 <script>
-import draggable from 'vuedraggable'
+import { mapState, mapGetters, mapMutations } from 'vuex'
 import SaveStep from '~/components/save-step'
+import Drag from '~/components/drag'
+import Locations from '~/mixins/locations'
 import PhraseGenerator from '~/mixins/phrases'
 import Diacritics from '~/mixins/diacritics'
-let idGlobal = 1000
+import Alert from '~/mixins/alert'
 export default {
   components: {
     SaveStep,
-    draggable
+    Drag
   },
-  mixins: [PhraseGenerator, Diacritics],
+  mixins: [PhraseGenerator, Diacritics, Alert, Locations],
   props: {
-    inputs: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    location: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    form: {
-      type: Object,
-      default() {
-        return {}
-      }
-    }
   },
   data () {
     return {
-      list2: [],
-      keywordInput: {
-        neighborhood_keywords: '',
-        landmark_keywords: '',
-        amenity_keywords: '',
-        comm_amenity_keywords: '',
-        api_neighborhood_keywords: '',
-        api_landmark_keywords: ''
-      },
-      splitRgx: /\s*(?:,|$)\s*/,
-      text: '',
-      alertMsg: 'Get Keywords Failed. Check the address for this location',
-      dismissSecs: 5,
-      dismissCountDown: 0,
-      showDismissibleAlert: false,
-      saveData: {
-        tooltipTargetID: 'step-two-tip',
-        stepUpdateTxt: 'stepTwoComplete'
-      },
-      loading: false,
-      saveTxt: 'Save',
-      mfRequiredFields: [
-        'landmark_1_name',
-        'apartment_amenity_1',
-        'community_amenity_1'
-      ],
-      selected: 'neighborhood',
-      options: [
-        { text: 'Neighborhood', value: 'neighborhood' },
-        { text: 'Landmark', value: 'landmark' },
-        { text: 'Amenity', value: 'amenity' }
-      ]
     }
   },
   computed: {
+    ...mapState({
+      keywordStore: state => state.keywordResearch,
+      locations: state => state.locations.locations,
+      location: state => state.selectedLocation.location,
+      initSelects: state => state.initSelects
+    }),
+    ...mapGetters({
+      compform: 'selectedLocation/stepTwoData'
+    }),
+    selected: {
+      get() { return this.$store.state.keywordResearch.selected },
+      set(val) { this.$store.commit('keywordResearch/SET', { 'selected': val }) }
+    },
     getInputs() {
-      return this.inputs[this.selected].inputs
+      return this.keywordStore[this.selected].inputs
+    },
+    numInputCol() {
+      return this.keywordStore[this.selected].inputs.length === 6
+        ? 'col-12 col-md-4' : 'col-12 col-md'
     },
     getKeywordInputs() {
-      return this.inputs[this.selected].keywords
+      return this.keywordStore[this.selected].keywords
     },
     getPhraseInputs() {
-      return this.inputs[this.selected].phrases
+      return this.keywordStore[this.selected].phrases
     },
     radioOptions() {
-      return this.form.selects[0].value === 'mf' ? this.options : this.options.slice(0, -1)
-    },
-    apiProps() {
-      return this.getApiProps()
+      return this.initSelects.selects[0].value === 'mf'
+        ? this.keywordStore.options
+        : this.keywordStore.options.slice(0, -1)
     },
     disabledGetKeywords() {
       return !this.validApiProps()
@@ -306,86 +221,44 @@ export default {
     disabledKeywordsToolTip() {
       return !this.validApiProps() ? 'get-keywords' : 'not-disabled'
     },
-    validateStepTwo1() {
+    disabledSave() {
       const valid = this.validateStepTwo()
-      return valid
-    },
-    pickPropertyVal() {
-      const propertyFeatureVal = this.location.properties.property_feature_1
-      return propertyFeatureVal || null
-    },
-    compform: {
-      get() {
-        return {
-          neighborhood: this.location.properties.neighborhood,
-          neighborhood_2: this.location.properties.neighborhood_2,
-          landmark_1_name: this.location.properties.landmark_1_name,
-          apartment_amenity_1: this.location.properties.apartment_amenity_1,
-          community_amenity_1: this.location.properties.community_amenity_1,
-          neighborhood_keywords: this.location.properties.neighborhood_keywords,
-          landmark_keywords: this.location.properties.landmark_keywords,
-          amenity_keywords: this.location.properties.amenity_keywords,
-          comm_amenity_keywords: this.location.properties.comm_amenity_keywords,
-          api_neighborhood_keywords: this.location.properties.api_neighborhood_keywords,
-          api_landmark_keywords: this.location.properties.api_landmark_keywords,
-          negative_keywords: this.location.properties.negative_keywords
-        }
-      },
-      set(val) {}
+      return !valid
     }
   },
   methods: {
-    log(evt) {
-      window.console.log(evt)
-    },
-    onAdd(input, payload) {
-      const { id } = payload.added.element
-      if (this.compform[input].length === 2) {
-        const itemIndex = this.compform[input].findIndex(item => item.id !== id)
-        const removeID = this.compform[input][itemIndex].id
-        this.removeAt(input, removeID)
-      }
-    },
-    cloneItem(payload) {
-      const { name } = payload
-      return { id: idGlobal++, name: `${name}` }
-    },
-    removeAt(list, id) {
-      const idx = this.compform[list].findIndex(item => item.id === id)
-      this.$emit('remove-keyword', { key: list, index: idx, id: this.location.id })
-    },
-    updateKeyword(property, id, event) {
-      const idx = this.compform[property].findIndex(item => item.id === id)
-      this.$emit('update-keyword', { key: property, index: idx, data: event, locId: this.location.id })
-    },
+    ...mapMutations({
+      setProperty: 'keywordResearch/SET',
+      setKeywordInput: 'keywordResearch/SET_KEYWORD_INPUT',
+      moveKeyword: 'selectedLocation/SET_PROPERTY',
+      deleteKeyword: 'selectedLocation/DELETE_KEYWORD',
+      updateKeyword: 'selectedLocation/UPDATE_KEYWORD',
+      addKywrd: 'selectedLocation/ADD_KEYWORD'
+    }),
     addKeyword(property) {
-      const value = this.keywordInput[property]
-      this.keywordInput[property] = ''
-      this.$emit('add-keyword', { key: property, val: value, id: this.location.id })
+      const value = this.keywordStore.keywordInput[property] // value user typed in
+      const keywords = this.locations[this.locIdx].properties[property]
+      const largestId = keywords.length > 0
+        ? Math.max.apply(Math, keywords.map(function(o) { return o.id }))
+        : 0
+      const data = { name: value, id: largestId + 1 }
+      this.addKywrd({ data, key: property }) // updates location state
+      this.setKeywordInput({ key: property, val: '' }) // updates input state
     },
     copyPhrases(id) {
       this.$copyText(this.location.properties[id])
-      this.text = 'Copied!'
+      this.setProperty({ 'text': 'Copied!' })
       // eslint-disable-next-line no-return-assign
-      setTimeout(() => this.text = '', 3000)
-    },
-    countDownChanged(dismissCountDown) {
-      this.dismissCountDown = dismissCountDown
-    },
-    showAlert() {
-      this.dismissCountDown = this.dismissSecs
-    },
-    onSave() {
-      this.$emit('step-save')
+      setTimeout(() => this.setProperty({ 'text': '' }), 3000)
     },
     getFields() {
-      return this.form.selects[0].value === 'mf'
-        ? this.mfRequiredFields
+      return this.initSelects.selects[0].value === 'mf'
+        ? this.keywordStore.mfRequiredFields
         : []
     },
     getApiProps() {
       return {
-        vertical: this.form.selects[0].value,
+        vertical: this.initSelects.selects[0].value,
         address: this.location.properties.street_address_1,
         class: this.location.properties.class,
         city: this.location.properties.city,
@@ -406,8 +279,17 @@ export default {
       return val
     },
     getStateStyle(field) {
-      const val = this.validateField(field)
-      return (val) ? 'border: 1px solid #ced4da; height:42px; border-radius: 0.25rem' : 'border: 1px solid red; height:42px; border-radius: 0.25rem'
+      let style = 'border: 1px solid #ced4da; height:42px; border-radius: 0.25rem'
+      const reqFields = this.getFields()
+      if (reqFields.includes(field)) {
+        const val = this.location.properties[field]
+        if (val === '' || val === null || val.length === 0) {
+          style = 'border: 1px solid #e94f3d; height:42px; border-radius: 0.25rem'
+        } else {
+          style = 'border: 1px solid #28a745; height:42px; border-radius: 0.25rem'
+        }
+      }
+      return style
     },
     validateField(field) {
       let valid = true
@@ -438,8 +320,9 @@ export default {
       }
       return arr
     },
-    getKeywords(props) {
-      this.loading = true
+    getKeywords() {
+      const props = this.getApiProps()
+      this.setProperty({ 'loading': true })
       const neighborhoodKeywords = []
       const landmarkKeywords = []
       this.$axios.$put('/placesapi/placesRequest', { props })
@@ -451,18 +334,20 @@ export default {
           for (const type in type2) {
             type2[type].forEach(place => landmarkKeywords.push(this.formatName(place)))
           }
-          this.$emit('step-update', { key: 'api_neighborhood_keywords', val: this.makeObject(neighborhoodKeywords), id: this.location.id })
-          this.$emit('step-update', { key: 'api_landmark_keywords', val: this.makeObject(landmarkKeywords), id: this.location.id })
-          this.loading = false
+          this.onUpdate({ key: 'api_neighborhood_keywords', val: this.makeObject(neighborhoodKeywords) })
+          this.onUpdate({ key: 'api_landmark_keywords', val: this.makeObject(landmarkKeywords) })
+          this.setProperty({ 'loading': false })
         }).catch((err) => {
           // eslint-disable-next-line no-console
           console.log(err)
-          this.showAlert()
-          this.loading = false
+          this.showAlert('Get Keywords Failed. Check the address for this location', 'danger')
+          this.setProperty({ 'loading': false })
         })
     },
     onInput(key, val) {
-      this.$emit('step-update', { key, val, id: this.location.id })
+      // eslint-disable-next-line no-console
+      console.log('hi')
+      this.onUpdate({ key, val })
     },
     splitMapFilterTrim(data1, data2) {
       return data1.concat(data2)
@@ -475,7 +360,7 @@ export default {
       return {
         neighborhood_phrases: this.splitMapFilterTrim(api_neighborhood_keywords, neighborhood_keywords),
         landmark_phrases: this.splitMapFilterTrim(api_landmark_keywords, landmark_keywords),
-        amenity_phrases: this.form.selects[0].value === 'mf'
+        amenity_phrases: this.initSelects.selects[0].value === 'mf'
           ? this.compform.amenity_keywords
             .concat(this.compform.comm_amenity_keywords)
             .map(item => item.name.trim()).filter(item => item)
@@ -491,10 +376,10 @@ export default {
           phrases[key].push(this.getPhrase(key, keyword))
         })
       }
-      if (this.form.selects[0].value !== 'mf') delete phrases.amenity_phrases
+      if (this.initSelects.selects[0].value !== 'mf') delete phrases.amenity_phrases
       const phraseKeyVal = Object.entries(phrases)
       for (const [prop, phrase] of phraseKeyVal) {
-        this.$emit('step-update', { key: prop, val: phrase.toString().replace(/\s\s+/g, ' ').trim(), id: this.location.id })
+        this.onUpdate({ key: prop, val: phrase.toString().replace(/\s\s+/g, ' ').trim() })
       }
     },
     formatName(name) {
@@ -513,6 +398,13 @@ export default {
     max-width: 2500px;
   }
 }
+.keywords-container {
+  border: 1.5px solid #ccc;
+  width: 100%;
+  height: 250px;
+  overflow-y: scroll;
+  scroll-behavior: smooth
+}
 .keywords .form-control:focus {
   box-shadow: none;
 }
@@ -523,7 +415,7 @@ export default {
     border-radius: 4px;
     cursor: default;
     float: left;
-    padding: 4px 15px;
+    padding: 4px 8px;
     min-width: 70px;
     min-height: 32px;
 }

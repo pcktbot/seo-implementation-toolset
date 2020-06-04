@@ -13,7 +13,7 @@
           id="strategy-selection"
           :state="validDropDown"
           :value="location.properties.redirectstrat"
-          :options="validation.stepthreefields.options"
+          :options="redirectsStore.options"
           @change="onInput('redirectstrat', $event)"
           class="w-50"
         />
@@ -35,11 +35,9 @@
       </b-col>
       <b-col class="top-3 text-right px-0 pb-3 col-12 col-md">
         <save-step
-          :isDisabled="!validateStep"
-          :saveData="saveData"
+          :isDisabled="disableSave"
+          :saveData="redirectsStore.saveData"
           :tooltipID="displaySaveTip"
-          @step-save="onSave"
-          @step-update="onInput"
         />
       </b-col>
     </b-row>
@@ -62,7 +60,7 @@
           ref="redirectsTable"
           :fields="location.properties.redirects.fields"
           :items="location.properties.redirects.items"
-          @row-selected="onRowSelected"
+          @row-selected="onRowSelected($event, 'redirecttbl')"
           selectable
           sticky-header="20rem"
           responsive
@@ -75,27 +73,17 @@
           <template v-slot:head(current_url)="data">
             {{ data.field.label }}
             <b-button @click="copyUrls('current_url')" class="p-0 m-0" variant="light">
-              <b-img
-                src="/copy-icon.png"
-                width="20"
-                height="20"
-                class="jello-vertical"
-              />
+              <b-img src="/copy-icon.png" width="20" height="20" class="jello-vertical" />
             </b-button>
-            <span style="font-weight:normal;">{{ current_url_msg }}</span>
+            <span style="font-weight:normal;">{{ redirectsStore.current_url_msg }}</span>
           </template>
           <!-- A custom formatted header cell for field 'formatted_url' -->
           <template v-slot:head(formatted_url)="data">
             {{ data.field.label }}
             <b-button @click="copyUrls('formatted_url')" class="p-0 m-0" variant="light">
-              <b-img
-                src="/copy-icon.png"
-                width="20"
-                height="20"
-                class="jello-vertical"
-              />
+              <b-img src="/copy-icon.png" width="20" height="20" class="jello-vertical" />
             </b-button>
-            <span style="font-weight:normal;">{{ formatted_url_msg }}</span>
+            <span style="font-weight:normal;">{{ redirectsStore.formatted_url_msg }}</span>
           </template>
           <template v-slot:cell(strategy)="data" class="align-self-center">
             <b-col
@@ -105,21 +93,21 @@
               <b-form-select
                 id="strat-selection"
                 :value="data.value"
-                :options="validation.stepthreefields.options"
-                @change="onChangeCell('redirects', $event, data.index, 'strategy')"
+                :options="redirectsStore.options"
+                @change="onChangeCell($event, data.index, 'strategy')"
               />
             </b-col>
           </template>
           <template v-slot:cell(current_url)="data">
             <b-form-input
               v-model="data.value"
-              @input="onChangeCell('redirects', $event, data.index, 'current_url')"
+              @input="onChangeCell($event, data.index, 'current_url')"
             />
           </template>
           <template v-slot:cell(formatted_url)="data">
             <b-form-input
               v-model="data.value"
-              @input="onChangeCell('redirects', $event, data.index, 'formatted_url')"
+              @input="onChangeCell($event, data.index, 'formatted_url')"
             />
           </template>
           <template v-slot:cell(select)="{ rowSelected }">
@@ -144,17 +132,6 @@
               Delete Selected
             </b-button>
           </b-col>
-          <b-col class="text-left">
-            <b-alert
-              :show="hasMsg"
-              :variant="alertvariant"
-              @dismissed="hasMsg=false, alertvariant='', msg=''"
-              dismissible
-              class="redirect-alert m-0 px-1 py-1"
-            >
-              {{ msg }}
-            </b-alert>
-          </b-col>
         </b-row>
       </b-col>
     </b-row>
@@ -162,48 +139,30 @@
 </template>
 
 <script>
+import { mapState, mapGetters, mapMutations } from 'vuex'
 import IconsSwap from '~/components/icons-swap'
 import SaveStep from '~/components/save-step'
+import Alert from '~/mixins/alert'
+import TableMethods from '~/mixins/tableMethods'
 export default {
   components: {
     SaveStep,
     IconsSwap
   },
-  props: {
-    location: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    validation: {
-      type: Object,
-      default() {
-        return {}
-      }
-    }
-  },
+  mixins: [Alert, TableMethods],
   data () {
     return {
-      iconConfig: {
-        width: '30',
-        height: '30',
-        true: '/check-box.svg',
-        false: '/square.svg'
-      },
-      saveData: {
-        tooltipTargetID: 'step-three-tip',
-        stepUpdateTxt: 'stepThreeComplete'
-      },
-      hasMsg: false,
-      msg: '',
-      current_url_msg: '',
-      formatted_url_msg: '',
-      alertvariant: '',
-      saveTxt: 'Save'
     }
   },
   computed: {
+    ...mapState({
+      location: state => state.selectedLocation.location,
+      redirectsStore: state => state.redirectStore,
+      iconConfig: state => state.iconConfig
+    }),
+    ...mapGetters({
+      form: 'selectedLocation/stepThreeData'
+    }),
     formatTip() {
       return this.location.properties.redirectstrat === null ||
         (this.location.properties.redirecttext === '' &&
@@ -213,8 +172,8 @@ export default {
     displaySaveTip() {
       return !this.validateStepThree() ? 'step-three-tip' : 'not-disabled'
     },
-    validateStep() {
-      return this.location.properties.redirects.items.length > 0
+    disableSave() {
+      return !this.location.properties.redirects.items.length > 0
     },
     validDropDown() {
       return !!this.location.properties.redirectstrat
@@ -223,42 +182,29 @@ export default {
       return this.location.properties.redirectstrat === null ||
         (this.location.properties.redirecttext === '' &&
         this.location.properties.redirectstrat !== 'No Redirects')
-    },
-    isDisabled() {
-      return this.location.properties.redirects.selected
-    },
-    form: {
-      get() {
-        return {
-          redirecttext: this.location.properties.redirecttext,
-          redirectstrat: this.location.properties.redirectstrat,
-          redirects: this.location.properties.redirects
-        }
-      },
-      set(val) {}
     }
   },
   methods: {
-    onSave() {
-      this.$emit('step-save')
-    },
+    ...mapMutations({
+      setRedirectProp: 'redirectStore/SET',
+      addRedirects: 'selectedLocation/ADD_REDIRECTS',
+      updateProp: 'selectedLocation/UPDATE_PROP',
+      updateCell: 'selectedLocation/UPDATE_CELL',
+      deleteSelected: 'selectedLocation/DELETE_REDIRECTS',
+      toggle: 'selectedLocation/TOGGLE_WILDCARD'
+    }),
     copyUrls(type) {
       let str = ''
       this.form.redirects.items.forEach((obj) => {
         str = str ? `${str}\n${obj[type]}` : obj[type]
       })
       this.$copyText(str)
-      this[`${type}_msg`] = 'Copied!'
+      this.setRedirectProp({ [`${type}_msg`]: 'Copied!' })
       // eslint-disable-next-line no-return-assign
-      setTimeout(() => this[`${type}_msg`] = '', 3000)
+      setTimeout(() => this.setRedirectProp({ [`${type}_msg`]: '' }), 3000)
     },
     validateStepThree() {
       return this.location.properties.redirects.items.length > 0
-    },
-    showMsg(msg, variant) {
-      this.msg = msg
-      this.alertvariant = variant
-      this.hasMsg = true
     },
     getRedirectsArr() {
       // removes duplicates, non urls, urls already in table, bad file types
@@ -315,25 +261,23 @@ export default {
         const cloudFormatted = this.formatRedirect(redirect, currentStrat)
         table.push({ isActive: true, strategy: currentStrat, current_url: redirect, formatted_url: cloudFormatted })
       })
-      this.$emit('add-rows', table, { id: this.location.id })
+      this.addRedirects(table)
+      this.updateProp({ key: this.redirectsStore.saveData.stepUpdateTxt, val: !this.disableSave })
       this.updateTxtField(table)
-      this.showMsg(`${table.length} Row/s Added`, `${table.length ? 'success' : 'danger'}`)
+      this.showAlert(`${table.length} Row/s Added`, `${table.length ? 'success' : 'danger'}`)
     },
     updateTxtField(table) {
       const newTxt = this.form.redirecttext.split(/\n|,/g).filter((item) => {
         const arr = table.map(obj => obj.current_url)
         return !arr.includes(item)
       }).toString().replace(/,+/g, '\n')
-      this.onInput('redirecttext', newTxt)
+      this.updateProp({ key: 'redirecttext', val: newTxt })
     },
-    onChangeCell(key, val, index, col) {
-      this.$emit('cell-update', { key, val, index, col, id: this.location.id })
+    onChangeCell(val, index, col) {
+      this.updateCell({ val, index, col })
     },
     onInput(key, val) {
-      this.$emit('step-update', { key, val, id: this.location.id })
-    },
-    onRowSelected(items) {
-      this.$emit('select-location', items, 'redirecttbl')
+      this.updateProp({ key, val })
     },
     selectAllRows() {
       this.$refs.redirectsTable.selectAllRows()
@@ -343,11 +287,12 @@ export default {
     },
     onTblDelete() {
       if (this.location.properties.redirects.selected.length > 0) {
-        this.$emit('delete-redirects')
+        this.deleteSelected()
+        this.updateProp({ key: this.redirectsStore.saveData.stepUpdateTxt, val: !this.disableSave })
       }
     },
     toggleWildcard() {
-      this.$emit('toggle-wildcard')
+      this.toggle()
       this.$refs.redirectsTable.clearSelected()
     }
   }

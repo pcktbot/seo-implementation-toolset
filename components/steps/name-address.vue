@@ -1,13 +1,11 @@
 <template>
   <b-container fluid>
     <usps-modal
-      :form="form"
-      :res="res"
-      @update-address="updateAddress"
+      :res="nameAddress.res"
     />
     <b-row>
       <b-col
-        v-for="input in inputs.fields"
+        v-for="input in nameAddress.fields"
         :key="input"
         cols="12"
         md="4"
@@ -66,7 +64,7 @@
           id="country"
           :value="form.country"
           :state="form.country !== null"
-          :options="country.options"
+          :options="nameAddress.country.options"
           @change="onInput('country', $event)"
         />
       </b-col>
@@ -94,12 +92,12 @@
           id="uspsvalid"
           :value="form.uspsvalid"
           :state="form.uspsvalid !== null"
-          :options="uspsvalid.options"
+          :options="nameAddress.uspsvalid.options"
           @change="onInput('uspsvalid', $event)"
         />
       </b-col>
       <b-col
-        v-if="initData.selects[0].value === 'mf'"
+        v-if="initSelects.selects[0].value === 'mf'"
         cols="12"
         md="4"
         class="align-self-center mb-2"
@@ -114,7 +112,7 @@
         />
       </b-col>
       <b-col
-        v-if="initData.selects[1].value === 'single'"
+        v-if="initSelects.selects[1].value === 'single'"
         cols="12"
         md="4"
         class="align-self-center mb-2"
@@ -129,7 +127,7 @@
         />
       </b-col>
       <b-col
-        v-if="initData.selects[0].value === 'mf'"
+        v-if="initSelects.selects[0].value === 'mf'"
         cols="12"
         md="4"
         class="align-self-center mb-2"
@@ -138,7 +136,7 @@
         <b-form-select
           id="property_feature_1"
           :value="pickPropertyVal"
-          :options="inputs.propertyvalue.options"
+          :options="nameAddress.propertyvalue.options"
           :state="pickPropertyVal !== null"
           @change="onInput('property_feature_1', $event)"
           class="pb-1"
@@ -149,7 +147,7 @@
         md="4"
         class="align-self-center address-col"
       >
-        <span :id="verifyAddTip" class="block" tabindex="0">
+        <span :id="addressTip" class="block" tabindex="0">
           <b-btn
             v-b-modal.usps-modal
             :disabled="disabledAddress"
@@ -160,7 +158,7 @@
           >
             Verify Address
           </b-btn>
-          <b-tooltip target="address-tip" variant="secondary" placement="auto">
+          <b-tooltip target="address-tip" variant="secondary" placement="topleft">
             complete address fields
           </b-tooltip>
         </span>
@@ -169,11 +167,9 @@
     <b-row class="align-items-center">
       <b-col class="text-right py-0">
         <save-step
-          :isDisabled="validateStepOne1"
-          :saveData="saveData"
-          :tooltipID="displaySaveTip"
-          @step-save="onSave"
-          @step-update="onInput"
+          :isDisabled="disabled"
+          :saveData="nameAddress.saveData"
+          :tooltipID="saveTip"
         />
       </b-col>
     </b-row>
@@ -181,126 +177,61 @@
 </template>
 
 <script>
+import { mapState, mapMutations, mapGetters } from 'vuex'
 import UspsModal from '~/components/modals/usps-modal'
 import SaveStep from '~/components/save-step'
-import States from '~/mixins/states'
+import Locations from '~/mixins/locations'
+
 export default {
   components: {
     UspsModal,
     SaveStep
   },
-  mixins: [States],
-  props: {
-    inputs: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    location: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    initData: {
-      type: Object,
-      default() {
-        return {}
-      }
-    }
-  },
-  data () {
-    return {
-      saveData: {
-        tooltipTargetID: 'step-one-tip',
-        stepUpdateTxt: 'stepOneComplete'
-      },
-      res: null,
-      uspsLink: 'https://tools.usps.com/zip-code-lookup.htm?byaddress',
-      country: {
-        selected: null,
-        options: [
-          { value: null, text: 'Select Country' },
-          { value: 'US', text: 'United States' },
-          { value: 'CA', text: 'Canada' }
-        ]
-      },
-      uspsvalid: {
-        selected: null,
-        options: [
-          { value: null, text: 'Is Location Address USPS Verified?' },
-          { value: true, text: 'Yes - USPS Verified' },
-          { value: false, text: 'No - Not USPS Verified' }
-        ]
-      },
-      removeFields: {
-        multi: {
-          mf: ['custom_slug'],
-          ss: ['floor_plans', 'property_feature_1', 'custom_slug'],
-          sl: ['floor_plans', 'property_feature_1', 'custom_slug']
-        },
-        single: {
-          mf: [],
-          ss: ['floor_plans', 'property_feature_1'],
-          sl: ['floor_plans', 'property_feature_1']
-        }
-      }
-    }
-  },
+  mixins: [Locations],
+  props: {},
+  data () { return {} },
   computed: {
+    ...mapState({
+      nameAddress: state => state.nameAddress,
+      initSelects: state => state.initSelects,
+      location: state => state.selectedLocation.location,
+      states: state => state.states
+    }),
+    ...mapGetters({
+      form: 'selectedLocation/stepOneData'
+    }),
     disabledAddress() {
       return !this.validateAddFields()
     },
     pickPropertyVal() {
-      const propertyFeatureVal = this.location.properties.property_feature_1
-      return propertyFeatureVal || null
+      return this.form.property_feature_1 || null
     },
     getStates() {
       const country = this.location.properties.country
-      return this.location.properties.country
+      return country
         ? this.states[country].options
         : [{ value: null, text: 'Select Country for States' }]
     },
-    verifyAddTip() {
+    addressTip() {
       return !this.validateAddFields() ? 'address-tip' : 'not-disabled'
     },
-    displaySaveTip() {
+    saveTip() {
       return !this.validateStepOne() ? 'step-one-tip' : 'not-disabled'
     },
-    validateStepOne1() {
+    disabled() {
       const valid = this.validateStepOne()
       return !valid
-    },
-    form: {
-      get() {
-        return {
-          name: this.location.name,
-          recommendedname: this.location.properties.recommendedname,
-          street_address_1: this.location.properties.street_address_1,
-          city: this.location.properties.city,
-          state: this.location.properties.state,
-          postal_code: this.location.properties.postal_code,
-          country: this.location.properties.country,
-          population: this.location.properties.population,
-          uspsvalid: this.location.properties.uspsvalid,
-          floor_plans: this.location.properties.floor_plans,
-          property_feature_1: this.location.properties.property_feature_1,
-          custom_slug: this.location.properties.custom_slug
-        }
-      },
-      set(val) {}
     }
   },
   methods: {
+    ...mapMutations({
+      set: 'nameAddress/SET'
+    }),
     validateAddFields() {
       return (this.location.properties.street_address_1 &&
         this.location.properties.city &&
         this.location.properties.state &&
         this.location.properties.postal_code)
-    },
-    onSave() {
-      this.$emit('step-save')
     },
     validation(field) {
       let valid = true
@@ -322,7 +253,7 @@ export default {
       return valid
     },
     getRequiredFields() {
-      const fieldsToExclude = this.removeFields[this.initData.selects[1].value][this.initData.selects[0].value]
+      const fieldsToExclude = this.nameAddress.excludedRequiredFields[this.initSelects.selects[1].value][this.initSelects.selects[0].value]
       const filtered = Object.keys(this.form)
         .filter(key => !fieldsToExclude.includes(key))
         .reduce((obj, key) => {
@@ -332,25 +263,22 @@ export default {
       return filtered
     },
     onInput(key, val) {
-      this.$emit('step-update', { key, val, id: this.location.id })
+      this.onUpdate({ key, val })
+      this.onUpdate({ key: this.nameAddress.saveData.stepUpdateTxt, val: !this.disabled })
     },
     async verifyAddress() {
       try {
-        const res = await this.$axios.post('/routes/uspsapi/verify-address', { form: this.form })
-        this.res = res
+        const result = await this.$axios.post('/routes/uspsapi/verify-address', { form: this.form })
+        this.set({ 'res': result })
       } catch (e) {
         // eslint-disable-next-line no-console
         console.log(e)
-        this.res = null
+        this.set({ 'res': null })
       }
-    },
-    updateAddress(data) {
-      this.$emit('update-address', data)
     }
   }
 }
 </script>
-
 <style>
   .address-col {
     padding-top: 1.75rem!important;

@@ -3,11 +3,11 @@
     <span :id="tooltipID" class="d-inline-block" tabindex="0">
       <b-btn
         :disabled="isDisabled"
-        @click="onSave(saveData.stepUpdateTxt)"
+        @click="save(saveData.stepUpdateTxt)"
         variant="outline-secondary--darken3"
         class="px-5"
       >
-        {{ saveTxt }}
+        Save
       </b-btn>
       <b-tooltip :target="saveData.tooltipTargetID" placement="left" variant="secondary">
         complete step to save
@@ -17,7 +17,11 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
+import Locations from '~/mixins/locations'
+import Alert from '~/mixins/alert'
 export default {
+  mixins: [Locations, Alert],
   props: {
     isDisabled: {
       type: Boolean,
@@ -40,16 +44,17 @@ export default {
   },
   data () {
     return {
-      saveTxt: 'Save'
     }
   },
   methods: {
-    onSave(key) {
-      this.saveTxt = 'Saved!'
-      this.$emit('step-save')
-      // eslint-disable-next-line no-return-assign
-      setTimeout(() => this.saveTxt = 'Save', 3000)
-      this.$emit('step-update', key, true)
+    ...mapMutations({
+      updateLocProp: 'selectedLocation/UPDATE_PROP'
+    }),
+    save(key) {
+      this.onSave() // in Locations Mixin
+      this.updateLocProp({ key, val: true })
+      this.updateLocationStatus() // in Locations Mixin
+      this.showAlert('Saved', 'success') // in Alert Mixin
     }
   }
 

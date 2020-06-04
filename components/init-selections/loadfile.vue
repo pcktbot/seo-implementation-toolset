@@ -1,7 +1,7 @@
 <template>
   <b-form>
     <b-form-file
-      v-model="form.inputs.file"
+      v-model="file"
       :state="validation"
       accept=".csv"
       placeholder="Choose CSV file"
@@ -17,17 +17,13 @@
 
 <script>
 export default {
-  props: {
-    form: {
-      type: Object,
-      default() {
-        return {}
-      }
-    }
-  },
   computed: {
+    file: {
+      get() { return this.$store.state.initSelects.file },
+      set(val) { this.$store.commit('initSelects/SET', { 'file': val }) }
+    },
     validation() {
-      return !!(this.form.inputs.file)
+      return !!(this.file)
     }
   }
 }

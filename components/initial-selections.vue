@@ -1,35 +1,21 @@
 <template>
   <b-container fluid>
-    <instructions
-      :form="form"
-      :toggle="toggle"
-    />
-    <dropdowns
-      v-if="toggle.selected === 'upload'"
-      :form="form"
-      @field-update="onChange"
-    />
+    <instructions />
+    <dropdowns v-if="initSelects.toggle.selected === 'upload'" />
     <b-collapse id="collapse-1" v-model="visible">
       <b-row>
         <b-col
-          v-if="toggle.selected === 'upload'"
+          v-if="initSelects.toggle.selected === 'upload'"
           cols="12"
           md="4"
         >
-          <loadfile :form="form" />
+          <loadfile />
         </b-col>
         <b-col :md="getColWidth()" cols="12">
-          <lpinput
-            :form="form"
-            @input-update="onInput"
-          />
+          <lpinput />
         </b-col>
         <b-col :md="getColWidth()" cols="12">
-          <loadbtn
-            :form="form"
-            :selected="toggle.selected"
-            @upload-data="onUpload"
-          />
+          <loadbtn />
         </b-col>
       </b-row>
     </b-collapse>
@@ -37,6 +23,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import lpinput from '~/components/init-selections/lpinput'
 import loadbtn from '~/components/init-selections/loadbtn'
 import dropdowns from '~/components/init-selections/dropdowns'
@@ -50,45 +37,21 @@ export default {
     loadfile,
     instructions
   },
-  props: {
-    form: {
-      type: Object,
-      default() {
-        return {}
-      }
-    },
-    visible: {
-      type: Boolean,
-      default() {
-        return false
-      }
-    }
-  },
   data() {
-    return {
-      file: [],
-      toggle: {
-        selected: 'upload',
-        options: [
-          { text: 'New LP Project', value: 'upload' },
-          { text: 'Load LP Project', value: 'import' }
-        ]
-      },
-      missingFields: 'All fields must be filled out to continue'
+    return {}
+  },
+  computed: {
+    ...mapState({
+      initSelects: state => state.initSelects
+    }),
+    visible: {
+      get() { return this.$store.state.initSelects.visible },
+      set(val) { this.$store.commit('initSelects/SET', { 'visible': val }) }
     }
   },
   methods: {
     getColWidth() {
-      return this.toggle.selected === 'upload' ? 4 : 6
-    },
-    onChange(key, val) {
-      this.$emit('field-update', { key, val })
-    },
-    onInput(key, val) {
-      this.$emit('input-update', { key, val })
-    },
-    onUpload() {
-      this.$emit('upload-data')
+      return this.initSelects.toggle.selected === 'upload' ? 4 : 6
     }
   }
 }
