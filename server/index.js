@@ -42,7 +42,7 @@ const regexWhitelist = [
 g5Auth.init(app, authConfig)
 
 app.use(bodyParser.json({ limit: '10000kb' }))
-app.use(checkWhiteList)
+// app.use(checkWhiteList)
 function checkWhiteList(req, res, next) {
   if (dynamicWhitelist(req.path)) {
     next()
