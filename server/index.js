@@ -52,6 +52,8 @@ function checkWhiteList(req, res, next) {
 }
 
 function dynamicWhitelist(path) {
+  // eslint-disable-next-line no-console
+  console.log(path)
   return regexWhitelist.some(url => url.test(path))
 }
 require('./routes/api')(app)
