@@ -11,10 +11,11 @@
       </h2>
     </b-navbar-brand>
     <!-- Right aligned nav items -->
+    <b-navbar-nav class="ml-auto">
+      <slot name="alert" />
+    </b-navbar-nav>
     <b-navbar-nav class="ml-auto pr-2">
-      <b-navbar-nav>
-        <slot name="content" />
-      </b-navbar-nav>
+      <slot name="content" />
     </b-navbar-nav>
   </b-navbar>
 </template>

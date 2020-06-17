@@ -4,29 +4,37 @@ export const state = () => ({
     stepUpdateTxt: 'stepFourComplete'
   },
   saveTxt: 'Save',
-  options: [
-    { value: null, text: 'Select Status' },
-    { value: 'req', text: 'Requested' },
-    { value: 'acc', text: 'Accessed' },
-    { value: 'new', text: 'Create New' },
-    { value: 'unverified', text: 'Unverified' },
-    { value: 'basic', text: 'N/A Basic Package' },
-    { value: 'clientmanaged', text: 'N/A - Client Managed' }
-  ],
   selects: [
     {
       id: 'gmb',
-      value: null
-
+      value: null,
+      options: [
+        { value: null, text: 'Select Status' },
+        { value: 'req', text: 'Requested' },
+        { value: 'acc', text: 'Accessed' },
+        { value: 'new', text: 'Create New' },
+        { value: 'unverified', text: 'Unverified' },
+        { value: 'lp', text: 'N/A Landing Page' },
+        { value: 'corp', text: 'N/A Corp' },
+        { value: 'basic', text: 'N/A Basic Package' },
+        { value: 'clientmanaged', text: 'N/A - Client Managed' }
+      ]
     },
     {
       id: 'ga',
-      value: null
+      value: null,
+      options: [
+        { value: null, text: 'Select Status' },
+        { value: 'req', text: 'Requested' },
+        { value: 'acc', text: 'Accessed' },
+        { value: 'new', text: 'Create New' },
+        { value: 'current', text: 'Use Current Domain' }
+      ]
     },
     {
       id: 'strategy',
       value: null,
-      mfoptions: [
+      options: [
         { value: null, text: 'Select Strategy' },
         { value: 'mfa', text: 'MF A' },
         { value: 'mfb', text: 'MF B' },

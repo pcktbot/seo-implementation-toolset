@@ -96,9 +96,7 @@ export default {
       return properties.gmb && properties.ga && this.strategy
     },
     pickOptions(index) {
-      return index === 2
-        ? this.gmbStore.selects[2][`${this.vertical}options`]
-        : this.gmbStore.options
+      return this.gmbStore.selects[index].options
     },
     onInput(key, val) {
       this.updateProp({ key, val })

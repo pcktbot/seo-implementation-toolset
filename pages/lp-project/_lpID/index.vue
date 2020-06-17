@@ -1,17 +1,27 @@
 <template>
   <div>
     <g5-nav>
-      <template v-slot:content>
+      <template v-slot:alert>
         <b-alert
           :show="alertProps.dismissCountDown"
           :variant="alertProps.alertvariant"
           @dismiss-count-down="countDownChanged"
           @dismissed="set({alertMsg: '',alertvariant: '', dismissCountDown: 0})"
+          class="mb-0"
           dismissible
           fade
         >
           {{ alertProps.alertMsg }}
         </b-alert>
+      </template>
+      <template v-slot:content>
+        <b-nav-item
+          :href="`/copy/${lpId}`"
+        >
+          <h5 class="text-white mb-0 pb-0">
+            SEO Liquid Values
+          </h5>
+        </b-nav-item>
       </template>
     </g5-nav>
     <div class="main-with-nav">
@@ -79,7 +89,8 @@ export default {
       userInfo: state => state.userInfo,
       locationtbl: state => state.locationsTable,
       selectedLocation: state => state.selectedLocation.location,
-      initSelects: state => state.initSelects.selects
+      initSelects: state => state.initSelects.selects,
+      lpId: state => state.initSelects.lpId
     }),
     completedDropDowns() {
       let valid = true
