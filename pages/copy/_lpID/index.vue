@@ -27,7 +27,7 @@
               striped
               hover
               bordered
-              sticky-header="20rem"
+              sticky-header="42rem"
               responsive="true"
               head-variant="light"
               class="self-align-center table mt-3 mb-1"
