@@ -208,7 +208,7 @@ export default {
     },
     getStates() {
       const country = this.location.properties.country
-      return country
+      return country === 'US' || country === 'CA'
         ? this.states[country].options
         : [{ value: null, text: 'Select Country for States' }]
     },
