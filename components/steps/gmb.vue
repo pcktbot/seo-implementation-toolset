@@ -1,5 +1,8 @@
 <template>
   <b-container fluid>
+    <cid-modal
+      :res="gmbStore.res"
+    />
     <b-row>
       <b-col class="text-left" cols="12" md="4">
         <span class="font-weight-bold">Current Website: </span>{{ location.properties.current_website }}
@@ -36,9 +39,39 @@
           </b-form-group>
         </b-form>
       </b-col>
-    </b-row>
-    <b-row>
-      <b-col class="text-right pt-0" cols="12">
+      <b-col
+        cols="12"
+        md="4"
+        class="align-self-center mb-2"
+      >
+        <label for="google_cid">GMB CID</label>
+        <b-form-input
+          id="google_cid"
+          :value="location.properties.google_cid"
+          @input="onInput('google_cid', $event)"
+          placeholder="Enter GMB CID"
+        />
+      </b-col>
+      <b-col
+        cols="12"
+        md="4"
+        class="align-self-center address-col"
+      >
+        <b-btn
+          v-b-modal.cid-modal
+          @click="getCID"
+          variant="outline-secondary--darken3"
+          class="px-4"
+          block
+        >
+          Get CID
+        </b-btn>
+      </b-col>
+      <b-col
+        cols="12"
+        md="4"
+        class="text-right align-self-center address-col"
+      >
         <save-step
           :isDisabled="disabledSave"
           :saveData="gmbStore.saveData"
@@ -53,9 +86,11 @@
 import { mapState, mapMutations } from 'vuex'
 import Strategies from '~/server/config/strategies'
 import SaveStep from '~/components/save-step'
+import CidModal from '~/components/modals/cid-modal'
 export default {
   components: {
-    SaveStep
+    SaveStep,
+    CidModal
   },
   data () {
     return {
@@ -89,7 +124,8 @@ export default {
   },
   methods: {
     ...mapMutations({
-      updateProp: 'selectedLocation/UPDATE_PROP'
+      updateProp: 'selectedLocation/UPDATE_PROP',
+      set: 'gmb/SET'
     }),
     validateStepFour() {
       const properties = this.location.properties
@@ -104,6 +140,29 @@ export default {
         key: this.gmbStore.saveData.stepUpdateTxt,
         val: !this.disabledSave
       })
+    },
+    getAPIProps() {
+      return {
+        name: this.location.name,
+        address: this.location.properties.street_address_1,
+        city: this.location.properties.city,
+        state: this.location.properties.state,
+        zip: this.location.properties.postal_code,
+        vertical: this.vertical
+      }
+    },
+    getCID() {
+      const props = this.getAPIProps()
+      this.$axios.$put('/placesapi/cidRequest', { props })
+        .then((result) => {
+          // eslint-disable-next-line no-console
+          console.log(result)
+          this.set({ 'res': result })
+        }).catch((err) => {
+          // eslint-disable-next-line no-console
+          console.log(err)
+          this.set({ 'res': null })
+        })
     }
   }
 }

@@ -1,4 +1,5 @@
 export const state = () => ({
+  res: null,
   saveData: {
     tooltipTargetID: 'step-four-tip',
     stepUpdateTxt: 'stepFourComplete'
