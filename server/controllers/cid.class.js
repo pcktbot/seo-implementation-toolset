@@ -42,15 +42,18 @@ class CIDS {
   async placeIDSearch(placeId) {
     const apiurl = `https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeId}&key=${this.apiKey}`
     const { data } = await this.fetchTerms(apiurl)
-    const cid = data.result.url.split('cid=')[1]
-    return cid
+    return {
+      cid: data.result.url.split('cid=')[1],
+      url: data.result.url
+    }
   }
 
   async addCids(places) {
     for (let i = 0; i < places.length; i++) {
       const place = places[i]
-      const cid = await this.placeIDSearch(place.place_id)
+      const { cid, url } = await this.placeIDSearch(place.place_id)
       place.cid = cid
+      place.url = url
     }
   }
 

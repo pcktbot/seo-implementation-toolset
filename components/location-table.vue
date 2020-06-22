@@ -8,7 +8,7 @@
         :select-mode="locationtbl.selectMode"
         @row-selected="onRowSelected($event, 'locationtbl')"
         selectable
-        sticky-header="25rem"
+        sticky-header="20rem"
         responsive="true"
         striped
         hover

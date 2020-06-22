@@ -2,6 +2,10 @@ export const state = () => ({
   res: null,
   fields: [
     {
+      key: 'select',
+      label: 'Select'
+    },
+    {
       key: 'name',
       label: 'Name'
     },
@@ -16,9 +20,19 @@ export const state = () => ({
     {
       key: 'user_ratings_total',
       label: 'Review Count'
+    },
+    {
+      key: 'url',
+      label: 'GMB'
     }
   ],
   selected: [],
+  iconCheckConfig: {
+    width: '22',
+    height: '22',
+    true: '/check-box.svg',
+    false: '/square.svg'
+  },
   saveData: {
     tooltipTargetID: 'step-four-tip',
     stepUpdateTxt: 'stepFourComplete'

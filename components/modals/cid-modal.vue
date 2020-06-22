@@ -18,10 +18,22 @@
               @row-selected="onRowSelected($event, 'cidTbl')"
               selectable
               select-mode="single"
-              class="cid-table"
+              class="cid-table self-align-center"
               responsive
               hover
-            />
+            >
+              <template v-slot:cell(select)="{ rowSelected }">
+                <icons-swap
+                  :needsCheckIcon="rowSelected"
+                  :iconConfig="gmbStore.iconCheckConfig"
+                />
+              </template>
+              <template v-slot:cell(url)="data">
+                <b-link :href="data.value" target="_blank">
+                  <b-img src="/maps-icon.svg" class="maps-icon jello-vertical social-link" />
+                </b-link>
+              </template>
+            </b-table>
             <b-button
               @click="updateData"
               :disabled="gmbStore.res === null || gmbStore.selected.length === 0"
@@ -41,7 +53,11 @@
 import { mapState, mapMutations } from 'vuex'
 import Locations from '~/mixins/locations'
 import TableMethods from '~/mixins/tableMethods'
+import IconsSwap from '~/components/icons-swap'
 export default {
+  components: {
+    IconsSwap
+  },
   mixins: [Locations, TableMethods],
   data () {
     return {
@@ -77,5 +93,12 @@ export default {
 
   .cid-table td {
     padding-left: 12px;
+  }
+
+  .social-link {
+     width: 20px;
+     height: 20px;
+     position: relative;
+     bottom: 3px;
   }
 </style>
