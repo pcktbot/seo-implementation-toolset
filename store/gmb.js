@@ -1,5 +1,24 @@
 export const state = () => ({
   res: null,
+  fields: [
+    {
+      key: 'name',
+      label: 'Name'
+    },
+    {
+      key: 'vicinity',
+      label: 'Address'
+    },
+    {
+      key: 'rating',
+      label: 'Avg Rating'
+    },
+    {
+      key: 'user_ratings_total',
+      label: 'Review Count'
+    }
+  ],
+  selected: [],
   saveData: {
     tooltipTargetID: 'step-four-tip',
     stepUpdateTxt: 'stepFourComplete'
@@ -84,5 +103,8 @@ export const mutations = {
     const keys = Object.keys(obj)
     // eslint-disable-next-line no-return-assign
     keys.forEach(key => state[key] = obj[key])
+  },
+  SET_SELECTED(state, val) {
+    state.selected = val
   }
 }

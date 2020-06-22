@@ -2,6 +2,7 @@ const axios = require('axios')
 class CIDS {
   constructor (params) {
     this.name = params.name
+    this.address = params.address
     this.vertical = params.vertical
     this.lat = params.lat
     this.long = params.long
@@ -17,11 +18,14 @@ class CIDS {
     return data
   }
 
+  // returns array of places matching name or address number
   filterPlaces(places) {
     return places.results.filter((place) => {
+      const addNum1 = this.address.split(/W+/)[0]
+      const addNum2 = place.vicinity.split(/W+/)[0]
       const name1 = place.name.toLowerCase()
       const name2 = this.name.toLowerCase()
-      return name1.includes(name2) || name2.includes(name1)
+      return name1.includes(name2) || name2.includes(name1) || addNum1 === addNum2
     })
   }
 
