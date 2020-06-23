@@ -68,7 +68,7 @@ export const state = () => ({
     {
       id: 'strategy',
       value: null,
-      options: [
+      mfoptions: [
         { value: null, text: 'Select Strategy' },
         { value: 'mfa', text: 'MF A' },
         { value: 'mfb', text: 'MF B' },
