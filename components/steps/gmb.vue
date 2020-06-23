@@ -132,6 +132,10 @@ export default {
       return properties.gmb && properties.ga && this.strategy
     },
     pickOptions(index) {
+      // eslint-disable-next-line no-console
+      console.log(index)
+      // eslint-disable-next-line no-console
+      console.log(this.vertical)
       return index === 2
         ? this.gmbStore.selects[index][`${this.vertical}options`]
         : this.gmbStore.selects[index].options
