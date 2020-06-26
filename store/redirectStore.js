@@ -1,4 +1,39 @@
 export const state = () => ({
+  fields: [
+    {
+      key: 'name',
+      label: 'Name',
+      sortable: true,
+      sortDirection: 'desc'
+    },
+    {
+      key: 'strategy',
+      label: 'Strategy',
+      sortable: true
+    },
+    {
+      key: 'current_url',
+      label: 'Original URL'
+    },
+    {
+      key: 'new_url',
+      label: 'Goes To'
+    },
+    {
+      key: 'formatted_url',
+      label: 'Formatted URL'
+    }
+  ],
+  items: [],
+  totalRows: 1,
+  currentPage: 1,
+  perPage: 5,
+  pageOptions: [5, 10, 15],
+  sortBy: '',
+  sortDesc: false,
+  sortDirection: 'asc',
+  filter: null,
+  filterOn: [],
   options: [
     { value: null, text: 'Select Strategy' },
     { value: 'Same Domain', text: 'Same Domain' },
@@ -31,5 +66,22 @@ export const mutations = {
   },
   SET_KEYWORD_INPUT(state, { key, val }) {
     state.keywordInput[key] = val
+  },
+  SET_MAP_ITEMS(state, res) {
+    const newItems = [
+      ...res.map((location) => {
+        const { name, properties } = location
+        return properties.redirects.items.map((redirect) => {
+          return {
+            name: `${name}`,
+            strategy: redirect.strategy,
+            current_url: redirect.current_url,
+            new_url: redirect.new_url ? redirect.new_url : '',
+            formatted_url: redirect.formatted_url
+          }
+        })
+      })
+    ].flat()
+    state.items = newItems
   }
 }

@@ -245,6 +245,8 @@ export default {
           .replace(/%5D|%5d/g, '\\]')
           .replace(/%7C/g, '\\|')
         formatted = formatted.length === 1 ? `[${formatted}]` : `${formatted}$`
+      } else if (strategy === 'Cross Domain' && this.validURL(redirect)) {
+        formatted = ''
       }
       return formatted
     },
