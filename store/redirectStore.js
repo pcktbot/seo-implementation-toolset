@@ -27,12 +27,12 @@ export const state = () => ({
   items: [],
   totalRows: 1,
   currentPage: 1,
-  perPage: 5,
-  pageOptions: [5, 10, 15],
+  perPage: 10,
+  pageOptions: [10, 20, 50, 100, 1000],
   sortBy: '',
   sortDesc: false,
   sortDirection: 'asc',
-  filter: null,
+  filter: '',
   filterOn: [],
   options: [
     { value: null, text: 'Select Strategy' },
@@ -70,18 +70,20 @@ export const mutations = {
   SET_MAP_ITEMS(state, res) {
     const newItems = [
       ...res.map((location) => {
-        const { name, properties } = location
+        const { name, properties, id } = location
         return properties.redirects.items.map((redirect) => {
           return {
             name: `${name}`,
             strategy: redirect.strategy,
             current_url: redirect.current_url,
             new_url: redirect.new_url ? redirect.new_url : '',
-            formatted_url: redirect.formatted_url
+            formatted_url: redirect.formatted_url,
+            locId: id
           }
         })
       })
     ].flat()
     state.items = newItems
+    state.totalRows = newItems.length
   }
 }

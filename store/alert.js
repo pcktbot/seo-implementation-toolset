@@ -5,6 +5,7 @@ export const state = () => ({
   dismissCountDown: 0,
   existingLPMsg: 'There is already a LP project under this ID. To add additional locations, load the LP project',
   successLoadMsg: 'Successfully loaded locations',
+  successLoadRedirects: 'Successfully loaded redirects',
   errLoadMsg: 'Error loading location/s, check to ensure the url is using the correct LP ID',
   csvSuccessMsg: 'Your new location/s have beeen successfully added, please select a location below',
   csvErrMsg: 'There was an error uploading the csv'
