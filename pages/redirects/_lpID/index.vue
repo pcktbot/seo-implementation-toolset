@@ -14,25 +14,7 @@
         </b-alert>
       </template>
       <template v-slot:content>
-        <b-nav-item-dropdown
-          id="my-nav-dropdown"
-          text="☰"
-          style="font-size: 32px;"
-          no-caret
-          toggle-class="nav-link-custom"
-          class="text-white"
-          right
-        >
-          <b-dropdown-item :href="`/lp-project/${lpId}`">
-            Home
-          </b-dropdown-item>
-          <b-dropdown-item :href="`/redirects/${lpId}`">
-            Redirects
-          </b-dropdown-item>
-          <b-dropdown-item :href="`/copy/${lpId}`">
-            SEO Liquid Values
-          </b-dropdown-item>
-        </b-nav-item-dropdown>
+        <menu-dropdown />
       </template>
     </g5-nav>
     <div class="main-with-nav">
@@ -114,23 +96,6 @@
             </b-form-group>
           </b-col>
           <b-col lg="3" class="p-2 w-50">
-            <!-- <b-form-group
-              label="Per page"
-              label-cols-sm="6"
-              label-cols-md="4"
-              label-cols-lg="3"
-              label-align-sm="right"
-              label-size="sm"
-              label-for="perPageSelect"
-              class="mb-0"
-            >
-              <b-form-select
-                id="perPageSelect"
-                v-model="perPage"
-                :options="redirects.pageOptions"
-                size="sm"
-              />
-            </b-form-group> -->
             <b-form-group
               label="Per page"
               label-size="sm"
@@ -146,14 +111,6 @@
             </b-form-group>
           </b-col>
           <b-col lg="6" class="p-2">
-            <!-- <b-pagination
-              v-model="currentPage"
-              :total-rows="totalRows"
-              :per-page="perPage"
-              align="fill"
-              size="sm"
-              class="my-0"
-            /> -->
             <b-form-group
               label="Pick Page"
               label-size="sm"
@@ -202,6 +159,7 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 import g5Nav from '~/components/nav'
+import menuDropdown from '~/components/menu-dropdown'
 import g5Footer from '~/components/footer'
 import Alert from '~/mixins/alert'
 // import IconsSwap from '~/components/icons-swap'
@@ -209,7 +167,8 @@ export default {
   components: {
     g5Nav,
     // IconsSwap,
-    g5Footer
+    g5Footer,
+    menuDropdown
   },
   mixins: [Alert],
   data () {

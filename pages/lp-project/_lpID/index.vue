@@ -15,13 +15,7 @@
         </b-alert>
       </template>
       <template v-slot:content>
-        <b-nav-item
-          :href="`/copy/${lpId}`"
-        >
-          <h5 class="text-white mb-0 pb-0">
-            SEO Liquid Values
-          </h5>
-        </b-nav-item>
+        <menu-dropdown />
       </template>
     </g5-nav>
     <div class="main-with-nav">
@@ -59,6 +53,7 @@
 <script>
 import { mapState } from 'vuex'
 import g5Nav from '~/components/nav'
+import menuDropdown from '~/components/menu-dropdown'
 import Drawer from '~/components/drawer'
 import Notes from '~/components/notes'
 import initialSelections from '~/components/initial-selections'
@@ -72,6 +67,7 @@ import CommentsMixin from '~/mixins/comments'
 export default {
   components: {
     g5Nav,
+    menuDropdown,
     Drawer,
     Notes,
     initialSelections,
