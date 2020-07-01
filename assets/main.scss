@@ -43,11 +43,11 @@ $font-family-base: 'Roboto', sans-serif;
 .navbar-light .navbar-nav .nav-link {
   color: white!important;
 }
-
-.nav-link:hover {
+.dropdown-toggle:hover {
   color: white!important;
   font-weight:bold
 }
+
 nav {
   z-index:1;
 }

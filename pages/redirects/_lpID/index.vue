@@ -31,14 +31,16 @@
               class="mb-0"
             >
               <b-input-group size="sm">
+                <!-- v-model="filter" -->
                 <b-form-input
                   id="filterInput"
-                  v-model="filter"
+                  :value="redirects.filter"
+                  @input="setRedirectProp({'filter': $event})"
                   type="search"
                   placeholder="Type to Search"
                 />
                 <b-input-group-append>
-                  <b-button :disabled="!filter" @click="filter = ''">
+                  <b-button :disabled="!redirects.filter" @click="setRedirectProp({'filter': ''})">
                     Clear
                   </b-button>
                 </b-input-group-append>
@@ -51,9 +53,12 @@
               label-size="sm"
               class="mb-0 pt-2"
             >
-              <b-form-checkbox-group class="mt-1">
+              <b-form-checkbox-group
+                :value="redirects.filterOn"
+                @input="setRedirectProp({'filterOn': $event})"
+                class="mt-1"
+              >
                 <b-form-checkbox
-                  v-model="filterOn"
                   v-for="field in redirects.fields"
                   :key="field.key"
                   :value="field.key"
@@ -84,7 +89,12 @@
                     </option>
                   </template>
                 </b-form-select>
-                <b-form-select v-model="sortDesc" :disabled="!sortBy" size="sm" class="w-25">
+                <b-form-select
+                  v-model="sortDesc"
+                  :disabled="!redirects.sortBy"
+                  size="sm"
+                  class="w-25"
+                >
                   <option :value="false">
                     Asc
                   </option>
@@ -104,7 +114,8 @@
             >
               <b-form-select
                 id="perPageSelect"
-                v-model="perPage"
+                :value="redirects.perPage"
+                @change="setRedirectProp({'perPage': $event})"
                 :options="redirects.pageOptions"
                 size="sm"
               />
@@ -119,9 +130,10 @@
             >
               <b-pagination
                 id="paginationComponent"
-                v-model="currentPage"
-                :total-rows="totalRows"
-                :per-page="perPage"
+                :value="redirects.currentPage"
+                @change="setRedirectProp({'currentPage': $event})"
+                :total-rows="redirects.totalRows"
+                :per-page="redirects.perPage"
                 align="fill"
                 size="sm"
                 class="my-0"
@@ -134,20 +146,35 @@
             <b-table
               :items="redirects.items"
               :fields="redirects.fields"
-              :current-page="currentPage"
-              :per-page="perPage"
-              :filter="filter"
-              :filterIncludedFields="filterOn"
+              :current-page="redirects.currentPage"
+              :per-page="redirects.perPage"
+              :filter="redirects.filter"
+              :filterIncludedFields="redirects.filterOn"
               :sort-by.sync="sortBy"
               :sort-desc.sync="sortDesc"
-              :sort-direction="sortDirection"
+              :sort-direction="redirects.sortDirection"
               @filtered="onFiltered"
               responsive
               bordered
               show-empty
               small
               stacked="md"
-            />
+            >
+              <template v-slot:cell(strategy)="data" class="align-self-center">
+                <b-col
+                  style="width:10rem"
+                  class="p-0 m-0"
+                >
+                  <!-- @change="onChangeCell($event, data.index, 'strategy')" -->
+                  <b-form-select
+                    id="strat-selection"
+                    :value="data.value"
+                    :options="redirects.options"
+                    @change="updateCell($event, data.index, 'strategy')"
+                  />
+                </b-col>
+              </template>
+            </b-table>
           </b-col>
         </b-row>
       </b-container>
@@ -183,37 +210,13 @@ export default {
       vertical: state => state.initSelects.selects[0].value,
       lpId: state => state.initSelects.lpId
     }),
-    sortBy: {
-      get() { return this.$store.state.redirectStore.sortBy },
-      set(val) { this.$store.commit('redirectStore/SET', { 'sortBy': val }) }
-    },
     sortDesc: {
       get() { return this.$store.state.redirectStore.sortDesc },
-      set(val) { this.$store.commit('redirectStore/SET', { 'sortDesc': val }) }
+      set(val) { this.$store.commit('initSelects/SET', { 'sortDesc': val }) }
     },
-    filter: {
-      get() { return this.$store.state.redirectStore.filter },
-      set(val) { this.$store.commit('redirectStore/SET', { 'filter': val }) }
-    },
-    filterOn: {
-      get() { return this.$store.state.redirectStore.filterOn },
-      set(val) { this.$store.commit('redirectStore/SET', { 'filterOn': val }) }
-    },
-    sortDirection: {
-      get() { return this.$store.state.redirectStore.sortDirection },
-      set(val) { this.$store.commit('redirectStore/SET', { 'sortDirection': val }) }
-    },
-    currentPage: {
-      get() { return this.$store.state.redirectStore.currentPage },
-      set(val) { this.$store.commit('redirectStore/SET', { 'currentPage': val }) }
-    },
-    perPage: {
-      get() { return this.$store.state.redirectStore.perPage },
-      set(val) { this.$store.commit('redirectStore/SET', { 'perPage': val }) }
-    },
-    totalRows: {
-      get() { return this.$store.state.redirectStore.totalRows },
-      set(val) { this.$store.commit('redirectStore/SET', { 'totalRows': val }) }
+    sortBy: {
+      get() { return this.$store.state.redirectStore.sortBy },
+      set(val) { this.$store.commit('initSelects/SET', { 'sortBy': val }) }
     },
     sortOptions() {
       // Create an options list from our fields
@@ -247,6 +250,14 @@ export default {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length
       this.currentPage = 1
+    },
+    updateCell(val, index, label) {
+      // eslint-disable-next-line no-console
+      console.log(val)
+      // eslint-disable-next-line no-console
+      console.log(index)
+      // eslint-disable-next-line no-console
+      console.log(label)
     }
   }
 }
