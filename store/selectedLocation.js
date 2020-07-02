@@ -1,5 +1,6 @@
 export const state = () => ({
-  location: null
+  location: null,
+  redirectCounter: 0
 })
 export const getters = {
   stepOneData: (state) => {
@@ -69,6 +70,9 @@ export const mutations = {
   SET(state, val) {
     state.location = val
   },
+  SET_COUNTER(state, val) {
+    state.redirectCounter = val
+  },
   SET_PROPERTY(state, { key, val }) {
     state.location.properties[key] = val
   },
@@ -92,6 +96,9 @@ export const mutations = {
   },
   ADD_REDIRECTS(state, val) {
     state.location.properties.redirects.items.push(...val)
+  },
+  UPDATE_REDIRECT_PROPERTY(state, { key, index }) {
+    state.location.properties.redirects.items[index][key] = index
   },
   UPDATE_CELL(state, { val, index, col }) {
     state.location.properties.redirects.items[index][col] = val

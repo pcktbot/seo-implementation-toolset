@@ -22,7 +22,7 @@
         <span :id="formatTip" tabindex="0">
           <b-btn
             :disabled="btnDisabled"
-            @click="formatRedirects"
+            @click="updateTable"
             variant="outline-secondary--darken3"
             class="px-4"
           >
@@ -94,20 +94,20 @@
                 id="strat-selection"
                 :value="data.value"
                 :options="redirectsStore.options"
-                @change="onChangeCell($event, data.index, 'strategy')"
+                @change="onChangeCell($event, data.item.id, 'strategy')"
               />
             </b-col>
           </template>
           <template v-slot:cell(current_url)="data">
             <b-form-input
               v-model="data.value"
-              @input="onChangeCell($event, data.index, 'current_url')"
+              @input="onChangeCell($event, data.item.id, 'current_url')"
             />
           </template>
           <template v-slot:cell(formatted_url)="data">
             <b-form-input
               v-model="data.value"
-              @input="onChangeCell($event, data.index, 'formatted_url')"
+              @input="onChangeCell($event, data.item.id, 'formatted_url')"
             />
           </template>
           <template v-slot:cell(select)="{ rowSelected }">
@@ -158,7 +158,8 @@ export default {
     ...mapState({
       location: state => state.selectedLocation.location,
       redirectsStore: state => state.redirectStore,
-      iconConfig: state => state.iconConfig
+      iconConfig: state => state.iconConfig,
+      counter: state => state.selectedLocation.redirectCounter
     }),
     ...mapGetters({
       form: 'selectedLocation/stepThreeData'
@@ -191,7 +192,8 @@ export default {
       updateProp: 'selectedLocation/UPDATE_PROP',
       updateCell: 'selectedLocation/UPDATE_CELL',
       deleteSelected: 'selectedLocation/DELETE_REDIRECTS',
-      toggle: 'selectedLocation/TOGGLE_WILDCARD'
+      toggle: 'selectedLocation/TOGGLE_WILDCARD',
+      setCounter: 'selectedLocation/SET_COUNTER'
     }),
     copyUrls(type) {
       let str = ''
@@ -253,20 +255,39 @@ export default {
     getCurrentRedirects() {
       return this.location.properties.redirects.items.map(redirect => redirect.current_url)
     },
-    formatRedirects() {
+    getItems() {
       const currentStrat = this.location.properties.redirectstrat
-      const table = currentStrat === 'No Redirects'
-        ? [{ isActive: true, strategy: currentStrat, current_url: 'N/A', formatted_url: 'N/A' }]
-        : []
-      const redirectArr = this.getRedirectsArr()
-      redirectArr.forEach((redirect) => {
-        const cloudFormatted = this.formatRedirect(redirect, currentStrat)
-        table.push({ isActive: true, strategy: currentStrat, current_url: redirect, formatted_url: cloudFormatted })
-      })
-      this.addRedirects(table)
+      const items = []
+      if (currentStrat === 'No Redirects') {
+        items.push({
+          isActive: true,
+          strategy: currentStrat,
+          id: this.counter + 1,
+          current_url: 'N/A',
+          formatted_url: 'N/A'
+        })
+      } else {
+        const newRedirects = this.getRedirectsArr()
+        newRedirects.forEach((redirect, index) => {
+          const formattedURL = this.formatRedirect(redirect, currentStrat)
+          items.push({
+            isActive: true,
+            id: this.counter + index + 1,
+            strategy: currentStrat,
+            current_url: redirect,
+            formatted_url: formattedURL
+          })
+        })
+      }
+      return items
+    },
+    updateTable() {
+      const newItems = this.getItems()
+      this.setCounter(this.counter + newItems.length)
+      this.addRedirects(newItems)
       this.updateProp({ key: this.redirectsStore.saveData.stepUpdateTxt, val: !this.disableSave })
-      this.updateTxtField(table)
-      this.showAlert(`${table.length} Row/s Added`, `${table.length ? 'success' : 'danger'}`)
+      this.updateTxtField(newItems)
+      this.showAlert(`${newItems.length} Row/s Added`, `${newItems.length ? 'success' : 'danger'}`)
     },
     updateTxtField(table) {
       const newTxt = this.form.redirecttext.split(/\n|,/g).filter((item) => {
@@ -275,7 +296,10 @@ export default {
       }).toString().replace(/,+/g, '\n')
       this.updateProp({ key: 'redirecttext', val: newTxt })
     },
-    onChangeCell(val, index, col) {
+    onChangeCell(val, id, col) {
+      const index = this.location.properties.redirects.items.findIndex((item) => {
+        return item.id === id
+      })
       this.updateCell({ val, index, col })
     },
     onInput(key, val) {

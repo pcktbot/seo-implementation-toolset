@@ -148,7 +148,9 @@ export default {
       setLocation: 'selectedLocation/SET',
       setLocations: 'locations/SET',
       setLocationNotes: 'notes/SET',
-      setLocationTblProps: 'locationsTable/SET'
+      setLocationTblProps: 'locationsTable/SET',
+      setRedirectProp: 'selectedLocation/UPDATE_REDIRECT_PROPERTY',
+      setCounter: 'selectedLocation/SET_COUNTER'
     }),
     save() {
       this.onSave()
@@ -192,9 +194,40 @@ export default {
     loadLocation(payload) {
       const selectLoc = this.locations.filter(location => location.id === payload)[0]
       this.setLocation(selectLoc)
+      this.configRedirectIds()
       const locNotes = this.getLocationNotes(this.selectedLocation.id)
       this.setLocationNotes({ 'locationNotes': locNotes })
       this.$store.commit('tabindex/set', 0)
+    },
+    configRedirectIds() {
+      const redirectItems = this.selectedLocation.properties.redirects.items
+      // no redirect ids
+      if (redirectItems.length > 0 && redirectItems[0].id === undefined) {
+        this.setRedirectIDs(redirectItems)
+      } else {
+        // eslint-disable-next-line no-console
+        console.log('madeit')
+        this.setLargestRedirectId(redirectItems)
+      }
+    },
+    setRedirectIDs(redirectItems) {
+      redirectItems.forEach((redirect, idx) => {
+        this.setRedirectProp({
+          key: 'id',
+          index: idx
+        })
+      })
+      this.setCounter(redirectItems.length)
+    },
+    setLargestRedirectId(redirectItems) {
+      let max = 0
+      if (redirectItems.length > 0) {
+        max = redirectItems.reduce((prev, current, index) => {
+          return prev.id > current.id ? prev : current
+        })
+        max = max.id
+      }
+      this.setCounter(max)
     }
   }
 }
