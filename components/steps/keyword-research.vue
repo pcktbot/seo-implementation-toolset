@@ -345,8 +345,6 @@ export default {
         })
     },
     onInput(key, val) {
-      // eslint-disable-next-line no-console
-      console.log('hi')
       this.onUpdate({ key, val })
     },
     splitMapFilterTrim(data1, data2) {

@@ -157,8 +157,6 @@ export default {
       const props = this.getAPIProps()
       this.$axios.$put('/placesapi/cidRequest', { props })
         .then((result) => {
-          // eslint-disable-next-line no-console
-          console.log(result)
           this.set({ 'res': result })
         }).catch((err) => {
           // eslint-disable-next-line no-console

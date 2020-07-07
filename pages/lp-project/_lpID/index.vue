@@ -62,6 +62,7 @@ import LocationTable from '~/components/location-table'
 import FormStepper from '~/components/form-stepper'
 import g5Footer from '~/components/footer'
 import Alert from '~/mixins/alert'
+import Locations from '~/mixins/locations'
 import CommentsMixin from '~/mixins/comments'
 
 export default {
@@ -76,7 +77,7 @@ export default {
     FormStepper,
     g5Footer
   },
-  mixins: [Alert, CommentsMixin],
+  mixins: [Alert, CommentsMixin, Locations],
   data () {
     return {}
   },
@@ -84,6 +85,7 @@ export default {
     ...mapState({
       userInfo: state => state.userInfo,
       locationtbl: state => state.locationsTable,
+      locations: state => state.locations.locations,
       selectedLocation: state => state.selectedLocation.location,
       initSelects: state => state.initSelects.selects,
       lpId: state => state.initSelects.lpId
@@ -113,6 +115,10 @@ export default {
     }
   },
   created() {
+    this.$axios.$put('api/locations', {
+      lpId: this.initSelects.lpId,
+      locations: this.locations
+    })
     this.locationtbl.items.length > 0
       ? this.showAlert(this.alertProps.successLoadMsg, 'success')
       : this.showAlert(this.alertProps.errLoadMsg, 'danger')

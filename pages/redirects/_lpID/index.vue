@@ -31,7 +31,6 @@
               class="mb-0"
             >
               <b-input-group size="sm">
-                <!-- v-model="filter" -->
                 <b-form-input
                   id="filterInput"
                   :value="redirects.filter"
@@ -40,7 +39,10 @@
                   placeholder="Type to Search"
                 />
                 <b-input-group-append>
-                  <b-button :disabled="!redirects.filter" @click="setRedirectProp({'filter': ''})">
+                  <b-button
+                    :disabled="!redirects.filter"
+                    @click="setRedirectProp({'filter': ''})"
+                  >
                     Clear
                   </b-button>
                 </b-input-group-append>
@@ -144,7 +146,7 @@
         <b-row class="px-4" style="background-color: white">
           <b-col>
             <b-table
-              :items="redirects.items"
+              :items="items"
               :fields="redirects.fields"
               :current-page="redirects.currentPage"
               :per-page="redirects.perPage"
@@ -154,25 +156,21 @@
               :sort-desc.sync="sortDesc"
               :sort-direction="redirects.sortDirection"
               @filtered="onFiltered"
-              responsive
+              sticky-header="5rem"
+              responsive="true"
               bordered
               show-empty
               small
               stacked="md"
             >
-              <template v-slot:cell(strategy)="data" class="align-self-center">
-                <b-col
-                  style="width:10rem"
-                  class="p-0 m-0"
-                >
-                  <!-- @change="onChangeCell($event, data.index, 'strategy')" -->
-                  <b-form-select
-                    id="strat-selection"
-                    :value="data.value"
-                    :options="redirects.options"
-                    @change="updateCell($event, data.index, 'strategy')"
-                  />
-                </b-col>
+              <template v-slot:cell(new_url)="data">
+                <b-form-input
+                  :value="data.value"
+                  @input="updateCell($event, data)"
+                />
+              </template>
+              <template v-slot:cell(formatted_url)="data">
+                {{ data.item.strategy === 'Cross Domain' ? `${data.item.current_url} ${data.item.new_url}` : data.value }}
               </template>
             </b-table>
           </b-col>
@@ -190,6 +188,7 @@ import menuDropdown from '~/components/menu-dropdown'
 import g5Footer from '~/components/footer'
 import Alert from '~/mixins/alert'
 // import IconsSwap from '~/components/icons-swap'
+import Locations from '~/mixins/locations'
 export default {
   components: {
     g5Nav,
@@ -197,7 +196,7 @@ export default {
     g5Footer,
     menuDropdown
   },
-  mixins: [Alert],
+  mixins: [Alert, Locations],
   data () {
     return {
 
@@ -206,17 +205,24 @@ export default {
   computed: {
     ...mapState({
       redirects: state => state.redirectStore,
-      locations: state => state.locations,
+      locations: state => state.locations.locations,
       vertical: state => state.initSelects.selects[0].value,
       lpId: state => state.initSelects.lpId
     }),
     sortDesc: {
       get() { return this.$store.state.redirectStore.sortDesc },
-      set(val) { this.$store.commit('initSelects/SET', { 'sortDesc': val }) }
+      set(val) { this.$store.commit('redirectStore/SET', { 'sortDesc': val }) }
     },
     sortBy: {
       get() { return this.$store.state.redirectStore.sortBy },
-      set(val) { this.$store.commit('initSelects/SET', { 'sortBy': val }) }
+      set(val) { this.$store.commit('redirectStore/SET', { 'sortBy': val }) }
+    },
+    totalRows: {
+      get() { return this.$store.state.redirectStore.totalRows },
+      set(val) { this.$store.commit('redirectStore/SET', { 'totalRows': val }) }
+    },
+    items() {
+      return this.getItems()
     },
     sortOptions() {
       // Create an options list from our fields
@@ -230,34 +236,67 @@ export default {
   async fetch({ store, params }) {
     try {
       await store.dispatch('initSelects/GET', params.lpID)
-      const res = await store.dispatch('locations/GET', params.lpID)
-      store.commit('redirectStore/SET_MAP_ITEMS', res)
+      await store.dispatch('locations/GET', params.lpID)
+      // store.commit('redirectStore/SET_MAP_ITEMS', res)
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e)
     }
   },
   created() {
-    this.locations.locations.length > 0
+    this.setRedirectProp({ 'totalRows': this.getItems().length })
+    this.locations.length > 0
       ? this.showAlert(this.alertProps.successLoadRedirects, 'success')
       : this.showAlert(this.alertProps.errLoadMsg, 'danger')
   },
   methods: {
     ...mapMutations({
-      setRedirectProp: 'redirectStore/SET'
+      updateRedirectProp: 'redirectStore/SET',
+      updateRedirectVal: 'locations/UPDATE_REDIRECT'
     }),
+    setRedirectProp(obj) {
+      this.updateRedirectProp(obj)
+    },
+    getItems() {
+      return [
+        ...this.locations.map((location) => {
+          const { name, properties, id } = location
+          return properties.redirects.items.map((redirect) => {
+            return {
+              name: `${name}`,
+              strategy: redirect.strategy,
+              current_url: redirect.current_url,
+              new_url: redirect.new_url ? redirect.new_url : '',
+              formatted_url: redirect.formatted_url,
+              locId: id,
+              id: redirect.id
+            }
+          })
+        })
+      ].flat()
+    },
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.totalRows = filteredItems.length
-      this.currentPage = 1
+      this.setRedirectProp({ 'currentPage': 1 })
     },
-    updateCell(val, index, label) {
+    updateCell(value, data) {
       // eslint-disable-next-line no-console
-      console.log(val)
-      // eslint-disable-next-line no-console
-      console.log(index)
-      // eslint-disable-next-line no-console
-      console.log(label)
+      console.log(data)
+      const locationIndex = this.locations.findIndex((location) => {
+        return location.id === data.item.locId
+      })
+      const itemIndex = this.locations[locationIndex]
+        .properties.redirects.items.findIndex((redirect) => {
+          return redirect.id === data.item.id
+        })
+      this.updateRedirectVal({
+        locIdx: locationIndex,
+        itemIdx: itemIndex,
+        key: data.field.key,
+        val: value
+      })
+      this.onSave()
     }
   }
 }

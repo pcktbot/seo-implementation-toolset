@@ -66,24 +66,5 @@ export const mutations = {
   },
   SET_KEYWORD_INPUT(state, { key, val }) {
     state.keywordInput[key] = val
-  },
-  SET_MAP_ITEMS(state, res) {
-    const newItems = [
-      ...res.map((location) => {
-        const { name, properties, id } = location
-        return properties.redirects.items.map((redirect) => {
-          return {
-            name: `${name}`,
-            strategy: redirect.strategy,
-            current_url: redirect.current_url,
-            new_url: redirect.new_url ? redirect.new_url : '',
-            formatted_url: redirect.formatted_url,
-            locId: id
-          }
-        })
-      })
-    ].flat()
-    state.items = newItems
-    state.totalRows = newItems.length
   }
 }

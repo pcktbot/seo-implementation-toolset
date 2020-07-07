@@ -189,7 +189,7 @@ export default {
     ...mapMutations({
       setRedirectProp: 'redirectStore/SET',
       addRedirects: 'selectedLocation/ADD_REDIRECTS',
-      updateProp: 'selectedLocation/UPDATE_PROP',
+      updateLocationProp: 'selectedLocation/UPDATE_PROP',
       updateCell: 'selectedLocation/UPDATE_CELL',
       deleteSelected: 'selectedLocation/DELETE_REDIRECTS',
       toggle: 'selectedLocation/TOGGLE_WILDCARD',
@@ -283,18 +283,23 @@ export default {
     },
     updateTable() {
       const newItems = this.getItems()
-      this.setCounter(this.counter + newItems.length)
-      this.addRedirects(newItems)
-      this.updateProp({ key: this.redirectsStore.saveData.stepUpdateTxt, val: !this.disableSave })
-      this.updateTxtField(newItems)
-      this.showAlert(`${newItems.length} Row/s Added`, `${newItems.length ? 'success' : 'danger'}`)
+      this.setCounter(this.counter + newItems.length) // updated redirect id counter
+      this.addRedirects(newItems) // adds to store
+      this.updateLocationProp({ // enables/disables save btn
+        key: this.redirectsStore.saveData.stepUpdateTxt,
+        val: !this.disableSave })
+      this.updateUserInputField(newItems) // removes text added to table from input field
+      this.showAlert(
+        `${newItems.length} Row/s Added`,
+        `${newItems.length ? 'success' : 'danger'}`
+      )
     },
-    updateTxtField(table) {
+    updateUserInputField(table) {
       const newTxt = this.form.redirecttext.split(/\n|,/g).filter((item) => {
         const arr = table.map(obj => obj.current_url)
         return !arr.includes(item)
       }).toString().replace(/,+/g, '\n')
-      this.updateProp({ key: 'redirecttext', val: newTxt })
+      this.updateLocationProp({ key: 'redirecttext', val: newTxt })
     },
     onChangeCell(val, id, col) {
       const index = this.location.properties.redirects.items.findIndex((item) => {
@@ -303,7 +308,7 @@ export default {
       this.updateCell({ val, index, col })
     },
     onInput(key, val) {
-      this.updateProp({ key, val })
+      this.updateLocationProp({ key, val })
     },
     selectAllRows() {
       this.$refs.redirectsTable.selectAllRows()
@@ -314,7 +319,10 @@ export default {
     onTblDelete() {
       if (this.location.properties.redirects.selected.length > 0) {
         this.deleteSelected()
-        this.updateProp({ key: this.redirectsStore.saveData.stepUpdateTxt, val: !this.disableSave })
+        this.updateLocationProp({
+          key: this.redirectsStore.saveData.stepUpdateTxt,
+          val: !this.disableSave
+        })
       }
     },
     toggleWildcard() {

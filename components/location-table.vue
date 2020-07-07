@@ -194,40 +194,24 @@ export default {
     loadLocation(payload) {
       const selectLoc = this.locations.filter(location => location.id === payload)[0]
       this.setLocation(selectLoc)
-      this.configRedirectIds()
+      this.initRedirectCounter()
       const locNotes = this.getLocationNotes(this.selectedLocation.id)
       this.setLocationNotes({ 'locationNotes': locNotes })
       this.$store.commit('tabindex/set', 0)
     },
-    configRedirectIds() {
+    initRedirectCounter() {
       const redirectItems = this.selectedLocation.properties.redirects.items
-      // no redirect ids
-      if (redirectItems.length > 0 && redirectItems[0].id === undefined) {
-        this.setRedirectIDs(redirectItems)
-      } else {
-        // eslint-disable-next-line no-console
-        console.log('madeit')
-        this.setLargestRedirectId(redirectItems)
-      }
+      const counterID = this.getLargestRedirectId(redirectItems)
+      this.setCounter(counterID)
     },
-    setRedirectIDs(redirectItems) {
-      redirectItems.forEach((redirect, idx) => {
-        this.setRedirectProp({
-          key: 'id',
-          index: idx
-        })
-      })
-      this.setCounter(redirectItems.length)
-    },
-    setLargestRedirectId(redirectItems) {
+    getLargestRedirectId(redirectItems) {
       let max = 0
       if (redirectItems.length > 0) {
         max = redirectItems.reduce((prev, current, index) => {
-          return prev.id > current.id ? prev : current
+          return prev.id > current.id ? prev.id : current.id
         })
-        max = max.id
       }
-      this.setCounter(max)
+      return max
     }
   }
 }
