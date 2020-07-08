@@ -13,22 +13,25 @@ export const state = () => ({
     },
     {
       key: 'current_url',
-      label: 'Original URL'
+      label: 'Original URL',
+      sortable: true
     },
     {
       key: 'new_url',
-      label: 'Goes To'
+      label: 'Goes To',
+      sortable: true
     },
     {
       key: 'formatted_url',
-      label: 'Formatted URL'
+      label: 'Formatted URL',
+      sortable: true
     }
   ],
   items: [],
   totalRows: 1,
   currentPage: 1,
-  perPage: 10,
-  pageOptions: [10, 20, 50, 100, 1000],
+  perPage: 15,
+  pageOptions: [10, 15, 20, 50, 100, 1000],
   sortBy: '',
   sortDesc: false,
   sortDirection: 'asc',

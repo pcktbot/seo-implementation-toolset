@@ -146,6 +146,7 @@
         <b-row class="px-4" style="background-color: white">
           <b-col>
             <b-table
+              ref="redirectsTable"
               :items="items"
               :fields="redirects.fields"
               :current-page="redirects.currentPage"
@@ -156,13 +157,35 @@
               :sort-desc.sync="sortDesc"
               :sort-direction="redirects.sortDirection"
               @filtered="onFiltered"
-              sticky-header="5rem"
+              class="redirects-tbl"
+              sticky-header="42rem"
               responsive="true"
               bordered
               show-empty
               small
               stacked="md"
             >
+              <!-- A custom formatted header cell for field 'current_url' -->
+              <template v-slot:head(current_url)="data">
+                {{ data.field.label }}
+                <b-button @click="copyUrls(data)" variant="light" class="copy-btn p-0 m-0">
+                  <b-img src="/copy-icon.png" width="17" height="17" class="copy-img" />
+                </b-button>
+                <span style="font-weight:normal;">{{ redirects.current_url_msg }}</span>
+              </template>
+              <!-- A custom formatted header cell for field 'formatted_url' -->
+              <template v-slot:head(formatted_url)="data">
+                {{ data.field.label }}
+                <b-button @click="copyUrls(data)" variant="light" class="copy-btn p-0 m-0">
+                  <b-img src="/copy-icon.png" width="17" height="17" class="copy-img jello-vertical" />
+                </b-button>
+                <span style="font-weight:normal;">{{ redirects.formatted_url_msg }}</span>
+              </template>
+              <template v-slot:cell(current_url)="data">
+                <b-link id="strat-link" :href="data.item.current_url" target="_blank">
+                  {{ data.item.current_url }}
+                </b-link>
+              </template>
               <template v-slot:cell(new_url)="data">
                 <b-form-input
                   :value="data.value"
@@ -188,7 +211,7 @@ import menuDropdown from '~/components/menu-dropdown'
 import g5Footer from '~/components/footer'
 import Alert from '~/mixins/alert'
 // import IconsSwap from '~/components/icons-swap'
-import Locations from '~/mixins/locations'
+import Save from '~/mixins/save'
 export default {
   components: {
     g5Nav,
@@ -196,7 +219,7 @@ export default {
     g5Footer,
     menuDropdown
   },
-  mixins: [Alert, Locations],
+  mixins: [Alert, Save],
   data () {
     return {
 
@@ -205,9 +228,7 @@ export default {
   computed: {
     ...mapState({
       redirects: state => state.redirectStore,
-      locations: state => state.locations.locations,
-      vertical: state => state.initSelects.selects[0].value,
-      lpId: state => state.initSelects.lpId
+      locations: state => state.locations.locations
     }),
     sortDesc: {
       get() { return this.$store.state.redirectStore.sortDesc },
@@ -257,6 +278,19 @@ export default {
     setRedirectProp(obj) {
       this.updateRedirectProp(obj)
     },
+    copyUrls(data) {
+      const { label, column } = data
+      const filteredItems = this.$refs.redirectsTable.filteredItems
+      const copyStr = filteredItems.map((item) => {
+        return item.strategy === 'Cross Domain' && column === 'formatted_url'
+          ? `${item.current_url} ${item.new_url}`.trim()
+          : item[column].trim()
+      }).join().replace(/ *, */g, '\n')
+      this.$copyText(copyStr)
+      this.setRedirectProp({ [`${column}_msg`]: `${label}'s Copied!` })
+      // eslint-disable-next-line no-return-assign
+      setTimeout(() => this.setRedirectProp({ [`${column}_msg`]: '' }), 3000)
+    },
     getItems() {
       return [
         ...this.locations.map((location) => {
@@ -281,8 +315,6 @@ export default {
       this.setRedirectProp({ 'currentPage': 1 })
     },
     updateCell(value, data) {
-      // eslint-disable-next-line no-console
-      console.log(data)
       const locationIndex = this.locations.findIndex((location) => {
         return location.id === data.item.locId
       })
@@ -304,18 +336,31 @@ export default {
 
 <style scoped>
 
-  .main-with-nav {
-      position: fixed;
-      top:5rem;
-      left: 0;
-      right: 0;
-      bottom: 30px;
+  .redirects-tbl .form-control {
+    border:none;
+    outline: none;
+    box-shadow: none;
+    height: 2em;
   }
-  .scroll-container {
-      overflow-y: scroll;
-      height: 100%;
-      scroll-behavior: smooth
+
+  .copy-img {
+    margin-bottom: 3px !important;
   }
+  .copy-img:active{
+   transform: scale(0.8);
+  }
+
+  .copy-btn {
+    background: white!important;
+    background-color: white!important;
+    border: none !important;
+    border-color: white !important;
+    vertical-align: top;
+    height: 17px !important;
+    outline: none;
+    box-shadow: none;
+  }
+
   #strat-link:hover {
     color: var(--tertiary);
   }

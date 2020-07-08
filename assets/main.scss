@@ -134,8 +134,9 @@ textarea {
   background: #f5f5f5 !important;
   color:#bbb !important;
 }
-
-
+.redirects-tbl td {
+  padding: 0em .3em!important;
+}
 #redirects-table,
 #lv-table {
   max-height: 40em !important;
@@ -201,6 +202,21 @@ label, legend, .col-form-label {
 .b-table-sticky-header > .table.b-table > thead > tr > th {
   padding: .4rem;
   vertical-align: middle!important;
+}
+th:focus { outline: none; }
+
+.main-with-nav {
+  position: fixed;
+  top:5rem;
+  left: 0;
+  right: 0;
+  bottom: 30px;
+}
+
+.scroll-container {
+  overflow-y: scroll;
+  height: 100%;
+  scroll-behavior: smooth
 }
 
 .footer {

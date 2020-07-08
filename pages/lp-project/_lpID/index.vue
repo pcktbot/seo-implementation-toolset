@@ -128,16 +128,4 @@ export default {
 
 <style scoped>
 
-.main-with-nav {
-    position: fixed;
-    top:5rem;
-    left: 0;
-    right: 0;
-    bottom: 30px;
-}
-.scroll-container {
-    overflow-y: scroll;
-    height: 100%;
-    scroll-behavior: smooth
-}
 </style>
