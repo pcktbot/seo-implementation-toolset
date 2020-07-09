@@ -25,6 +25,10 @@ export const state = () => ({
       key: 'formatted_url',
       label: 'Formatted URL',
       sortable: true
+    },
+    {
+      key: 'entered',
+      label: 'Entered'
     }
   ],
   items: [],

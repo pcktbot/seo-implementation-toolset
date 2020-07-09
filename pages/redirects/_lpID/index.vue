@@ -181,6 +181,18 @@
                 </b-button>
                 <span style="font-weight:normal;">{{ redirects.formatted_url_msg }}</span>
               </template>
+              <!-- A custom formatted header cell for field 'entered' -->
+              <template v-slot:head(entered)="data">
+                <b-form-checkbox
+                  id="select-all"
+                  :state="selectAll"
+                  v-model="selectAll"
+                  @input="selectAllChecks($event, data)"
+                  name="check-button"
+                >
+                  {{ data.field.label }}
+                </b-form-checkbox>
+              </template>
               <template v-slot:cell(current_url)="data">
                 <b-link id="strat-link" :href="data.item.current_url" target="_blank">
                   {{ data.item.current_url }}
@@ -193,7 +205,17 @@
                 />
               </template>
               <template v-slot:cell(formatted_url)="data">
+                <p />
                 {{ data.item.strategy === 'Cross Domain' ? `${data.item.current_url} ${data.item.new_url}` : data.value }}
+              </template>
+              <template v-slot:cell(entered)="data">
+                <b-form-checkbox
+                  :id="`${data.item.locId}-${data.item.id}`"
+                  :state="data.item.entered ? true : false"
+                  :checked="data.item.entered"
+                  @input="updateCell($event, data)"
+                  name="check-button"
+                />
               </template>
             </b-table>
           </b-col>
@@ -222,7 +244,7 @@ export default {
   mixins: [Alert, Save],
   data () {
     return {
-
+      selectAll: false
     }
   },
   computed: {
@@ -303,7 +325,8 @@ export default {
               new_url: redirect.new_url ? redirect.new_url : '',
               formatted_url: redirect.formatted_url,
               locId: id,
-              id: redirect.id
+              id: redirect.id,
+              entered: redirect.entered
             }
           })
         })
@@ -314,7 +337,20 @@ export default {
       this.totalRows = filteredItems.length
       this.setRedirectProp({ 'currentPage': 1 })
     },
+    selectAllChecks(val, data) {
+      const filteredItems = this.$refs.redirectsTable.filteredItems
+      filteredItems.forEach((filteredItem, index) => {
+        // eslint-disable-next-line no-console
+        console.log(index)
+        this.updateCell(val, {
+          item: filteredItem,
+          field: data.field
+        })
+      })
+    },
     updateCell(value, data) {
+      // eslint-disable-next-line no-console
+      console.log(data)
       const locationIndex = this.locations.findIndex((location) => {
         return location.id === data.item.locId
       })

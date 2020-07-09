@@ -158,7 +158,7 @@ export default {
     ...mapState({
       location: state => state.selectedLocation.location,
       redirectsStore: state => state.redirectStore,
-      iconConfig: state => state.iconConfig,
+      iconConfig: state => state.redirectStore.iconConfig,
       counter: state => state.selectedLocation.redirectCounter
     }),
     ...mapGetters({
@@ -264,7 +264,8 @@ export default {
           strategy: currentStrat,
           id: this.counter + 1,
           current_url: 'N/A',
-          formatted_url: 'N/A'
+          formatted_url: 'N/A',
+          entered: false
         })
       } else {
         const newRedirects = this.getRedirectsArr()
@@ -275,7 +276,8 @@ export default {
             id: this.counter + index + 1,
             strategy: currentStrat,
             current_url: redirect,
-            formatted_url: formattedURL
+            formatted_url: formattedURL,
+            entered: false
           })
         })
       }
