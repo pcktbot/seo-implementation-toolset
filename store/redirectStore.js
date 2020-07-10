@@ -21,11 +21,11 @@ export const state = () => ({
       label: 'Goes To',
       sortable: true
     },
-    {
-      key: 'formatted_url',
-      label: 'Formatted URL',
-      sortable: true
-    },
+    // {
+    //   key: 'formatted_url',
+    //   label: 'Formatted URL',
+    //   sortable: true
+    // },
     {
       key: 'entered',
       label: 'Entered'
@@ -59,6 +59,8 @@ export const state = () => ({
     tooltipTargetID: 'step-three-tip',
     stepUpdateTxt: 'stepThreeComplete'
   },
+  current_url_btn: 'Copy Original URL\'s',
+  formatted_url_btn: 'Copy Formatted URL\'s',
   current_url_msg: '',
   formatted_url_msg: ''
 })

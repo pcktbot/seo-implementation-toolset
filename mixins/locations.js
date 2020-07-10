@@ -19,6 +19,14 @@ export default {
       updateLocProp: 'selectedLocation/UPDATE_PROP',
       updateLocTable: 'locationsTable/SET_ITEM'
     }),
+    toTitleCase(str) {
+      return str.replace(
+        /\w\S*/g,
+        (txt) => {
+          return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+        }
+      )
+    },
     onUpdate(obj) {
       this.updateLocProp(obj)
     },

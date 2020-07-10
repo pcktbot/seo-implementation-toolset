@@ -123,7 +123,7 @@
               />
             </b-form-group>
           </b-col>
-          <b-col lg="6" class="p-2">
+          <b-col lg="2" class="p-2">
             <b-form-group
               label="Pick Page"
               label-size="sm"
@@ -141,6 +141,16 @@
                 class="my-0"
               />
             </b-form-group>
+          </b-col>
+          <b-col lg="2" class="mt-auto p-2">
+            <b-button @click="copyUrls('current_url')" size="sm" class="" block>
+              {{ redirects.current_url_btn }}
+            </b-button>
+          </b-col>
+          <b-col lg="2" class="mt-auto p-2">
+            <b-button @click="copyUrls('formatted_url')" size="sm" class="" block>
+              {{ redirects.formatted_url_btn }}
+            </b-button>
           </b-col>
         </b-row>
         <b-row class="px-4" style="background-color: white">
@@ -168,19 +178,19 @@
               <!-- A custom formatted header cell for field 'current_url' -->
               <template v-slot:head(current_url)="data">
                 {{ data.field.label }}
-                <b-button @click="copyUrls(data)" variant="light" class="copy-btn p-0 m-0">
+                <!-- <b-button @click="copyUrls(data)" variant="light" class="copy-btn p-0 m-0">
                   <b-img src="/copy-icon.png" width="17" height="17" class="copy-img" />
-                </b-button>
+                </b-button> -->
                 <span style="font-weight:normal;">{{ redirects.current_url_msg }}</span>
               </template>
               <!-- A custom formatted header cell for field 'formatted_url' -->
-              <template v-slot:head(formatted_url)="data">
+              <!-- <template v-slot:head(formatted_url)="data">
                 {{ data.field.label }}
                 <b-button @click="copyUrls(data)" variant="light" class="copy-btn p-0 m-0">
                   <b-img src="/copy-icon.png" width="17" height="17" class="copy-img jello-vertical" />
                 </b-button>
                 <span style="font-weight:normal;">{{ redirects.formatted_url_msg }}</span>
-              </template>
+              </template> -->
               <!-- A custom formatted header cell for field 'entered' -->
               <template v-slot:head(entered)="data">
                 <b-form-checkbox
@@ -232,7 +242,7 @@ import g5Nav from '~/components/nav'
 import menuDropdown from '~/components/menu-dropdown'
 import g5Footer from '~/components/footer'
 import Alert from '~/mixins/alert'
-// import IconsSwap from '~/components/icons-swap'
+import Locations from '~/mixins/locations'
 import Save from '~/mixins/save'
 export default {
   components: {
@@ -241,7 +251,7 @@ export default {
     g5Footer,
     menuDropdown
   },
-  mixins: [Alert, Save],
+  mixins: [Alert, Save, Locations],
   data () {
     return {
       selectAll: false
@@ -300,8 +310,7 @@ export default {
     setRedirectProp(obj) {
       this.updateRedirectProp(obj)
     },
-    copyUrls(data) {
-      const { label, column } = data
+    copyUrls(column) {
       const filteredItems = this.$refs.redirectsTable.filteredItems
       const copyStr = filteredItems.map((item) => {
         return item.strategy === 'Cross Domain' && column === 'formatted_url'
@@ -309,9 +318,17 @@ export default {
           : item[column].trim()
       }).join().replace(/ *, */g, '\n')
       this.$copyText(copyStr)
-      this.setRedirectProp({ [`${column}_msg`]: `${label}'s Copied!` })
+      this.updateBtnTxt(column)
+    },
+    updateBtnTxt(column) {
+      const originalTxt = this.redirects[`${column}_btn`]
+      // eslint-disable-next-line no-console
+      console.log(originalTxt)
+      this.setRedirectProp({
+        [`${column}_btn`]: `${this.toTitleCase(column.replace('_', ' '))}'s Copied!`
+      })
       // eslint-disable-next-line no-return-assign
-      setTimeout(() => this.setRedirectProp({ [`${column}_msg`]: '' }), 3000)
+      setTimeout(() => this.setRedirectProp({ [`${column}_btn`]: originalTxt }), 3000)
     },
     getItems() {
       return [
@@ -350,7 +367,7 @@ export default {
     },
     updateCell(value, data) {
       // eslint-disable-next-line no-console
-      console.log(data)
+      console.log(value, data)
       const locationIndex = this.locations.findIndex((location) => {
         return location.id === data.item.locId
       })
