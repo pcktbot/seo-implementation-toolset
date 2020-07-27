@@ -325,7 +325,7 @@ export default {
           return properties.redirects.items.map((redirect) => {
             return {
               name: `${name}`,
-              internal: properties.internal_branded_name,
+              internal: `${name} ${properties.street_address_1} ${properties.city}`,
               strategy: redirect.strategy,
               current_url: redirect.current_url,
               new_url: redirect.new_url ? redirect.new_url : '',
