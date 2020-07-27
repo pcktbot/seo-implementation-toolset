@@ -175,23 +175,6 @@
               small
               stacked="md"
             >
-              <!-- A custom formatted header cell for field 'current_url' -->
-              <template v-slot:head(current_url)="data">
-                {{ data.field.label }}
-                <!-- <b-button @click="copyUrls(data)" variant="light" class="copy-btn p-0 m-0">
-                  <b-img src="/copy-icon.png" width="17" height="17" class="copy-img" />
-                </b-button> -->
-                <span style="font-weight:normal;">{{ redirects.current_url_msg }}</span>
-              </template>
-              <!-- A custom formatted header cell for field 'formatted_url' -->
-              <!-- <template v-slot:head(formatted_url)="data">
-                {{ data.field.label }}
-                <b-button @click="copyUrls(data)" variant="light" class="copy-btn p-0 m-0">
-                  <b-img src="/copy-icon.png" width="17" height="17" class="copy-img jello-vertical" />
-                </b-button>
-                <span style="font-weight:normal;">{{ redirects.formatted_url_msg }}</span>
-              </template> -->
-              <!-- A custom formatted header cell for field 'entered' -->
               <template v-slot:head(entered)="data">
                 <b-form-checkbox
                   id="select-all"
@@ -202,6 +185,11 @@
                 >
                   {{ data.field.label }}
                 </b-form-checkbox>
+              </template>
+              <template v-slot:cell(name)="data">
+                {{ initSelects.selects[2].value === 'no'
+                  ? data.item.name
+                  : data.item.internal }}
               </template>
               <template v-slot:cell(current_url)="data">
                 <b-link id="strat-link" :href="data.item.current_url" target="_blank">
@@ -337,6 +325,7 @@ export default {
           return properties.redirects.items.map((redirect) => {
             return {
               name: `${name}`,
+              internal: `${name} - ${properties.city}`,
               strategy: redirect.strategy,
               current_url: redirect.current_url,
               new_url: redirect.new_url ? redirect.new_url : '',

@@ -10,7 +10,7 @@
     "start": "NODE_ENV=production node server/server.js",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "proxy": "./cloud_sql_proxy -instances=operational-excellence-239518:us-central1:opex-postgres=tcp:5432"
+    "proxy": "./cloud_sql_proxy -instances=operational-excellence-239518:us-central1:opex-postgres=tcp:5433"
   },
   "dependencies": {
     "@getg5/g5-auth": "^2.0.3",
