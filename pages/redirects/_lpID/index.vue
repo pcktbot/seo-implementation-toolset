@@ -175,6 +175,7 @@
               small
               stacked="md"
             >
+              <!-- CUSTOM CHECKBOX HEADER -->
               <template v-slot:head(entered)="data">
                 <b-form-checkbox
                   id="select-all"
@@ -186,6 +187,7 @@
                   {{ data.field.label }}
                 </b-form-checkbox>
               </template>
+              <!-- CUSTOM CHECKBOX HEADER -->
               <template v-slot:cell(name)="data">
                 {{ initSelects.selects[2].value === 'no'
                   ? data.item.name
@@ -356,7 +358,7 @@ export default {
     },
     updateCell(value, data) {
       // eslint-disable-next-line no-console
-      console.log(value, data)
+      // console.log(value, data)
       const locationIndex = this.locations.findIndex((location) => {
         return location.id === data.item.locId
       })
@@ -370,7 +372,7 @@ export default {
         key: data.field.key,
         val: value
       })
-      this.onSave()
+      // this.onSave()
     }
   }
 }
