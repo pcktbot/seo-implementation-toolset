@@ -23,7 +23,7 @@
           Redirects
         </h1>
         <b-row class="px-4">
-          <b-col lg="6" class="p-2">
+          <b-col lg="4" class="p-2">
             <b-form-group
               label="Filter"
               label-size="sm"
@@ -49,7 +49,7 @@
               </b-input-group>
             </b-form-group>
           </b-col>
-          <b-col lg="6" class="p-2">
+          <b-col lg="4" class="p-2">
             <b-form-group
               label="Filter On *Leave all unchecked to filter on all data"
               label-size="sm"
@@ -70,9 +70,7 @@
               </b-form-checkbox-group>
             </b-form-group>
           </b-col>
-        </b-row>
-        <b-row class="px-4">
-          <b-col lg="3" class="p-2">
+          <b-col lg="4" class="p-2">
             <b-form-group
               label="Sort"
               label-size="sm"
@@ -107,6 +105,8 @@
               </b-input-group>
             </b-form-group>
           </b-col>
+        </b-row>
+        <b-row class="px-4">
           <b-col lg="3" class="p-2 w-50">
             <b-form-group
               label="Per page"
@@ -123,7 +123,7 @@
               />
             </b-form-group>
           </b-col>
-          <b-col lg="2" class="p-2">
+          <b-col lg="3" class="p-2">
             <b-form-group
               label="Pick Page"
               label-size="sm"
@@ -150,6 +150,11 @@
           <b-col lg="2" class="mt-auto p-2">
             <b-button @click="copyUrls('formatted_url')" size="sm" class="" block>
               {{ redirects.formatted_url_btn }}
+            </b-button>
+          </b-col>
+          <b-col lg="2" class="mt-auto p-2">
+            <b-button @click="save()" size="sm" class="" block>
+              {{ redirects.saveButton }}
             </b-button>
           </b-col>
         </b-row>
@@ -310,10 +315,18 @@ export default {
       this.$copyText(copyStr)
       this.updateBtnTxt(column)
     },
+    save() {
+      this.onSave()
+      this.setRedirectProp({
+        'saveButton': 'Saved!'
+      })
+      // eslint-disable-next-line no-return-assign
+      setTimeout(() => this.setRedirectProp({ 'saveButton': 'Save' }), 3000)
+    },
     updateBtnTxt(column) {
       const originalTxt = this.redirects[`${column}_btn`]
       // eslint-disable-next-line no-console
-      console.log(originalTxt)
+      // console.log(originalTxt)
       this.setRedirectProp({
         [`${column}_btn`]: `${this.toTitleCase(column.replace('_', ' '))}'s Copied!`
       })

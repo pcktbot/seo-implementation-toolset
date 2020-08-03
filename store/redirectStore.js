@@ -61,6 +61,7 @@ export const state = () => ({
   },
   current_url_btn: 'Copy Original URL\'s',
   formatted_url_btn: 'Copy Formatted URL\'s',
+  saveButton: 'Save',
   current_url_msg: '',
   formatted_url_msg: ''
 })
