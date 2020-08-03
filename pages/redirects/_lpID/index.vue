@@ -23,7 +23,7 @@
           Redirects
         </h1>
         <b-row class="px-4">
-          <b-col lg="6" class="p-2">
+          <b-col lg="4" class="p-2">
             <b-form-group
               label="Filter"
               label-size="sm"
@@ -49,7 +49,7 @@
               </b-input-group>
             </b-form-group>
           </b-col>
-          <b-col lg="6" class="p-2">
+          <b-col lg="4" class="p-2">
             <b-form-group
               label="Filter On *Leave all unchecked to filter on all data"
               label-size="sm"
@@ -70,9 +70,7 @@
               </b-form-checkbox-group>
             </b-form-group>
           </b-col>
-        </b-row>
-        <b-row class="px-4">
-          <b-col lg="3" class="p-2">
+          <b-col lg="4" class="p-2">
             <b-form-group
               label="Sort"
               label-size="sm"
@@ -107,6 +105,8 @@
               </b-input-group>
             </b-form-group>
           </b-col>
+        </b-row>
+        <b-row class="px-4">
           <b-col lg="3" class="p-2 w-50">
             <b-form-group
               label="Per page"
@@ -123,7 +123,7 @@
               />
             </b-form-group>
           </b-col>
-          <b-col lg="2" class="p-2">
+          <b-col lg="3" class="p-2">
             <b-form-group
               label="Pick Page"
               label-size="sm"
@@ -152,6 +152,11 @@
               {{ redirects.formatted_url_btn }}
             </b-button>
           </b-col>
+          <b-col lg="2" class="mt-auto p-2">
+            <b-button @click="save()" size="sm" class="" block>
+              {{ redirects.saveButton }}
+            </b-button>
+          </b-col>
         </b-row>
         <b-row class="px-4" style="background-color: white">
           <b-col>
@@ -175,6 +180,7 @@
               small
               stacked="md"
             >
+              <!-- CUSTOM CHECKBOX HEADER -->
               <template v-slot:head(entered)="data">
                 <b-form-checkbox
                   id="select-all"
@@ -186,6 +192,7 @@
                   {{ data.field.label }}
                 </b-form-checkbox>
               </template>
+              <!-- CUSTOM CHECKBOX HEADER -->
               <template v-slot:cell(name)="data">
                 {{ initSelects.selects[2].value === 'no'
                   ? data.item.name
@@ -308,10 +315,18 @@ export default {
       this.$copyText(copyStr)
       this.updateBtnTxt(column)
     },
+    save() {
+      this.onSave()
+      this.setRedirectProp({
+        'saveButton': 'Saved!'
+      })
+      // eslint-disable-next-line no-return-assign
+      setTimeout(() => this.setRedirectProp({ 'saveButton': 'Save' }), 3000)
+    },
     updateBtnTxt(column) {
       const originalTxt = this.redirects[`${column}_btn`]
       // eslint-disable-next-line no-console
-      console.log(originalTxt)
+      // console.log(originalTxt)
       this.setRedirectProp({
         [`${column}_btn`]: `${this.toTitleCase(column.replace('_', ' '))}'s Copied!`
       })
@@ -356,7 +371,7 @@ export default {
     },
     updateCell(value, data) {
       // eslint-disable-next-line no-console
-      console.log(value, data)
+      // console.log(value, data)
       const locationIndex = this.locations.findIndex((location) => {
         return location.id === data.item.locId
       })
@@ -370,7 +385,7 @@ export default {
         key: data.field.key,
         val: value
       })
-      this.onSave()
+      // this.onSave()
     }
   }
 }
