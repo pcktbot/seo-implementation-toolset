@@ -40,7 +40,7 @@ export default {
     },
     updateLocationStatus() {
       const locProp = this.selectedLocation.properties
-      const stepsComplete = this.allStepsComple(locProp)
+      const stepsComplete = this.allStepsComplete(locProp)
       if (stepsComplete) {
         this.updateLocProp({ key: 'locationComplete', val: true })
         this.updateLocTable({ index: this.locIdx, field: 'status', val: true })
@@ -54,11 +54,10 @@ export default {
       this.updateLocTable({ index: this.locIdx, field: 'prstatus', val: locProp.prComplete })
       this.onSave()
     },
-    allStepsComple(locProp) {
-      return locProp.stepOneComplete &&
-        locProp.stepTwoComplete &&
-        locProp.stepThreeComplete &&
-        locProp.stepFourComplete
+    allStepsComplete(locProp) {
+      return locProp.corporate
+        ? locProp.stepOneComplete && locProp.stepThreeComplete && locProp.stepFourComplete
+        : locProp.stepOneComplete && locProp.stepTwoComplete && locProp.stepThreeComplete && locProp.stepFourComplete
     },
     onSave() {
       this.$axios.$put('api/locations', {

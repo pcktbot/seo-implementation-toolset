@@ -25,6 +25,12 @@
         <template v-slot:cell(location)="data">
           {{ data.value }}
         </template>
+        <template v-slot:cell(corporate)="data">
+          <icons-swap
+            :needsCheckIcon="data.value"
+            :iconConfig="iconConfig"
+          />
+        </template>
         <template v-slot:cell(edit)="data">
           <b-btn
             :disabled="disabled"

@@ -19,7 +19,7 @@
     </b-row>
     <b-row>
       <b-col
-        v-for="(select, index) in gmbStore.selects"
+        v-for="(select) in selects"
         :key="select.id"
         cols="12"
         md="4"
@@ -28,18 +28,20 @@
           <b-form-group
             :for="select.id"
             :label="select.id"
-            class="pb-0 text-left text-uppercase"
+            class="mb-0 pb-0 text-left text-uppercase"
           >
             <b-form-select
               :id="select.id"
+              :state="validation(select.id)"
               :value="location.properties[select.id]"
-              :options="pickOptions(index)"
+              :options="pickOptions(select.id)"
               @change="onInput(select.id, $event)"
             />
           </b-form-group>
         </b-form>
       </b-col>
       <b-col
+        v-if="location.properties.corporate === 'false'"
         cols="12"
         md="4"
         class="align-self-center mb-2"
@@ -53,6 +55,7 @@
         />
       </b-col>
       <b-col
+        v-if="location.properties.corporate === 'false'"
         cols="12"
         md="4"
         class="align-self-center address-col"
@@ -105,6 +108,10 @@ export default {
       vertical: state => state.initSelects.selects[0].value,
       strategy: state => state.selectedLocation.location.properties.strategy
     }),
+    selects() {
+      return this.location.properties.corporate === 'false'
+        ? this.gmbStore.selects : this.gmbStore.selects.slice(1)
+    },
     disabledSave() {
       return !this.validateStepFour()
     },
@@ -127,14 +134,20 @@ export default {
       updateProp: 'selectedLocation/UPDATE_PROP',
       set: 'gmb/SET'
     }),
+    validation(id) {
+      return !!(this.location.properties[id])
+    },
     validateStepFour() {
       const properties = this.location.properties
-      return properties.gmb && properties.ga && this.strategy
+      return properties.corporate === 'false'
+        ? properties.gmb && properties.ga && this.strategy
+        : properties.ga && this.strategy
     },
-    pickOptions(index) {
-      return index === 2
-        ? this.gmbStore.selects[index][`${this.vertical}options`]
-        : this.gmbStore.selects[index].options
+    pickOptions(id) {
+      const selectIndex = this.gmbStore.selects.findIndex(select => select.id === id)
+      return selectIndex === 2
+        ? this.gmbStore.selects[selectIndex][`${this.vertical}options`]
+        : this.gmbStore.selects[selectIndex].options
     },
     onInput(key, val) {
       this.updateProp({ key, val })
