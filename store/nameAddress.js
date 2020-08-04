@@ -56,7 +56,14 @@ export const state = () => ({
       ss: ['floor_plans', 'property_feature_1', 'recommended_name'],
       sl: ['floor_plans', 'property_feature_1', 'recommended_name']
     }
-  }
+  },
+  corpExcludedFields: [
+    'floor_plans',
+    'property_feature_1',
+    'recommended_name',
+    'uspsvalid',
+    'population'
+  ]
 })
 
 export const actions = {}

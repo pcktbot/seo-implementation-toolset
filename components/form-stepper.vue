@@ -51,7 +51,7 @@
         </template>
         <name-address />
       </b-tab>
-      <b-tab>
+      <b-tab v-if="location.properties.corporate === 'false'">
         <template v-slot:title>
           <tabs
             :text="stepTwoText"
