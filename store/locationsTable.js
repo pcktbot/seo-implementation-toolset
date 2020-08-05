@@ -10,6 +10,11 @@ export const state = () => ({
       sortable: true
     },
     {
+      key: 'corporate',
+      label: 'Corp',
+      sortable: true
+    },
+    {
       key: 'edit',
       label: 'Edit'
     },
@@ -39,6 +44,7 @@ export const mutations = {
         const { name, properties } = location
         return {
           select: false,
+          corporate: properties.corporate === 'true',
           location: `${name} - ${properties.street_address_1}`,
           status: properties.locationComplete,
           value: location.id,

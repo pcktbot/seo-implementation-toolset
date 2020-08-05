@@ -69,6 +69,7 @@
         />
       </b-col>
       <b-col
+        v-if="location.properties.corporate === 'false'"
         cols="12"
         md="4"
         class="align-self-center mb-2"
@@ -83,6 +84,7 @@
         />
       </b-col>
       <b-col
+        v-if="location.properties.corporate === 'false'"
         cols="12"
         md="4"
         class="align-self-center mb-2"
@@ -97,7 +99,7 @@
         />
       </b-col>
       <b-col
-        v-if="initSelects.selects[0].value === 'mf'"
+        v-if="initSelects.selects[0].value === 'mf' && location.properties.corporate === 'false'"
         cols="12"
         md="4"
         class="align-self-center mb-2"
@@ -127,7 +129,7 @@
         />
       </b-col>
       <b-col
-        v-if="initSelects.selects[0].value === 'mf'"
+        v-if="initSelects.selects[0].value === 'mf' && location.properties.corporate === 'false'"
         cols="12"
         md="4"
         class="align-self-center mb-2"
@@ -253,7 +255,9 @@ export default {
       return valid
     },
     getRequiredFields() {
-      const fieldsToExclude = this.nameAddress.excludedRequiredFields[this.initSelects.selects[1].value][this.initSelects.selects[0].value]
+      const fieldsToExclude = this.location.properties.corporate === 'false'
+        ? this.nameAddress.excludedRequiredFields[this.initSelects.selects[1].value][this.initSelects.selects[0].value]
+        : this.nameAddress.corpExcludedFields
       const filtered = Object.keys(this.form)
         .filter(key => !fieldsToExclude.includes(key))
         .reduce((obj, key) => {
@@ -281,6 +285,6 @@ export default {
 </script>
 <style>
   .address-col {
-    padding-top: 1.75rem!important;
+    padding-top: 2rem!important;
   }
 </style>
