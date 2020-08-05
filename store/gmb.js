@@ -70,6 +70,9 @@ export const state = () => ({
       value: null,
       mfoptions: [
         { value: null, text: 'Select Strategy' },
+        { value: 'mfcorp', text: 'Multi Family Corp' },
+        { value: 'mfbasic', text: 'Multi Family Basic' },
+        { value: 'mfprofessional', text: 'Multi Family Professional' },
         { value: 'mfa', text: 'MF A' },
         { value: 'mfb', text: 'MF B' },
         { value: 'mfc', text: 'MF C' },
@@ -96,12 +99,19 @@ export const state = () => ({
       ],
       ssoptions: [
         { value: null, text: 'Select Strategy' },
+        { value: 'sscorp1', text: 'SS Corp 1' },
+        { value: 'sscorp2', text: 'SS Corp 2' },
+        { value: 'ssstarter', text: 'SS Starter' },
+        { value: 'ssprofessional', text: 'SS Professional' },
         { value: 'ssa', text: 'SS A' },
         { value: 'ssalandmark', text: 'SS A - Landmark' },
         { value: 'ssb', text: 'SS B' }
       ],
       sloptions: [
         { value: null, text: 'Select Strategy' },
+        { value: 'slcorp', text: 'SL Corp' },
+        { value: 'slaffordable', text: 'SL Affordable' },
+        { value: 'slelite', text: 'SL Elite' },
         { value: 'sla', text: 'SL A' },
         { value: 'slb', text: 'SL B' },
         { value: 'slc', text: 'SL C' }

@@ -69,7 +69,7 @@
         />
       </b-col>
       <b-col
-        v-if="location.properties.corporate === 'false'"
+        v-if="location.properties.corporate === 'false' || location.properties.corporate === 'FALSE'"
         cols="12"
         md="4"
         class="align-self-center mb-2"
@@ -84,7 +84,7 @@
         />
       </b-col>
       <b-col
-        v-if="location.properties.corporate === 'false'"
+        v-if="location.properties.corporate === 'false' || location.properties.corporate === 'FALSE'"
         cols="12"
         md="4"
         class="align-self-center mb-2"
@@ -99,7 +99,7 @@
         />
       </b-col>
       <b-col
-        v-if="initSelects.selects[0].value === 'mf' && location.properties.corporate === 'false'"
+        v-if="initSelects.selects[0].value === 'mf' && (location.properties.corporate === 'false' || location.properties.corporate === 'FALSE')"
         cols="12"
         md="4"
         class="align-self-center mb-2"
@@ -129,7 +129,7 @@
         />
       </b-col>
       <b-col
-        v-if="initSelects.selects[0].value === 'mf' && location.properties.corporate === 'false'"
+        v-if="initSelects.selects[0].value === 'mf' && (location.properties.corporate === 'false' || location.properties.corporate === 'FALSE')"
         cols="12"
         md="4"
         class="align-self-center mb-2"
@@ -255,7 +255,7 @@ export default {
       return valid
     },
     getRequiredFields() {
-      const fieldsToExclude = this.location.properties.corporate === 'false'
+      const fieldsToExclude = this.location.properties.corporate === 'false' || this.location.properties.corporate === 'FALSE'
         ? this.nameAddress.excludedRequiredFields[this.initSelects.selects[1].value][this.initSelects.selects[0].value]
         : this.nameAddress.corpExcludedFields
       const filtered = Object.keys(this.form)
