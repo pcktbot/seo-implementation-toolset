@@ -1,5 +1,17 @@
 {
   "mf": {
+    "mfcorp": {
+      "link": "https://docs.google.com/spreadsheets/d/1QR7EH32NxyeGOqARCIt0qYtDX1WpzKMR2BcBqgqz0jY/edit#gid=1010465426",
+      "description": "Multi Family Corp"
+    },
+    "mfbasic": {
+      "link": "https://docs.google.com/spreadsheets/d/1QR7EH32NxyeGOqARCIt0qYtDX1WpzKMR2BcBqgqz0jY/edit#gid=177583136",
+      "description": "Multi Family Basic"
+    },
+    "mfprofessional": {
+      "link": "https://docs.google.com/spreadsheets/d/1QR7EH32NxyeGOqARCIt0qYtDX1WpzKMR2BcBqgqz0jY/edit#gid=228566201",
+      "description": "Multi Family Professional"
+    },
     "mfa": {
       "link": "https://docs.google.com/spreadsheets/d/1QR7EH32NxyeGOqARCIt0qYtDX1WpzKMR2BcBqgqz0jY/edit",
       "description": "Orginal Multi Family A"
@@ -94,6 +106,22 @@
     }
   },
   "ss": {
+    "sscorp1": {
+      "link": "https://docs.google.com/spreadsheets/d/1QR7EH32NxyeGOqARCIt0qYtDX1WpzKMR2BcBqgqz0jY/edit#gid=833933764",
+      "description": "Self Storage Corp 1"
+    },
+    "sscorp2": {
+      "link": "https://docs.google.com/spreadsheets/d/1QR7EH32NxyeGOqARCIt0qYtDX1WpzKMR2BcBqgqz0jY/edit#gid=1068645965",
+      "description": "Self Storage Corp 2"
+    },
+    "ssstarter": {
+      "link": "https://docs.google.com/spreadsheets/d/1QR7EH32NxyeGOqARCIt0qYtDX1WpzKMR2BcBqgqz0jY/edit#gid=990943676",
+      "description": "Self Storage Starter"
+    },
+    "ssprofessional": {
+      "link": "https://docs.google.com/spreadsheets/d/1QR7EH32NxyeGOqARCIt0qYtDX1WpzKMR2BcBqgqz0jY/edit#gid=920508734",
+      "description": "Self Storage Professional"
+    },
     "ssa": {
       "link": "https://docs.google.com/spreadsheets/d/1QR7EH32NxyeGOqARCIt0qYtDX1WpzKMR2BcBqgqz0jY/edit#gid=320995540",
       "description": "Self Storage Facility A"
@@ -108,6 +136,18 @@
     }
   },
   "sl": {
+    "slcorp": {
+      "link": "https://docs.google.com/spreadsheets/d/1QR7EH32NxyeGOqARCIt0qYtDX1WpzKMR2BcBqgqz0jY/edit#gid=1942130339",
+      "description": "Senior Living Corp"
+    },
+    "slaffordable": {
+      "link": "https://docs.google.com/spreadsheets/d/1QR7EH32NxyeGOqARCIt0qYtDX1WpzKMR2BcBqgqz0jY/edit#gid=1942130339",
+      "description": "Senior Living Affordable"
+    },
+    "slelite": {
+      "link": "https://docs.google.com/spreadsheets/d/1QR7EH32NxyeGOqARCIt0qYtDX1WpzKMR2BcBqgqz0jY/edit#gid=1653440946",
+      "description": "Senior Living Elite"
+    },
     "sla": {
       "link": "https://docs.google.com/spreadsheets/d/1QR7EH32NxyeGOqARCIt0qYtDX1WpzKMR2BcBqgqz0jY/edit#gid=649440825",
       "description": "Senior Living Community A"
