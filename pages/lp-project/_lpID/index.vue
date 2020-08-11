@@ -104,11 +104,11 @@ export default {
   async fetch({ store, params }) {
     try {
       store.dispatch('userInfo/GET')
-      const selects = await store.dispatch('initSelects/GET', params.lpID)
+      await store.dispatch('initSelects/GET', params.lpID)
       store.commit('initSelects/SET', { 'visible': false })
       store.dispatch('notes/GET_AND_SET', params.lpID)
       const res = await store.dispatch('locations/GET', params.lpID)
-      store.commit('locationsTable/SET_MAP_ITEMS', { res, selects })
+      store.commit('locationsTable/SET_MAP_ITEMS', res)
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e)

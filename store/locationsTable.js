@@ -49,11 +49,6 @@ export const state = () => ({
       text: 'Enterprise'
     }
   ],
-  defaultService: {
-    mf: 'elite',
-    ss: 'elite',
-    sl: 'enterprise'
-  },
   fields: [
     {
       key: 'select',
@@ -98,16 +93,14 @@ export const state = () => ({
 export const gettters = {}
 export const actions = {}
 export const mutations = {
-  SET_MAP_ITEMS(state, { res, selects }) {
-    // eslint-disable-next-line no-console
-    console.log(selects)
+  SET_MAP_ITEMS(state, res) {
     const newItems = [
       ...res.map((location) => {
         const { name, properties } = location
         return {
           select: false,
           corporate: properties.corporate === 'true',
-          service_level: properties.service_level ? properties.service_level.toLowerCase() : state.defaultService[selects[0].value],
+          service_level: properties.service_level,
           location: `${name} - ${properties.street_address_1}`,
           status: properties.locationComplete,
           value: location.id,

@@ -55,7 +55,8 @@ export default {
       this.onSave()
     },
     allStepsComplete(locProp) {
-      return locProp.corporate
+      return (locProp.corporate === 'FALSE' || locProp.corporate === 'false') &&
+        (locProp.service_level !== 'elite' && locProp.service_level !== 'enterprise')
         ? locProp.stepOneComplete && locProp.stepThreeComplete && locProp.stepFourComplete
         : locProp.stepOneComplete && locProp.stepTwoComplete && locProp.stepThreeComplete && locProp.stepFourComplete
     },
