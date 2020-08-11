@@ -52,8 +52,8 @@ export const getters = {
 }
 
 export const actions = {
-  GET({ commit, state }, lpID) {
-    this.$axios
+  async GET({ commit, state }, lpID) {
+    await this.$axios
       .$get(`api/lp-project/${lpID}`)
       .then((res) => {
         commit('SET', { 'lpId': res[0].lpId })
@@ -61,6 +61,7 @@ export const actions = {
           commit('UPDATE_SELECTS', { val: res[0][select.id], index: i })
         })
       })
+    return state.selects
   }
 }
 
