@@ -149,6 +149,9 @@ export default {
         const { name } = location
         const properties = this.reject(location, ['name'])
         const addPropertyFields = this.addImportProps
+        // checks for service level
+        // properties.service_level = properties.service_level ? properties.service_level 
+        // adds additional property fields
         for (const prop in addPropertyFields) {
           properties[prop] = addPropertyFields[prop]
         } // turns keyword string into arr objects
