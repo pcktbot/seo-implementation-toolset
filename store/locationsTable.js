@@ -1,8 +1,58 @@
 export const state = () => ({
+  mfOptions: [
+    {
+      value: null,
+      text: 'Select'
+    },
+    {
+      value: 'basic',
+      text: 'Basic'
+    },
+    {
+      value: 'professional',
+      text: 'Professional'
+    },
+    {
+      value: 'elite',
+      text: 'Elite'
+    }
+  ],
+  ssOptions: [
+    {
+      value: null,
+      text: 'Select'
+    },
+    {
+      value: 'starter',
+      text: 'Starter'
+    },
+    {
+      value: 'professional',
+      text: 'Professional'
+    },
+    {
+      value: 'elite',
+      text: 'Elite'
+    }
+  ],
+  slOptions: [
+    {
+      value: null,
+      text: 'Select'
+    },
+    {
+      value: 'affordable',
+      text: 'Affordable'
+    },
+    {
+      value: 'enterprise',
+      text: 'Enterprise'
+    }
+  ],
   defaultService: {
-    mf: 'Elite',
-    ss: 'Elite',
-    sl: 'Enterprise'
+    mf: 'elite',
+    ss: 'elite',
+    sl: 'enterprise'
   },
   fields: [
     {
@@ -57,7 +107,7 @@ export const mutations = {
         return {
           select: false,
           corporate: properties.corporate === 'true',
-          service_level: properties.service_level ? properties.service_level : state.defaultService[selects[0].value],
+          service_level: properties.service_level ? properties.service_level.toLowerCase() : state.defaultService[selects[0].value],
           location: `${name} - ${properties.street_address_1}`,
           status: properties.locationComplete,
           value: location.id,

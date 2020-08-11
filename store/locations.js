@@ -31,5 +31,8 @@ export const mutations = {
   },
   UPDATE_REDIRECT(state, { locIdx, itemIdx, key, val }) {
     state.locations[locIdx].properties.redirects.items[itemIdx][key] = val
+  },
+  UPDATE_LOCATION_PROP(state, { locIdx, key, val }) {
+    state.locations[locIdx].properties[key] = val
   }
 }

@@ -31,6 +31,14 @@
             :iconConfig="iconConfig"
           />
         </template>
+        <template v-slot:cell(service_level)="data">
+          <b-form-select
+            :id="`service-${data.item.id}`"
+            :value="data.value"
+            :options="locationtbl[`${initSelects.selects[0].value}Options`]"
+            @input="onChangeCell($event, data.item.value, 'service_level')"
+          />
+        </template>
         <template v-slot:cell(edit)="data">
           <b-btn
             :disabled="disabled"
@@ -153,6 +161,7 @@ export default {
     ...mapMutations({
       setLocation: 'selectedLocation/SET',
       setLocations: 'locations/SET',
+      setLocationProp: 'locations/UPDATE_LOCATION_PROP',
       setLocationNotes: 'notes/SET',
       setLocationTblProps: 'locationsTable/SET',
       setRedirectProp: 'selectedLocation/UPDATE_REDIRECT_PROPERTY',
@@ -218,6 +227,10 @@ export default {
         })
       }
       return max
+    },
+    onChangeCell(val, locId, key) {
+      const locIdx = this.locations.findIndex(item => item.id === locId)
+      this.setLocationProp({ val, locIdx, key })
     }
   }
 }
