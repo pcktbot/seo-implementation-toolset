@@ -15,6 +15,11 @@ export const state = () => ({
       sortable: true
     },
     {
+      key: 'service_level',
+      label: 'Service Level',
+      sortable: true
+    },
+    {
       key: 'edit',
       label: 'Edit'
     },
