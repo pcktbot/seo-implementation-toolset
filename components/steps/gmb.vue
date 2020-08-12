@@ -41,7 +41,8 @@
         </b-form>
       </b-col>
       <b-col
-        v-if="location.properties.corporate === 'false' || location.properties.corporate === 'FALSE'"
+        v-if="(location.properties.corporate === 'false' || location.properties.corporate === 'FALSE')
+          && (location.properties.service_level === 'elite' || location.properties.service_level === 'enterprise')"
         cols="12"
         md="4"
         class="align-self-center mb-2"
@@ -55,7 +56,8 @@
         />
       </b-col>
       <b-col
-        v-if="location.properties.corporate === 'false' || location.properties.corporate === 'FALSE'"
+        v-if="(location.properties.corporate === 'false' || location.properties.corporate === 'FALSE')
+          && (location.properties.service_level === 'elite' || location.properties.service_level === 'enterprise')"
         cols="12"
         md="4"
         class="align-self-center address-col"
@@ -109,7 +111,8 @@ export default {
       strategy: state => state.selectedLocation.location.properties.strategy
     }),
     selects() {
-      return this.location.properties.corporate === 'false' || this.location.properties.corporate === 'FALSE'
+      return (this.location.properties.corporate === 'false' || this.location.properties.corporate === 'FALSE') &&
+      (this.location.properties.service_level === 'elite' || this.location.properties.service_level === 'enterprise')
         ? this.gmbStore.selects : this.gmbStore.selects.slice(1)
     },
     disabledSave() {
@@ -139,7 +142,8 @@ export default {
     },
     validateStepFour() {
       const properties = this.location.properties
-      return properties.corporate === 'false' || properties.corporate === 'FALSE'
+      return (this.location.properties.corporate === 'false' || this.location.properties.corporate === 'FALSE') &&
+      (this.location.properties.service_level === 'elite' || this.location.properties.service_level === 'enterprise')
         ? properties.gmb && properties.ga && this.strategy
         : properties.ga && this.strategy
     },

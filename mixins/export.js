@@ -22,6 +22,7 @@ export default {
         'class',
         'primary_type',
         'current_website',
+        'service_level',
         'negative_keywords'
       ]
     }

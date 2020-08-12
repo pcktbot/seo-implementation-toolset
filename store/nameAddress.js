@@ -47,14 +47,36 @@ export const state = () => ({
   },
   excludedRequiredFields: {
     multi: {
-      mf: ['custom_slug', 'recommended_name'],
-      ss: ['floor_plans', 'property_feature_1', 'custom_slug', 'recommended_name'],
-      sl: ['floor_plans', 'property_feature_1', 'custom_slug', 'recommended_name']
+      mf: {
+        basic: ['custom_slug', 'recommended_name', 'population', 'floor_plans', 'property_feature_1'],
+        professional: ['custom_slug', 'recommended_name', 'population', 'floor_plans', 'property_feature_1'],
+        elite: ['custom_slug', 'recommended_name']
+      },
+      ss: {
+        starter: ['floor_plans', 'property_feature_1', 'custom_slug', 'recommended_name', 'population'],
+        professional: ['floor_plans', 'property_feature_1', 'custom_slug', 'recommended_name', 'population'],
+        elite: ['floor_plans', 'property_feature_1', 'custom_slug', 'recommended_name']
+      },
+      sl: {
+        affordable: ['floor_plans', 'property_feature_1', 'custom_slug', 'recommended_name', 'population'],
+        enterprise: ['floor_plans', 'property_feature_1', 'custom_slug', 'recommended_name']
+      }
     },
     single: {
-      mf: ['recommended_name'],
-      ss: ['floor_plans', 'property_feature_1', 'recommended_name'],
-      sl: ['floor_plans', 'property_feature_1', 'recommended_name']
+      mf: {
+        basic: ['recommended_name', 'population', 'floor_plans', 'property_feature_1'],
+        professional: ['recommended_name', 'population', 'floor_plans', 'property_feature_1'],
+        elite: ['recommended_name']
+      },
+      ss: {
+        starter: ['floor_plans', 'property_feature_1', 'recommended_name', 'population'],
+        professional: ['floor_plans', 'property_feature_1', 'recommended_name', 'population'],
+        elite: ['floor_plans', 'property_feature_1', 'recommended_name']
+      },
+      sl: {
+        affordable: ['floor_plans', 'property_feature_1', 'recommended_name', 'population'],
+        enterprise: ['floor_plans', 'property_feature_1', 'recommended_name']
+      }
     }
   },
   corpExcludedFields: [

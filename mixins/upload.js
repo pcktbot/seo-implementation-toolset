@@ -6,6 +6,11 @@ export default {
   mixins: [Alert],
   data () {
     return {
+      defaultService: {
+        mf: 'elite',
+        ss: 'elite',
+        sl: 'enterprise'
+      },
       splitRgx: /\s*(?:,|$)\s*/, // staying here
       // staying here
       propertiesToArr: [
@@ -149,6 +154,11 @@ export default {
         const { name } = location
         const properties = this.reject(location, ['name'])
         const addPropertyFields = this.addImportProps
+        // checks for service level
+        properties.service_level = properties.service_level
+          ? properties.service_level.toLowerCase()
+          : this.defaultService[this.initSelects.selects[0].value]
+        // adds additional property fields
         for (const prop in addPropertyFields) {
           properties[prop] = addPropertyFields[prop]
         } // turns keyword string into arr objects
