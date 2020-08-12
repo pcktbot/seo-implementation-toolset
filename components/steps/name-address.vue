@@ -69,7 +69,7 @@
         />
       </b-col>
       <b-col
-        v-if="location.properties.corporate === 'false' || location.properties.corporate === 'FALSE'"
+        v-if="notCorpOrBasic"
         cols="12"
         md="4"
         class="align-self-center mb-2"
@@ -99,7 +99,7 @@
         />
       </b-col>
       <b-col
-        v-if="initSelects.selects[0].value === 'mf' && (location.properties.corporate === 'false' || location.properties.corporate === 'FALSE')"
+        v-if="mfNotCorpOrBasic"
         cols="12"
         md="4"
         class="align-self-center mb-2"
@@ -129,7 +129,7 @@
         />
       </b-col>
       <b-col
-        v-if="initSelects.selects[0].value === 'mf' && (location.properties.corporate === 'false' || location.properties.corporate === 'FALSE')"
+        v-if="mfNotCorpOrBasic"
         cols="12"
         md="4"
         class="align-self-center mb-2"
@@ -223,6 +223,17 @@ export default {
     disabled() {
       const valid = this.validateStepOne()
       return !valid
+    },
+    mfNotCorpOrBasic() {
+      const locProp = this.location.properties
+      return this.initSelects.selects[0].value === 'mf' &&
+        (locProp.corporate === 'false' || locProp.corporate === 'FALSE') &&
+        (locProp.service_level === 'elite' || locProp.service_level === 'enterprise')
+    },
+    notCorpOrBasic() {
+      const locProp = this.location.properties
+      return (locProp.corporate === 'false' || locProp.corporate === 'FALSE') &&
+        (locProp.service_level === 'elite' || locProp.service_level === 'enterprise')
     }
   },
   methods: {
@@ -255,8 +266,12 @@ export default {
       return valid
     },
     getRequiredFields() {
-      const fieldsToExclude = this.location.properties.corporate === 'false' || this.location.properties.corporate === 'FALSE'
-        ? this.nameAddress.excludedRequiredFields[this.initSelects.selects[1].value][this.initSelects.selects[0].value]
+      const locProp = this.location.properties
+      const domainStrat = this.initSelects.selects[1].value
+      const vertical = this.initSelects.selects[0].value
+      const sericeLevel = locProp.service_level
+      const fieldsToExclude = locProp.corporate === 'false' || locProp.corporate === 'FALSE'
+        ? this.nameAddress.excludedRequiredFields[domainStrat][vertical][sericeLevel]
         : this.nameAddress.corpExcludedFields
       const filtered = Object.keys(this.form)
         .filter(key => !fieldsToExclude.includes(key))
