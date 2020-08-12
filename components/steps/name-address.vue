@@ -129,7 +129,7 @@
         />
       </b-col>
       <b-col
-        v-if="mfNotCorpOrBasic"
+        v-if="mfNotCorpOrBasicOrProf"
         cols="12"
         md="4"
         class="align-self-center mb-2"
@@ -224,11 +224,17 @@ export default {
       const valid = this.validateStepOne()
       return !valid
     },
-    mfNotCorpOrBasic() {
+    mfNotCorpOrBasicOrProf() {
       const locProp = this.location.properties
       return this.initSelects.selects[0].value === 'mf' &&
         (locProp.corporate === 'false' || locProp.corporate === 'FALSE') &&
         (locProp.service_level === 'elite' || locProp.service_level === 'enterprise')
+    },
+    mfNotCorpOrBasic() {
+      const locProp = this.location.properties
+      return this.initSelects.selects[0].value === 'mf' &&
+        (locProp.corporate === 'false' || locProp.corporate === 'FALSE') &&
+        (locProp.service_level === 'elite' || locProp.service_level === 'enterprise' || locProp.service_level === 'professional')
     },
     notCorpOrBasic() {
       const locProp = this.location.properties

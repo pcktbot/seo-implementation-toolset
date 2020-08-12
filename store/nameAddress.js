@@ -49,7 +49,7 @@ export const state = () => ({
     multi: {
       mf: {
         basic: ['custom_slug', 'recommended_name', 'population', 'floor_plans', 'property_feature_1'],
-        professional: ['custom_slug', 'recommended_name', 'population', 'floor_plans', 'property_feature_1'],
+        professional: ['custom_slug', 'recommended_name', 'population', 'property_feature_1'],
         elite: ['custom_slug', 'recommended_name']
       },
       ss: {
@@ -65,7 +65,7 @@ export const state = () => ({
     single: {
       mf: {
         basic: ['recommended_name', 'population', 'floor_plans', 'property_feature_1'],
-        professional: ['recommended_name', 'population', 'floor_plans', 'property_feature_1'],
+        professional: ['recommended_name', 'population', 'property_feature_1'],
         elite: ['recommended_name']
       },
       ss: {
