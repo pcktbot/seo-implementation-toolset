@@ -1,13 +1,23 @@
 export const state = () => ({
-  locations: []
+  locations: [],
+  defaultService: {
+    mf: 'elite',
+    ss: 'elite',
+    sl: 'enterprise'
+  }
 })
 
 export const actions = {
-  async GET({ commit }, lpId) {
+  async GET({ commit, state }, { lpId, selects }) {
+    // eslint-disable-next-line no-console
+    console.log(lpId, selects)
     const val = await this.$axios
       .$get(`api/locations/${lpId}`)
       .then((res) => {
         res.forEach((location) => {
+          if (!location.properties.service_level) {
+            location.properties.service_level = state.defaultService[selects[0].value]
+          }
           const redirects = location.properties.redirects.items
           if (redirects.length > 0 && redirects[0].id === undefined) {
             redirects.forEach((redirect, index) => {
