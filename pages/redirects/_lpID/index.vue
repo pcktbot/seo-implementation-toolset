@@ -283,8 +283,9 @@ export default {
   },
   async fetch({ store, params }) {
     try {
-      await store.dispatch('initSelects/GET', params.lpID)
-      await store.dispatch('locations/GET', params.lpID)
+      const lpId = params.lpID
+      const selects = await store.dispatch('initSelects/GET', lpId)
+      await store.dispatch('locations/GET', { lpId, selects })
       // store.commit('redirectStore/SET_MAP_ITEMS', res)
     } catch (e) {
       // eslint-disable-next-line no-console

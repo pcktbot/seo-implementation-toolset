@@ -92,8 +92,9 @@ export default {
   },
   async fetch({ store, params }) {
     try {
-      await store.dispatch('initSelects/GET', params.lpID)
-      const res = await store.dispatch('locations/GET', params.lpID)
+      const lpId = params.lpID
+      const selects = await store.dispatch('initSelects/GET', lpId)
+      const res = await store.dispatch('locations/GET', { lpId, selects })
       store.commit('copyTable/SET_MAP_ITEMS', res)
     } catch (e) {
       // eslint-disable-next-line no-console
