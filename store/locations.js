@@ -9,8 +9,6 @@ export const state = () => ({
 
 export const actions = {
   async GET({ commit, state }, { lpId, selects }) {
-    // eslint-disable-next-line no-console
-    console.log(lpId, selects)
     const val = await this.$axios
       .$get(`api/locations/${lpId}`)
       .then((res) => {
