@@ -77,6 +77,7 @@ export const state = () => ({
         { value: 'mfb', text: 'MF B' },
         { value: 'mfc', text: 'MF C' },
         { value: 'townhomes', text: 'Townhomes' },
+        { value: 'condos', text: 'Condos' },
         { value: 'apartmentstownhomes', text: 'Apartments & Townhomes' },
         { value: 'mobile', text: 'Mobile Homes' },
         { value: 'fiftyfiveplus', text: '55+ Apartments' },

@@ -37,7 +37,7 @@
                   />
                 </span>
               </template>
-              <template v-slot:cell(updatedAt)="data">
+              <template v-slot:cell(createdAt)="data">
                 {{ formattedDate(data.value) }}
               </template>
               <template v-slot:cell(feedbackText)="data">
@@ -140,7 +140,7 @@ export default {
             label: 'Name'
           },
           {
-            key: 'updatedAt',
+            key: 'createdAt',
             label: 'Submitted Date',
             sortable: true
           },
@@ -177,7 +177,7 @@ export default {
     }
   },
   async fetch({ store }) {
-    await store.dispatch('userInfo/get')
+    await store.dispatch('userInfo/GET')
   },
   created() {
     this.$axios.$get(`/api/feedback`).then((res) => {

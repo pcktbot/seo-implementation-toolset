@@ -56,7 +56,7 @@ export default {
     },
     allStepsComplete(locProp) {
       let val
-      if (location.corporate === true) {
+      if (location.corporate === 'true' || location.corporate === 'TRUE' || location.corporate === true) {
         val = locProp.stepOneComplete && locProp.stepThreeComplete && locProp.stepFourComplete
       } else if ((locProp.corporate === 'FALSE' || locProp.corporate === 'false') &&
         (locProp.service_level !== 'elite' && locProp.service_level !== 'enterprise')) {

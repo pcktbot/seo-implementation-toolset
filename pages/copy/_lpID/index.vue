@@ -1,7 +1,7 @@
 <template>
   <div>
     <g5-nav>
-      <template v-slot:content>
+      <template v-slot:alert>
         <b-alert
           :show="alertProps.dismissCountDown"
           :variant="alertProps.alertvariant"
@@ -12,6 +12,9 @@
         >
           {{ alertProps.alertMsg }}
         </b-alert>
+      </template>
+      <template v-slot:content>
+        <menu-dropdown />
       </template>
     </g5-nav>
     <div class="main-with-nav">
@@ -55,6 +58,7 @@
 <script>
 import { mapState } from 'vuex'
 import g5Nav from '~/components/nav'
+import menuDropdown from '~/components/menu-dropdown'
 import g5Footer from '~/components/footer'
 import Alert from '~/mixins/alert'
 import CommentsMixin from '~/mixins/comments'
@@ -64,7 +68,8 @@ export default {
   components: {
     g5Nav,
     IconsSwap,
-    g5Footer
+    g5Footer,
+    menuDropdown
   },
   mixins: [Alert, CommentsMixin],
   data () {
