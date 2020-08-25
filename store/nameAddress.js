@@ -64,18 +64,18 @@ export const state = () => ({
     },
     single: {
       mf: {
-        basic: ['recommended_name', 'population', 'floor_plans', 'property_feature_1'],
-        professional: ['recommended_name', 'population', 'property_feature_1'],
-        elite: ['recommended_name']
+        basic: ['recommended_name', 'population', 'floor_plans', 'property_feature_1', 'naked_domain'],
+        professional: ['recommended_name', 'population', 'property_feature_1', 'naked_domain'],
+        elite: ['recommended_name', 'naked_domain']
       },
       ss: {
-        starter: ['floor_plans', 'property_feature_1', 'recommended_name', 'population'],
-        professional: ['floor_plans', 'property_feature_1', 'recommended_name', 'population'],
-        elite: ['floor_plans', 'property_feature_1', 'recommended_name']
+        starter: ['floor_plans', 'property_feature_1', 'recommended_name', 'population', 'naked_domain'],
+        professional: ['floor_plans', 'property_feature_1', 'recommended_name', 'population', 'naked_domain'],
+        elite: ['floor_plans', 'property_feature_1', 'recommended_name', 'naked_domain']
       },
       sl: {
-        affordable: ['floor_plans', 'property_feature_1', 'recommended_name', 'population'],
-        enterprise: ['floor_plans', 'property_feature_1', 'recommended_name']
+        affordable: ['floor_plans', 'property_feature_1', 'recommended_name', 'population', 'naked_domain'],
+        enterprise: ['floor_plans', 'property_feature_1', 'recommended_name', 'naked_domain']
       }
     }
   },

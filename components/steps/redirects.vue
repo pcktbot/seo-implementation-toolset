@@ -1,14 +1,18 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col class="text-center">
+      <b-col class="text-left" cols="12" md="4">
+        <span class="font-weight-bold">Current Website: </span>
+        {{ location.properties.current_website }}
+      </b-col>
+      <b-col class="text-center" cols="12" md="4">
         <p class="font-italic mb-0">
           Please select a strategy and paste all redirects below
         </p>
       </b-col>
     </b-row>
-    <b-row class="mx-auto px-0">
-      <b-col class="top-3 align-self-center px-0 pb-3 col-12 col-md">
+    <b-row>
+      <b-col class="top-3 align-self-center pb-3 col-12 col-md">
         <b-form-select
           id="strategy-selection"
           :state="validDropDown"
@@ -18,7 +22,7 @@
           class="w-50"
         />
       </b-col>
-      <b-col class="top-3 text-center px-0 pb-3 col-12 col-md">
+      <b-col class="top-3 text-center pb-3 col-12 col-md">
         <span :id="formatTip" tabindex="0">
           <b-btn
             :disabled="btnDisabled"
@@ -33,7 +37,7 @@
           </b-tooltip>
         </span>
       </b-col>
-      <b-col class="top-3 text-right px-0 pb-3 col-12 col-md">
+      <b-col class="top-3 text-right pb-3 col-12 col-md">
         <save-step
           :isDisabled="disableSave"
           :saveData="redirectsStore.saveData"

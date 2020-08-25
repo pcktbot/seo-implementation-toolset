@@ -18,6 +18,7 @@ export const getters = {
         uspsvalid: state.location.properties.uspsvalid,
         floor_plans: state.location.properties.floor_plans,
         property_feature_1: state.location.properties.property_feature_1,
+        naked_domain: state.location.properties.naked_domain,
         custom_slug: state.location.properties.custom_slug
       }
     }

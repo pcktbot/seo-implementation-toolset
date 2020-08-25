@@ -58,8 +58,7 @@ export default {
       let val
       if (locProp.corporate === 'true' || locProp.corporate === 'TRUE' || locProp.corporate === true) {
         val = locProp.stepOneComplete && locProp.stepThreeComplete && locProp.stepFourComplete
-      } else if ((locProp.corporate === 'FALSE' || locProp.corporate === 'false') &&
-        (locProp.service_level !== 'elite' && locProp.service_level !== 'enterprise')) {
+      } else if (locProp.service_level !== 'elite' && locProp.service_level !== 'enterprise') {
         val = locProp.stepOneComplete && locProp.stepThreeComplete && locProp.stepFourComplete
       } else {
         val = locProp.stepOneComplete && locProp.stepTwoComplete && locProp.stepThreeComplete && locProp.stepFourComplete
