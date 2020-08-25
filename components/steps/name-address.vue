@@ -26,11 +26,7 @@
           />
         </b-form-group>
       </b-col>
-      <b-col
-        cols="12"
-        md="4"
-        class="align-self-center mb-2"
-      >
+      <b-col cols="12" md="4">
         <label for="state">STATE</label>
         <b-form-select
           id="state"
@@ -40,11 +36,7 @@
           @change="onInput('state', $event)"
         />
       </b-col>
-      <b-col
-        cols="12"
-        md="4"
-        class="align-self-center mb-2"
-      >
+      <b-col cols="12" md="4">
         <label for="postal_code">POSTAL CODE</label>
         <b-form-input
           id="postal_code"
@@ -54,11 +46,7 @@
           placeholder="Enter postal code"
         />
       </b-col>
-      <b-col
-        cols="12"
-        md="4"
-        class="align-self-center mb-2"
-      >
+      <b-col cols="12" md="4">
         <label for="country">COUNTRY</label>
         <b-form-select
           id="country"
@@ -72,7 +60,6 @@
         v-if="notCorpOrBasic"
         cols="12"
         md="4"
-        class="align-self-center mb-2"
       >
         <label for="population">POPULATION</label>
         <b-form-input
@@ -87,7 +74,6 @@
         v-if="location.properties.corporate === 'false' || location.properties.corporate === 'FALSE'"
         cols="12"
         md="4"
-        class="align-self-center mb-2"
       >
         <label for="uspsvalid">USPS Verified</label>
         <b-form-select
@@ -102,7 +88,6 @@
         v-if="mfNotCorpOrBasic"
         cols="12"
         md="4"
-        class="align-self-center mb-2"
       >
         <label for="floor_plans">FLOOR PLANS</label>
         <b-form-input
@@ -117,7 +102,6 @@
         v-if="initSelects.selects[1].value === 'single'"
         cols="12"
         md="4"
-        class="align-self-center mb-2"
       >
         <label for="custom_slug">CUSTOM SLUG</label>
         <b-form-input
@@ -132,7 +116,6 @@
         v-if="mfNotCorpOrBasicOrProf"
         cols="12"
         md="4"
-        class="align-self-center mb-2"
       >
         <label for="property_feature_1">PROPERTY FEATURE</label>
         <b-form-select
@@ -145,9 +128,26 @@
         />
       </b-col>
       <b-col
+        v-if="domain === 'multi'"
         cols="12"
         md="4"
-        class="align-self-center address-col"
+      >
+        <label for="population">NAKED DOMAIN</label>
+        <b-form-input
+          id="domain"
+          :value="form.naked_domain"
+          :state="validation('naked_domain')"
+          @input="onInput('naked_domain', $event)"
+          placeholder="Enter naked domain"
+        />
+        <b-form-invalid-feedback id="domain">
+          Invalid naked domain
+        </b-form-invalid-feedback>
+      </b-col>
+      <b-col
+        cols="12"
+        md="4"
+        class="btn-spacing"
       >
         <span :id="addressTip" class="block" tabindex="0">
           <b-btn
@@ -165,9 +165,7 @@
           </b-tooltip>
         </span>
       </b-col>
-    </b-row>
-    <b-row class="align-items-center">
-      <b-col class="text-right py-0">
+      <b-col class="text-right btn-spacing">
         <save-step
           :isDisabled="disabled"
           :saveData="nameAddress.saveData"
@@ -191,11 +189,16 @@ export default {
   },
   mixins: [Locations],
   props: {},
-  data () { return {} },
+  data () {
+    return {
+      validDomain: /^(?!:\/\/)([a-zA-Z0-9-_]+\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\.[a-zA-Z]{2,11}?$/i
+    }
+  },
   computed: {
     ...mapState({
       nameAddress: state => state.nameAddress,
       initSelects: state => state.initSelects,
+      domain: state => state.initSelects.selects[1].value,
       location: state => state.selectedLocation.location,
       states: state => state.states
     }),
@@ -258,13 +261,19 @@ export default {
         valid = false
       }
       if (field === 'recommended_name') valid = null
+      if (field === 'naked_domain' && !this.validDomain.test(this.form.naked_domain)) {
+        valid = false
+      }
       return valid
     },
     validateStepOne() {
       let valid = true
       const filteredForm = this.getRequiredFields()
       for (const prop in filteredForm) {
-        if (filteredForm[prop] === '' || filteredForm[prop] === null) {
+        if (prop === 'naked_domain' && !this.validDomain.test(filteredForm.naked_domain)) {
+          valid = false
+          break
+        } else if (filteredForm[prop] === '' || filteredForm[prop] === null) {
           valid = false
           break
         }
@@ -305,7 +314,7 @@ export default {
 }
 </script>
 <style>
-  .address-col {
-    padding-top: 2rem!important;
+  .btn-spacing {
+    padding-top: 2.24rem!important;
   }
 </style>

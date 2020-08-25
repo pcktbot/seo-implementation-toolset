@@ -5,7 +5,8 @@
     />
     <b-row>
       <b-col class="text-left" cols="12" md="4">
-        <span class="font-weight-bold">Current Website: </span>{{ location.properties.current_website }}
+        <span class="font-weight-bold">Current Website: </span>
+        {{ location.properties.current_website }}
       </b-col>
       <b-col v-if="location.properties.primary_type" class="text-left" cols="12" md="4">
         <span class="font-weight-bold">Property Type:</span> {{ location.properties.primary_type }}
@@ -45,7 +46,7 @@
           && (location.properties.service_level === 'elite' || location.properties.service_level === 'enterprise')"
         cols="12"
         md="4"
-        class="align-self-center mb-2"
+        class="align-self-center"
       >
         <label for="google_cid">GMB CID</label>
         <b-form-input
@@ -60,7 +61,7 @@
           && (location.properties.service_level === 'elite' || location.properties.service_level === 'enterprise')"
         cols="12"
         md="4"
-        class="align-self-center address-col"
+        class="align-self-center btn-spacing"
       >
         <b-btn
           v-b-modal.cid-modal
@@ -75,7 +76,7 @@
       <b-col
         cols="12"
         md="4"
-        class="text-right align-self-center address-col"
+        class="text-right align-self-center btn-spacing"
       >
         <save-step
           :isDisabled="disabledSave"
@@ -99,6 +100,7 @@ export default {
   },
   data () {
     return {
+      content: 'text',
       strategies: Strategies
     }
   },
@@ -137,6 +139,9 @@ export default {
       updateProp: 'selectedLocation/UPDATE_PROP',
       set: 'gmb/SET'
     }),
+    handleInput(e) {
+      this.content = e.target.innerHTML
+    },
     validation(id) {
       return !!(this.location.properties[id])
     },
@@ -154,6 +159,8 @@ export default {
         : this.gmbStore.selects[selectIndex].options
     },
     onInput(key, val) {
+      // eslint-disable-next-line no-console
+      console.log(key, val)
       this.updateProp({ key, val })
       this.updateProp({
         key: this.gmbStore.saveData.stepUpdateTxt,
@@ -186,6 +193,7 @@ export default {
 </script>
 
 <style>
+.edit-text:focus { outline: none; }
  #strat-link {
   text-decoration: underline!important;
 }
