@@ -84,7 +84,8 @@ export const state = () => ({
     'property_feature_1',
     'recommended_name',
     'uspsvalid',
-    'population'
+    'population',
+    'naked_domain'
   ]
 })
 
