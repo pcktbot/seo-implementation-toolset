@@ -69,7 +69,7 @@ export default {
           break
         }
       }
-      return (valid && this.initSelects.file && this.initSelects.lpId.toString().length === 8)
+      return (valid && this.initSelects.file && this.initSelects.lpId.toString().length === 8 && this.initSelects.phase)
     },
     validateLPID() {
       return this.initSelects.lpId && this.initSelects.lpId.toString().length === 8
@@ -158,6 +158,8 @@ export default {
         properties.service_level = properties.service_level
           ? properties.service_level.toLowerCase()
           : this.defaultService[this.initSelects.selects[0].value]
+        // adds phase property to each location
+        properties.phase = this.initSelects.phase
         // adds additional property fields
         for (const prop in addPropertyFields) {
           properties[prop] = addPropertyFields[prop]

@@ -16,6 +16,9 @@ export const actions = {
           if (!location.properties.service_level) {
             location.properties.service_level = state.defaultService[selects[0].value]
           }
+          if (!location.properties.phase) {
+            location.properties.phase = 1
+          }
           const redirects = location.properties.redirects.items
           if (redirects.length > 0 && redirects[0].id === undefined) {
             redirects.forEach((redirect, index) => {

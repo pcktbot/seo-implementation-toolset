@@ -7,12 +7,15 @@
         <b-col
           v-if="initSelects.toggle.selected === 'upload'"
           cols="12"
-          md="4"
+          md="3"
         >
           <loadfile />
         </b-col>
         <b-col :md="getColWidth()" cols="12">
           <lpinput />
+        </b-col>
+        <b-col :md="getColWidth()" cols="12">
+          <phaseInput />
         </b-col>
         <b-col :md="getColWidth()" cols="12">
           <loadbtn />
@@ -28,6 +31,7 @@ import lpinput from '~/components/init-selections/lpinput'
 import loadbtn from '~/components/init-selections/loadbtn'
 import dropdowns from '~/components/init-selections/dropdowns'
 import loadfile from '~/components/init-selections/loadfile'
+import phaseInput from '~/components/init-selections/phaseInput'
 import instructions from '~/components/init-selections/instructions'
 export default {
   components: {
@@ -35,6 +39,7 @@ export default {
     loadbtn,
     dropdowns,
     loadfile,
+    phaseInput,
     instructions
   },
   data() {
@@ -51,7 +56,7 @@ export default {
   },
   methods: {
     getColWidth() {
-      return this.initSelects.toggle.selected === 'upload' ? 4 : 6
+      return this.initSelects.toggle.selected === 'upload' ? 3 : 6
     }
   }
 }

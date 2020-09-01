@@ -60,6 +60,11 @@ export const state = () => ({
       sortable: true
     },
     {
+      key: 'phase',
+      label: 'Phase',
+      sortable: true
+    },
+    {
       key: 'corporate',
       label: 'Corp',
       sortable: true
@@ -88,7 +93,12 @@ export const state = () => ({
   ],
   items: [],
   selectMode: 'multi',
-  selected: []
+  selected: [],
+  filter: '',
+  filterOn: [],
+  sortBy: '',
+  sortDesc: false,
+  sortDirection: 'asc'
 })
 export const gettters = {}
 export const actions = {}
@@ -99,6 +109,7 @@ export const mutations = {
         const { name, properties } = location
         return {
           select: false,
+          phase: properties.phase,
           corporate: properties.corporate === 'true',
           service_level: properties.service_level,
           location: `${name} - ${properties.street_address_1}`,
