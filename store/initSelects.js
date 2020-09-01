@@ -1,4 +1,5 @@
 export const state = () => ({
+  phase: null,
   visible: true,
   lpId: null,
   file: null,
