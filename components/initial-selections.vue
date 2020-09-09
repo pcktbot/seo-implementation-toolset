@@ -14,7 +14,11 @@
         <b-col :md="getColWidth()" cols="12">
           <lpinput />
         </b-col>
-        <b-col :md="getColWidth()" cols="12">
+        <b-col
+          v-if="initSelects.toggle.selected === 'upload'"
+          :md="getColWidth()"
+          cols="12"
+        >
           <phaseInput />
         </b-col>
         <b-col :md="getColWidth()" cols="12">

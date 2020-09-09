@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-row class="px-4">
+    <b-row>
       <b-col lg="3" class="p-2">
         <b-form-group
           label="Filter"
