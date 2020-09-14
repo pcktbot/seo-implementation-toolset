@@ -23,7 +23,8 @@ export default {
         'primary_type',
         'current_website',
         'service_level',
-        'negative_keywords'
+        'negative_keywords',
+        'phase'
       ]
     }
   },
