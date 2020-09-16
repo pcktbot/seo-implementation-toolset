@@ -281,13 +281,7 @@ export default {
       return valid
     },
     getRequiredFields() {
-      const locProp = this.location.properties
-      const domainStrat = this.initSelects.selects[1].value
-      const vertical = this.initSelects.selects[0].value
-      const sericeLevel = locProp.service_level
-      const fieldsToExclude = locProp.corporate === 'false' || locProp.corporate === 'FALSE'
-        ? this.nameAddress.excludedRequiredFields[domainStrat][vertical][sericeLevel]
-        : this.nameAddress.corpExcludedFields
+      const fieldsToExclude = this.getFieldsToExclude()
       const filtered = Object.keys(this.form)
         .filter(key => !fieldsToExclude.includes(key))
         .reduce((obj, key) => {
@@ -295,6 +289,19 @@ export default {
           return obj
         }, {})
       return filtered
+    },
+    getFieldsToExclude() {
+      const locProp = this.location.properties
+      const domainStrat = this.initSelects.selects[1].value
+      const vertical = this.initSelects.selects[0].value
+      const sericeLevel = locProp.service_level
+      let fieldsToExclude = this.nameAddress.corpExcludedFields
+      if (locProp.corporate === 'false' || locProp.corporate === 'FALSE') {
+        fieldsToExclude = this.nameAddress.excludedRequiredFields[domainStrat][vertical][sericeLevel]
+          ? this.nameAddress.excludedRequiredFields[domainStrat][vertical][sericeLevel]
+          : this.nameAddress.excludedRequiredFields[domainStrat][vertical].default
+      }
+      return fieldsToExclude
     },
     onInput(key, val) {
       this.onUpdate({ key, val })

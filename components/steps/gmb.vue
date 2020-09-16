@@ -113,8 +113,9 @@ export default {
       strategy: state => state.selectedLocation.location.properties.strategy
     }),
     selects() {
+      const serviceLevel = this.location.properties.service_level
       return (this.location.properties.corporate === 'false' || this.location.properties.corporate === 'FALSE') &&
-      (this.location.properties.service_level === 'elite' || this.location.properties.service_level === 'enterprise')
+      (serviceLevel === 'elite' || serviceLevel === 'enterprise' || serviceLevel === 'professional')
         ? this.gmbStore.selects : this.gmbStore.selects.slice(1)
     },
     disabledSave() {
@@ -147,8 +148,8 @@ export default {
     },
     validateStepFour() {
       const properties = this.location.properties
-      return (this.location.properties.corporate === 'false' || this.location.properties.corporate === 'FALSE') &&
-      (this.location.properties.service_level === 'elite' || this.location.properties.service_level === 'enterprise')
+      return (properties.corporate === 'false' || properties.corporate === 'FALSE') &&
+      (properties.service_level === 'elite' || properties.service_level === 'enterprise' || properties.service_level === 'professional')
         ? properties.gmb && properties.ga && this.strategy
         : properties.ga && this.strategy
     },
@@ -159,8 +160,6 @@ export default {
         : this.gmbStore.selects[selectIndex].options
     },
     onInput(key, val) {
-      // eslint-disable-next-line no-console
-      console.log(key, val)
       this.updateProp({ key, val })
       this.updateProp({
         key: this.gmbStore.saveData.stepUpdateTxt,

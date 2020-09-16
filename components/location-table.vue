@@ -284,8 +284,6 @@ export default {
     }),
     getFilteredFields() {
       const fields = this.locationtbl.fields.filter((obj) => {
-        // eslint-disable-next-line no-console
-        console.log(obj.key)
         return obj.key !== 'select' && obj.key !== 'edit'
       })
       return fields

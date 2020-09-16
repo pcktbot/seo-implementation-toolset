@@ -50,32 +50,38 @@ export const state = () => ({
       mf: {
         basic: ['custom_slug', 'recommended_name', 'population', 'floor_plans', 'property_feature_1'],
         professional: ['custom_slug', 'recommended_name', 'population', 'property_feature_1'],
-        elite: ['custom_slug', 'recommended_name']
+        elite: ['custom_slug', 'recommended_name'],
+        default: ['custom_slug', 'recommended_name']
       },
       ss: {
         starter: ['floor_plans', 'property_feature_1', 'custom_slug', 'recommended_name', 'population'],
         professional: ['floor_plans', 'property_feature_1', 'custom_slug', 'recommended_name', 'population'],
-        elite: ['floor_plans', 'property_feature_1', 'custom_slug', 'recommended_name']
+        elite: ['floor_plans', 'property_feature_1', 'custom_slug', 'recommended_name'],
+        default: ['floor_plans', 'property_feature_1', 'custom_slug', 'recommended_name']
       },
       sl: {
         affordable: ['floor_plans', 'property_feature_1', 'custom_slug', 'recommended_name', 'population'],
-        enterprise: ['floor_plans', 'property_feature_1', 'custom_slug', 'recommended_name']
+        enterprise: ['floor_plans', 'property_feature_1', 'custom_slug', 'recommended_name'],
+        default: ['floor_plans', 'property_feature_1', 'custom_slug', 'recommended_name']
       }
     },
     single: {
       mf: {
         basic: ['recommended_name', 'population', 'floor_plans', 'property_feature_1', 'naked_domain'],
         professional: ['recommended_name', 'population', 'property_feature_1', 'naked_domain'],
-        elite: ['recommended_name', 'naked_domain']
+        elite: ['recommended_name', 'naked_domain'],
+        default: ['recommended_name', 'naked_domain']
       },
       ss: {
         starter: ['floor_plans', 'property_feature_1', 'recommended_name', 'population', 'naked_domain'],
         professional: ['floor_plans', 'property_feature_1', 'recommended_name', 'population', 'naked_domain'],
-        elite: ['floor_plans', 'property_feature_1', 'recommended_name', 'naked_domain']
+        elite: ['floor_plans', 'property_feature_1', 'recommended_name', 'naked_domain'],
+        default: ['floor_plans', 'property_feature_1', 'recommended_name', 'naked_domain']
       },
       sl: {
         affordable: ['floor_plans', 'property_feature_1', 'recommended_name', 'population', 'naked_domain'],
-        enterprise: ['floor_plans', 'property_feature_1', 'recommended_name', 'naked_domain']
+        enterprise: ['floor_plans', 'property_feature_1', 'recommended_name', 'naked_domain'],
+        default: ['floor_plans', 'property_feature_1', 'recommended_name', 'naked_domain']
       }
     }
   },

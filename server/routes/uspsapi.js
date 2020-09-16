@@ -28,8 +28,6 @@ module.exports = (app) => {
       `
 
       const response = await axios.get(`http://production.shippingapis.com/ShippingAPI.dll?API=Verify&XML=${address}`)
-      // eslint-disable-next-line no-console
-      console.log(xmlparser.xml2json(response.data))
       res.send(xmlparser.xml2json(response.data))
     } catch (e) {
       res.status(500).send(e.message)

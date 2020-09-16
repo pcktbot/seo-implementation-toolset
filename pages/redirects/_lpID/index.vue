@@ -326,8 +326,6 @@ export default {
     },
     updateBtnTxt(column) {
       const originalTxt = this.redirects[`${column}_btn`]
-      // eslint-disable-next-line no-console
-      // console.log(originalTxt)
       this.setRedirectProp({
         [`${column}_btn`]: `${this.toTitleCase(column.replace('_', ' '))}'s Copied!`
       })
@@ -362,8 +360,6 @@ export default {
     selectAllChecks(val, data) {
       const filteredItems = this.$refs.redirectsTable.filteredItems
       filteredItems.forEach((filteredItem, index) => {
-        // eslint-disable-next-line no-console
-        console.log(index)
         this.updateCell(val, {
           item: filteredItem,
           field: data.field
@@ -371,8 +367,6 @@ export default {
       })
     },
     updateCell(value, data) {
-      // eslint-disable-next-line no-console
-      // console.log(value, data)
       const locationIndex = this.locations.findIndex((location) => {
         return location.id === data.item.locId
       })
@@ -386,7 +380,6 @@ export default {
         key: data.field.key,
         val: value
       })
-      // this.onSave()
     }
   }
 }

@@ -76,8 +76,6 @@ async function start () {
   models.sequelize
     .sync()
     .then(() => {
-      // signale.database(`Connected: ${dbName}`)
-      // Listen the server
       app.listen(port, host)
       consola.ready({
         message: `Server listening on http://${host}:${port}`,

@@ -117,8 +117,6 @@ export default {
         if (!this.onProjectPage) { // on home page
           const lpId = this.initSelects.lpId
           const dbResult = await this.$axios.$get(`api/locations/${lpId}`)
-          // eslint-disable-next-line no-console
-          console.log(dbResult)
           !dbResult.length // no existing project found in db
             ? this.processUpload()
             : this.showAlert(this.alertProps.existingLPMsg, 'danger')
