@@ -17,7 +17,15 @@ module.exports = {
     host: process.env.BASE_URL || 'localhost',
     port: process.env.PORT || 8000
   },
-  loading: { color: '#fff' },
+  loading: {
+    color: '#7898ad',
+    failedColor: '#ff0033',
+    continuous: true,
+    throttle: 300,
+    duration: 2000,
+    height: '4px'
+  },
+  loadingIndicator: '@/static/loading.html',
   css: [
     '@/assets/main.scss'
   ],

@@ -33,7 +33,7 @@ function getLocations (lpId) {
 }
 
 function getAllLocations () {
-  return models.location.findAll({ attributes: ['properties', 'lpId'] })
+  return models.location.findAll({ attributes: ['properties', 'lpId', 'name'] })
 }
 
 function deleteLocation (id) {

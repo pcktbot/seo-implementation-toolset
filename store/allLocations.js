@@ -9,7 +9,12 @@ export const actions = {
       .$get(`api/locations`)
       .then((res) => {
         const newRes = res.map((row) => {
-          return { text: row.properties.internal_branded_name, value: row.lpId }
+          const intName = row.properties.internal_branded_name
+          const name = row.name
+          return {
+            text: intName || name,
+            value: row.lpId
+          }
         })
         commit('SET', { options: newRes })
       })
