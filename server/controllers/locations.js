@@ -3,6 +3,7 @@ module.exports = {
   createLocations,
   updateLocations,
   getLocations,
+  getAllLocations,
   deleteLocation
 }
 
@@ -29,6 +30,10 @@ async function updateLocations (locations) {
 
 function getLocations (lpId) {
   return models.location.findAll({ where: { lpId } })
+}
+
+function getAllLocations () {
+  return models.location.findAll({ attributes: ['properties', 'lpId'] })
 }
 
 function deleteLocation (id) {

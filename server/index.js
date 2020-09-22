@@ -34,6 +34,7 @@ const regexWhitelist = [
   /\/copy\/\d*$/,
   /\/api\/lp-project\/\d*$/,
   /\/api\/locations\/\d*$/,
+  /\/api\/locations/,
   /\/_nuxt\/\S*\.js$/,
   /\/g5-logo-2\.png/,
   /\/green-check\.svg/,
