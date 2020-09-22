@@ -23,6 +23,12 @@ module.exports = (app) => {
     res.json(locations)
   })
 
+  // Get all locations in db
+  app.get('/api/locations', async (req, res) => {
+    const locations = await newLocations.getAllLocations()
+    res.json(locations)
+  })
+
   // Create New Projects on Upload
   app.post('/api/lp-project', async (req, res) => {
     const { lpId, selects } = req.body
