@@ -34,6 +34,15 @@ function getLocations (lpId) {
 
 function getAllLocations () {
   return models.location.findAll({ attributes: ['properties', 'lpId', 'name'] })
+    .then((res) => {
+      return res.map((location) => {
+        return {
+          internal_branded_name: location.properties.internal_branded_name,
+          name: location.name,
+          lpId: location.lpId
+        }
+      })
+    })
 }
 
 function deleteLocation (id) {

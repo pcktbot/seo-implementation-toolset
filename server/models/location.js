@@ -9,7 +9,7 @@ module.exports = sequelize => sequelize.define('location', {
     type: STRING
   },
   lpId: {
-    type: INTEGER
+    type: STRING
   },
   properties: {
     type: JSONB

@@ -38,7 +38,8 @@ const regexWhitelist = [
   /\/_nuxt\/\S*\.js$/,
   /\/g5-logo-2\.png/,
   /\/green-check\.svg/,
-  /\/red-x\.svg/
+  /\/red-x\.svg/,
+  /\/g5-logo\.png/
 ]
 
 g5Auth.init(app, authConfig)
