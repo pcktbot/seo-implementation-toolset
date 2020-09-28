@@ -4,7 +4,8 @@ module.exports = {
   updateLocations,
   getLocations,
   getAllLocations,
-  deleteLocation
+  deleteLocation,
+  updateInternalName
 }
 
 async function createLocations (lpId, locations) {
@@ -43,6 +44,17 @@ function getAllLocations () {
         }
       })
     })
+}
+
+async function updateInternalName () {
+  const locations = await models.location.findAll({ attributes: ['properties', 'name', 'id'] })
+  for (let i = 0; i < locations.length; i++) {
+    const { id, name, properties } = locations[i]
+    if (properties.internal_branded_name === null || properties.internal_branded_name === '') {
+      properties.internal_branded_name = `${name} - ${properties.street_address_1} - ${properties.city}`
+      await models.location.update({ properties }, { where: { id } })
+    }
+  }
 }
 
 function deleteLocation (id) {

@@ -15,6 +15,11 @@ module.exports = (app) => {
     await newLocations.updateLocations(locations)
     res.sendStatus(200)
   })
+  // update location internal_brand_name
+  app.get('/api/update', async (req, res) => {
+    await newLocations.updateInternalName()
+    res.sendStatus(200)
+  })
 
   // Get locations associated to an LP Project
   app.get('/api/locations/:lpId', async (req, res) => {
