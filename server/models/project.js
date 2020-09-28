@@ -6,7 +6,7 @@ module.exports = sequelize => sequelize.define('project', {
     primaryKey: true
   },
   lpId: {
-    type: INTEGER
+    type: STRING
   },
   vertical: {
     type: STRING

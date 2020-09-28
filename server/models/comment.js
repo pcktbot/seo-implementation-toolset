@@ -9,7 +9,7 @@ module.exports = sequelize => sequelize.define('comment', {
     type: STRING
   },
   lpId: {
-    type: INTEGER
+    type: STRING
   },
   locationId: {
     type: INTEGER

@@ -69,10 +69,10 @@ export default {
           break
         }
       }
-      return (valid && this.initSelects.file && this.initSelects.lpId.toString().length === 8 && this.initSelects.phase)
+      return (valid && this.initSelects.file && this.initSelects.lpId && this.initSelects.phase)
     },
     validateLPID() {
-      return this.initSelects.lpId && this.initSelects.lpId.toString().length === 8
+      return this.initSelects.lpId
     },
     async postToDB(locations) {
       await this.$axios.$post('api/locations', {
@@ -99,8 +99,6 @@ export default {
       this.setSelects({ 'loading': true })
       const data = await this.parseCSV(this.initSelects.file)
       const locations = await this.getLocationData(data)
-      // eslint-disable-next-line no-console
-      console.log(locations, !this.onProjectPage)
       if (locations.length && !this.onProjectPage) { // on home page
         await this.postToDB(locations)
         window.open(`/lp-project/${this.initSelects.lpId}`, '_self')

@@ -4,12 +4,11 @@
       v-model="lpId"
       :state="validation"
       :disabled="onLpPage"
-      placeholder="Enter 8 digit LP Id"
+      placeholder="Enter a Project Id"
       required
-      type="number"
     />
     <b-form-invalid-feedback :state="validation">
-      Your LP ID must be 8 digits long.
+      Your ID cant be blank
     </b-form-invalid-feedback>
     <b-form-valid-feedback :state="validation" class="ml-2" />
   </b-form>
@@ -32,7 +31,7 @@ export default {
       return !!this.$nuxt._route.params.lpId
     },
     validation() {
-      return !!(this.lpId && this.lpId.toString().length === 8)
+      return !!this.lpId
     }
   },
   methods: {
