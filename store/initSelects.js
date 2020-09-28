@@ -37,8 +37,8 @@ export const state = () => ({
   toggle: {
     selected: 'upload',
     options: [
-      { text: 'New LP Project', value: 'upload' },
-      { text: 'Load LP Project', value: 'import' }
+      { text: 'New Project', value: 'upload' },
+      { text: 'Load Project', value: 'import' }
     ]
   }
 })

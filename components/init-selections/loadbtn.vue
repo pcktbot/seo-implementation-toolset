@@ -35,7 +35,7 @@ export default {
       if (this.toggle.selected === 'upload') {
         btnTxt = this.$nuxt._route.params.lpID ? 'Add Locations' : 'Upload'
       } else {
-        btnTxt = 'Load LP Project'
+        btnTxt = 'Load Project'
       }
       return btnTxt
     }
