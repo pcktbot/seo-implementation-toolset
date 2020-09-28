@@ -11,12 +11,6 @@ async function createLocations (lpId, locations) {
   const returnLocations = []
   for (let i = 0; i < locations.length; i++) {
     const { name, properties } = locations[i]
-    // eslint-disable-next-line no-console
-    console.log({
-      lpId,
-      name,
-      properties
-    })
     const location = await models.location.create({
       lpId,
       name,
