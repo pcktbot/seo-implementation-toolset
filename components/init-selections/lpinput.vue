@@ -28,7 +28,7 @@ export default {
       }
     },
     onLpPage() {
-      return !!this.$nuxt._route.params.lpId
+      return !!this.$nuxt._route.params.lpID
     },
     validation() {
       return !!this.lpId
