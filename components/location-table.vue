@@ -351,7 +351,9 @@ export default {
     },
     onChangeCell(val, locId, key) {
       const locIdx = this.locations.findIndex(item => item.id === locId)
+      const tableIndex = this.locationtbl.items.findIndex(item => item.value === locId)
       this.setLocationProp({ val, locIdx, key })
+      this.updateLocTable({ index: tableIndex, field: key, val })
     }
   }
 }
