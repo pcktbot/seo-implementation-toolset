@@ -3,6 +3,11 @@
     <b-navbar-brand to="/" class="d-flex align-items-center">
       <b-img
         class="mr-2 logo"
+        src="/corgi.png"
+        alt="G5 Corporate Logo"
+      />
+      <b-img
+        class="mr-2 logo"
         src="/g5-logo-2.png"
         alt="G5 Corporate Logo"
       />
@@ -40,7 +45,7 @@ export default {
     font-size: 1.25rem
   }
   .logo {
-  width: 2.75em;
+  /* width: 2.75em; */
   height: 2.75em;
 }
 }
