@@ -15,6 +15,7 @@ module.exports = {
   rules: {
     'nuxt/no-cjs-in-config': 'off',
     'space-before-function-paren': 'off',
-    'curly': 'off'
+    'curly': 'off',
+    "vue/comment-directive": 0
   }
 }
